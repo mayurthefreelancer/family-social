@@ -1,10 +1,12 @@
 // app/actions/invite.ts
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { requireUser } from "../lib/auth";
 import { pool } from "../lib/db";
-import { getUserFamily } from "../lib/family";
+import { getUserFamily, getUserFamilyWithRole } from "../lib/family";
 import { generateInviteToken } from "../lib/invite";
+import { logAuditEvent } from "../lib/audit";
 
 export async function createInvite() {
   const userId = await requireUser();
@@ -32,5 +34,45 @@ export async function createInvite() {
     [token, familyId, expiresAt]
   );
 
+  // Log audit event
+  await logAuditEvent({
+    familyId,
+    actorUserId: userId,
+    action: "invite_created",
+    entityType: "invite",
+    entityId: token,
+    metadata: {
+      expiresAt,
+    },
+  });
+
   return token;
+}
+
+export async function revokeInvite(token: string) {
+  const userId = await requireUser();
+  const membership = await getUserFamilyWithRole(userId);
+
+  if (!membership || membership.role !== "admin") {
+    throw new Error("Unauthorized");
+  }
+
+  await pool.query(
+    `
+    DELETE FROM invites
+    WHERE token = $1
+      AND family_id = $2
+    `,
+    [token, membership.family_id]
+  );
+
+  await logAuditEvent({
+    familyId: membership.family_id,
+    actorUserId: userId,
+    action: "invite_revoked",
+    entityType: "invite",
+    entityId: token,
+  });
+
+  revalidatePath("/family/invites");
 }

@@ -1,55 +1,123 @@
 // app/actions/auth.ts
 "use server";
-import { pool } from "../lib/db";
-import { hashPassword } from "../lib/password";
-import { getSession } from "../lib/session";
 import { redirect } from "next/navigation";
+import { AuthFormState } from "../lib/auth-type";
+import { pool } from "../lib/db";
+import { hashPassword, verifyPassword } from "../lib/password";
+import { getSession } from "../lib/session";
+import { logAuditEvent } from "../lib/audit";
 
 export async function register(
-  name: string,
-  email: string,
-  password: string,
-  inviteToken?: string
-) {
-  const passwordHash = await hashPassword(password);
+  _prevState: AuthFormState,
+  formData: FormData
+): Promise<AuthFormState> {
+  const name = formData.get("name")?.toString();
+  const email = formData.get("email")?.toString();
+  const password = formData.get("password")?.toString();
+  const inviteToken = formData.get("invite")?.toString();
 
-  const userRes = await pool.query(
-    `INSERT INTO users (name, email, password_hash)
-     VALUES ($1, $2, $3)
-     RETURNING id`,
-    [name, email, passwordHash]
-  );
+  if (!name || !email || !password) {
+    return { error: "All fields are required" };
+  }
 
-  const userId = userRes.rows[0].id;
+  if (password.length < 6) {
+    return { error: "Password must be at least 6 characters" };
+  }
 
-  if (inviteToken) {
-    const inviteRes = await pool.query(
-      `SELECT family_id FROM invites
-       WHERE token = $1 AND expires_at > now()`,
-      [inviteToken]
+  try {
+    const userRes = await pool.query(
+      `INSERT INTO users (name, email, password_hash)
+       VALUES ($1, $2, $3)
+       RETURNING id`,
+      [name, email, await hashPassword(password)]
     );
 
-    if (inviteRes.rowCount === 0) {
-      throw new Error("Invalid invite");
+    const userId = userRes.rows[0].id;
+
+    if (inviteToken) {
+      const inviteRes = await pool.query(
+        `SELECT family_id FROM invites
+         WHERE token = $1 AND expires_at > now()`,
+        [inviteToken]
+      );
+
+      if (inviteRes.rowCount === 0) {
+        return { error: "Invalid or expired invite link" };
+      }
+
+      await pool.query(
+        `INSERT INTO family_members (user_id, family_id, role)
+         VALUES ($1, $2, 'member')`,
+        [userId, inviteRes.rows[0].family_id]
+      );
+
+      await logAuditEvent({
+        familyId: inviteRes.rows[0].family_id,
+        actorUserId: userId,
+        action: "member_joined",
+        entityType: "user",
+        entityId: userId,
+        metadata: {
+          method: "invite",
+        },
+      });
+
+      await pool.query(
+        `DELETE FROM invites WHERE token = $1`,
+        [inviteToken]
+      );
     }
 
-    const familyId = inviteRes.rows[0].family_id;
+    const session = await getSession();
+    session.userId = userId;
+    await session.save();
 
-    await pool.query(
-      `INSERT INTO family_members (user_id, family_id, role)
-       VALUES ($1, $2, 'member')`,
-      [userId, familyId]
-    );
 
-    // Invalidate token
-    await pool.query(
-      `DELETE FROM invites WHERE token = $1`,
-      [inviteToken]
-    );
+
+    redirect("/feed");
+  } catch (err: any) {
+    if (err.code === "23505") {
+      return { error: "Email already registered" };
+    }
+
+    return { error: "Something went wrong. Try again." };
+  }
+}
+
+
+export async function logout() {
+  const session = await getSession();
+  session.destroy();
+  redirect("/login");
+}
+
+export async function login(
+  _prevState: AuthFormState,
+  formData: FormData
+): Promise<AuthFormState> {
+  const email = formData.get("email")?.toString();
+  const password = formData.get("password")?.toString();
+
+  if (!email || !password) {
+    return { error: "Email and password are required" };
+  }
+
+  const res = await pool.query(
+    `SELECT id, password_hash FROM users WHERE email = $1`,
+    [email]
+  );
+
+  if (res.rowCount === 0) {
+    return { error: "Invalid email or password" };
+  }
+
+  const valid = await verifyPassword(password, res.rows[0].password_hash);
+  if (!valid) {
+    return { error: "Invalid email or password" };
   }
 
   const session = await getSession();
-  session.userId = userId;
+  session.userId = res.rows[0].id;
   await session.save();
 
   redirect("/feed");
