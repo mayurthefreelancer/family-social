@@ -4,6 +4,7 @@ import {
   text,
   timestamp,
   primaryKey,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 /* ================= USERS ================= */
@@ -68,4 +69,25 @@ export const invites = pgTable("invites", {
   familyId: uuid("family_id").references(() => families.id),
   expiresAt: timestamp("expires_at"),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+/* ================= AUDIT LOGS ================= */
+
+export const auditLogs = pgTable("audit_logs", {
+  id: uuid("id").defaultRandom().primaryKey(),
+
+  familyId: uuid("family_id")
+    .notNull()
+    .references(() => families.id),
+
+  actorUserId: uuid("actor_user_id")
+    .references(() => users.id),
+
+  action: text("action").notNull(),
+  entityType: text("entity_type").notNull(),
+  entityId: text("entity_id"),
+
+  metadata: jsonb("metadata"),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });

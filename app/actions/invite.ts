@@ -6,6 +6,7 @@ import { requireUser } from "../lib/auth";
 import { pool } from "../lib/db";
 import { getUserFamily, getUserFamilyWithRole } from "../lib/family";
 import { generateInviteToken } from "../lib/invite";
+import { logAuditEvent } from "../lib/audit";
 
 export async function createInvite() {
   const userId = await requireUser();
@@ -33,6 +34,18 @@ export async function createInvite() {
     [token, familyId, expiresAt]
   );
 
+  // Log audit event
+  await logAuditEvent({
+    familyId,
+    actorUserId: userId,
+    action: "invite_created",
+    entityType: "invite",
+    entityId: token,
+    metadata: {
+      expiresAt,
+    },
+  });
+
   return token;
 }
 
@@ -52,6 +65,14 @@ export async function revokeInvite(token: string) {
     `,
     [token, membership.family_id]
   );
+
+  await logAuditEvent({
+    familyId: membership.family_id,
+    actorUserId: userId,
+    action: "invite_revoked",
+    entityType: "invite",
+    entityId: token,
+  });
 
   revalidatePath("/family/invites");
 }

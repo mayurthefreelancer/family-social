@@ -5,6 +5,7 @@ import { AuthFormState } from "../lib/auth-type";
 import { pool } from "../lib/db";
 import { hashPassword, verifyPassword } from "../lib/password";
 import { getSession } from "../lib/session";
+import { logAuditEvent } from "../lib/audit";
 
 export async function register(
   _prevState: AuthFormState,
@@ -50,6 +51,17 @@ export async function register(
         [userId, inviteRes.rows[0].family_id]
       );
 
+      await logAuditEvent({
+        familyId: inviteRes.rows[0].family_id,
+        actorUserId: userId,
+        action: "member_joined",
+        entityType: "user",
+        entityId: userId,
+        metadata: {
+          method: "invite",
+        },
+      });
+
       await pool.query(
         `DELETE FROM invites WHERE token = $1`,
         [inviteToken]
@@ -59,6 +71,8 @@ export async function register(
     const session = await getSession();
     session.userId = userId;
     await session.save();
+
+
 
     redirect("/feed");
   } catch (err: any) {
