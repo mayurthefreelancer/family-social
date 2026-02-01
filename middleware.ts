@@ -57,6 +57,5 @@ export const config = {
         "/login",
         "/register",
         "/create-family",
-        "/invite/:path*",
     ],
 };
