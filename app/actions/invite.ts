@@ -1,9 +1,10 @@
 // app/actions/invite.ts
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { requireUser } from "../lib/auth";
 import { pool } from "../lib/db";
-import { getUserFamily } from "../lib/family";
+import { getUserFamily, getUserFamilyWithRole } from "../lib/family";
 import { generateInviteToken } from "../lib/invite";
 
 export async function createInvite() {
@@ -33,4 +34,24 @@ export async function createInvite() {
   );
 
   return token;
+}
+
+export async function revokeInvite(token: string) {
+  const userId = await requireUser();
+  const membership = await getUserFamilyWithRole(userId);
+
+  if (!membership || membership.role !== "admin") {
+    throw new Error("Unauthorized");
+  }
+
+  await pool.query(
+    `
+    DELETE FROM invites
+    WHERE token = $1
+      AND family_id = $2
+    `,
+    [token, membership.family_id]
+  );
+
+  revalidatePath("/family/invites");
 }

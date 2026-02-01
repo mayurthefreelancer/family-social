@@ -32,6 +32,8 @@ export default function RootLayout({
               <a href="/feed">Feed</a>
               <a href="/login">Login</a>
               <a href="/register">Register</a>
+              <a href="/invites">Manage Invites</a>
+
               <LogoutButton />
             </nav>
             {children}
