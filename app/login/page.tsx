@@ -1,22 +1,26 @@
 // app/login/page.tsx
+"use client";
 
-import { login } from "@/app/actions/login";
+import { login } from "@/app/actions/auth";
+import { AuthFormState } from "../lib/auth-type";
+import { useActionState } from "react";
+const initialState: AuthFormState = {};
 
 export default function LoginPage() {
-  return (
-    <form
-      action={async (formData) => {
-        "use server";
-        await login(
-          formData.get("email") as string,
-          formData.get("password") as string
-        );
-      }}
-    >
-      <h1>Login Page</h1>
+  const [state, formAction] = useActionState(login, initialState);
 
-      <input name="email" type="email" placeholder="Enter email id" required />
-      <input name="password" type="password" placeholder="Enter password" required />
+  return (
+    <form action={formAction}>
+      <h1>Login</h1>
+
+      {state.error && (
+        <p style={{ color: "red" }}>{state.error}</p>
+      )}
+
+      <label htmlFor="email">Email:</label>
+      <input name="email" type="email" required />
+      <label htmlFor="password">Password:</label>
+      <input name="password" type="password" required />
 
       <button type="submit">Login</button>
     </form>
