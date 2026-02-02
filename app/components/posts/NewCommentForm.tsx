@@ -3,16 +3,26 @@
 import { addNewComment } from "@/app/actions/comments";
 import { useState, useTransition } from "react";
 
-export function NewCommentForm({ postId }: { postId: string }) {
+export function NewCommentForm({
+  postId,
+  onOptimisticAdd,
+}: {
+  postId: string;
+  onOptimisticAdd: (content: string) => void;
+}) {
   const [content, setContent] = useState("");
   const [isPending, startTransition] = useTransition();
 
   function submit() {
     if (!content.trim()) return;
 
+    // ✅ Optimistic UI
+    onOptimisticAdd(content);
+    setContent("");
+
+    // 🔁 Server write
     startTransition(async () => {
       await addNewComment(postId, content);
-      setContent("");
     });
   }
 
@@ -23,22 +33,14 @@ export function NewCommentForm({ postId }: { postId: string }) {
         onChange={(e) => setContent(e.target.value)}
         placeholder="Write a comment…"
         className="
-          flex-1
-          rounded-md
-          border border-[var(--color-border)]
-          px-3 py-1.5
-          text-sm
-          focus:outline-none
+          flex-1 rounded-md border border-[var(--color-border)]
+          px-3 py-1.5 text-sm focus:outline-none
         "
       />
       <button
         onClick={submit}
         disabled={isPending}
-        className="
-          text-sm
-          text-[var(--color-text-primary)]
-          disabled:opacity-40
-        "
+        className="text-sm text-[var(--color-text-primary)] disabled:opacity-40"
       >
         Post
       </button>
