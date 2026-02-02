@@ -9,15 +9,15 @@ import { pool } from "../lib/db";
 export async function createPost(content: string) {
   if (!content.trim()) return;
 
-  const userId = await requireUser();
-  const familyId = await getUserFamily(userId);
+  const user = await requireUser();
+  const familyId = await getUserFamily(user.familyId);
 
   if (!familyId) throw new Error("User not in family");
 
   await pool.query(
     `INSERT INTO posts (family_id, user_id, content)
      VALUES ($1, $2, $3)`,
-    [familyId, userId, content]
+    [familyId, user.id, content]
   );
 
   // Refresh feed

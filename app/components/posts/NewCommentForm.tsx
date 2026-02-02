@@ -1,24 +1,47 @@
-// components/posts/NewCommentForm.tsx
 "use client";
 
-import { addComment } from "@/app/actions/comments";
+import { addNewComment } from "@/app/actions/comments";
+import { useState, useTransition } from "react";
 
 export function NewCommentForm({ postId }: { postId: string }) {
+  const [content, setContent] = useState("");
+  const [isPending, startTransition] = useTransition();
+
+  function submit() {
+    if (!content.trim()) return;
+
+    startTransition(async () => {
+      await addNewComment(postId, content);
+      setContent("");
+    });
+  }
+
   return (
-    <form
-      action={async (formData) => {
-        await addComment(
-          postId,
-          formData.get("content") as string
-        );
-      }}
-    >
+    <div className="flex gap-2">
       <input
-        name="content"
-        placeholder="Write a comment..."
-        required
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="Write a comment…"
+        className="
+          flex-1
+          rounded-md
+          border border-[var(--color-border)]
+          px-3 py-1.5
+          text-sm
+          focus:outline-none
+        "
       />
-      <button type="submit">Comment</button>
-    </form>
+      <button
+        onClick={submit}
+        disabled={isPending}
+        className="
+          text-sm
+          text-[var(--color-text-primary)]
+          disabled:opacity-40
+        "
+      >
+        Post
+      </button>
+    </div>
   );
 }

@@ -1,21 +1,21 @@
-// lib/feed.ts
-import { pool } from "./db";
+import { pool } from "@/app/lib/db";
 
-export async function getFeed(familyId: string) {
-  const res = await pool.query(
+export async function getFamilyFeed(familyId: string) {
+  const { rows } = await pool.query(
     `
     SELECT
-      posts.id,
-      posts.content,
-      posts.created_at,
-      users.name
-    FROM posts
-    JOIN users ON users.id = posts.user_id
-    WHERE posts.family_id = $1
-    ORDER BY posts.created_at DESC
+      p.id,
+      p.content,
+      p.created_at AS "createdAt",
+      u.name AS "authorName"
+    FROM posts p
+    JOIN users u ON u.id = p.user_id
+    WHERE p.family_id = $1
+    ORDER BY p.created_at DESC
+    LIMIT 50
     `,
     [familyId]
   );
 
-  return res.rows;
+  return rows;
 }

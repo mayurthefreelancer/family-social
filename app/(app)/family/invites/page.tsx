@@ -5,8 +5,8 @@ import { getActiveInvites } from "@/app/lib/invite";
 
 
 export default async function FamilyInvitesPage() {
-  const userId = await requireUser();
-  const membership = await getUserFamilyWithRole(userId);
+  const user = await requireUser();
+  const membership = await getUserFamilyWithRole(user.id);
 
   if (!membership || membership.role !== "admin") {
     return <p>You do not have permission to view invites.</p>;

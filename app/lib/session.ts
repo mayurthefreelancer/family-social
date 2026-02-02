@@ -1,6 +1,8 @@
 // lib/session.ts
-import { getIronSession } from "iron-session";
+import '../lib/server-only';
 import { cookies } from "next/headers";
+import { getIronSession } from "iron-session";
+
 
 export type SessionData = {
   userId?: string;
@@ -16,4 +18,9 @@ const sessionOptions = {
 
 export async function getSession() {
   return getIronSession<SessionData>(await cookies(), sessionOptions);
+}
+
+export async function getSessionUser() {
+  const session = await getIronSession<SessionData>(await cookies(), sessionOptions);
+  return session.userId ?? null;
 }

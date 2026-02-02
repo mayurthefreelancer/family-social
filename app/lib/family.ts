@@ -1,4 +1,5 @@
 // lib/family.ts
+"use server";
 import { pool } from "./db";
 
 export async function getUserFamily(userId: string) {

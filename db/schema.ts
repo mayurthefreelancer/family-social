@@ -55,12 +55,14 @@ export const posts = pgTable("posts", {
 /* ================= COMMENTS ================= */
 
 export const comments = pgTable("comments", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  postId: uuid("post_id").references(() => posts.id),
-  userId: uuid("user_id").references(() => users.id),
+  id: uuid("id").primaryKey(),
+  postId: uuid("post_id").notNull(),
+  userId: uuid("user_id").notNull(),
+  familyId: uuid("family_id").notNull(),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
 
 /* ================= INVITES ================= */
 

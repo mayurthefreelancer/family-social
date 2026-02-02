@@ -3,7 +3,7 @@
 import { createPost } from "@/app/actions/post";
 
 
-export function NewPostForm() {
+export default function NewPostForm() {
   return (
     <form action={async formData => {
       await createPost(formData.get("content") as string);

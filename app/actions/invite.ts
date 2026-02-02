@@ -9,8 +9,8 @@ import { generateInviteToken } from "../lib/invite";
 import { logAuditEvent } from "../lib/audit";
 
 export async function createInvite() {
-  const userId = await requireUser();
-  const familyId = await getUserFamily(userId);
+  const user = await requireUser();
+  const familyId = await getUserFamily(user.familyId);
 
   if (!familyId) throw new Error("No family");
 
@@ -18,7 +18,7 @@ export async function createInvite() {
   const roleRes = await pool.query(
     `SELECT role FROM family_members
      WHERE user_id = $1 AND family_id = $2`,
-    [userId, familyId]
+    [user.id, familyId]
   );
 
   if (roleRes.rows[0]?.role !== "admin") {
@@ -37,7 +37,7 @@ export async function createInvite() {
   // Log audit event
   await logAuditEvent({
     familyId,
-    actorUserId: userId,
+    actorUserId: user.id,
     action: "invite_created",
     entityType: "invite",
     entityId: token,
@@ -50,8 +50,8 @@ export async function createInvite() {
 }
 
 export async function revokeInvite(token: string) {
-  const userId = await requireUser();
-  const membership = await getUserFamilyWithRole(userId);
+  const user = await requireUser();
+  const membership = await getUserFamilyWithRole(user.id);
 
   if (!membership || membership.role !== "admin") {
     throw new Error("Unauthorized");
@@ -68,7 +68,7 @@ export async function revokeInvite(token: string) {
 
   await logAuditEvent({
     familyId: membership.family_id,
-    actorUserId: userId,
+    actorUserId: user.id,
     action: "invite_revoked",
     entityType: "invite",
     entityId: token,
