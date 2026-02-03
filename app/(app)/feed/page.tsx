@@ -1,10 +1,12 @@
+export const dynamic = "force-dynamic";
+
 import { Feed } from "@/app/components/feed/Feed";
 import { requireUser } from "@/app/lib/auth";
 import { getFamilyFeed } from "@/app/lib/feed";
 
 export default async function FeedPage() {
   const user = await requireUser();
-  const posts = await getFamilyFeed(user.familyId);
-
+  const posts = await getFamilyFeed(user.familyId, user.id);
+  console.log("posts in feed page:", posts);
   return <Feed posts={posts} />;
 }

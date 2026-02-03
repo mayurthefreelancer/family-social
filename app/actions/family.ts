@@ -1,12 +1,13 @@
 // app/actions/family.ts
 "use server";
 
+import { requireUserId } from "../lib/auth";
 import { pool } from "../lib/db";
-import { requireUser } from "../lib/auth";
 import { redirect } from "next/navigation";
 
 export async function createFamily(name: string) {
-  const userId = await requireUser();
+  const userId = await requireUserId();
+  console.log("Creating family for user:", userId);
 
   const familyRes = await pool.query(
     `INSERT INTO families (name, created_by)

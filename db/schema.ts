@@ -5,6 +5,7 @@ import {
   timestamp,
   primaryKey,
   jsonb,
+  unique,
 } from "drizzle-orm/pg-core";
 
 /* ================= USERS ================= */
@@ -93,3 +94,21 @@ export const auditLogs = pgTable("audit_logs", {
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+// ================= POST LIKES ================= //
+export const postLikes = pgTable(
+  "post_likes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    postId: uuid("post_id").notNull(),
+    userId: uuid("user_id").notNull(),
+    familyId: uuid("family_id").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    postUserUnique: unique("post_likes_post_user_uniq").on(
+      table.postId,
+      table.userId
+    ),
+  })
+);

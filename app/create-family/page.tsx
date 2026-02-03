@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { createFamily } from "@/app/actions/family";
 import { AuthCard } from "@/app/components/auth/AuthCard";
 import { AuthField } from "@/app/components/auth/AuthField";
+import { useState } from "react";
 
 export default function CreateFamilyPage() {
   const [error, setError] = useState<string | null>(null);
@@ -14,10 +14,11 @@ export default function CreateFamilyPage() {
     setPending(true);
 
     try {
+      console.log("Form Data:", formData.get("name"));
       const result = await createFamily(
         formData.get("name") as string
       );
-
+      console.log("Create Family Result:", result);
       if (result?.error) {
         setError(result.error);
       }

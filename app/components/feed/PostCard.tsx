@@ -1,5 +1,6 @@
 import { formatDistanceToNow } from "date-fns";
 import { CommentSection } from "./CommentSection";
+import { LikeButton } from "./LikeButton";
 
 export function PostCard({
   post,
@@ -10,6 +11,8 @@ export function PostCard({
     content: string;
     createdAt: string;
     commentCount?: number;
+    likeCount: number;
+    likedByMe: boolean;
   };
 }) {
   return (
@@ -44,7 +47,15 @@ export function PostCard({
       <CommentSection
         postId={post.id}
         initialCount={post.commentCount ?? 0}
+        currentUserName={post.authorName}
       />
+      
+      <LikeButton post={{
+        id: post.id,
+        likeCount: post.likeCount,
+        likedByMe: post.likedByMe,
+      }} />
+
     </article>
   );
 }

@@ -10,6 +10,14 @@ export type AuthUser = {
   familyId: string;
 };
 
+export async function requireUserId(): Promise<string> {
+  const session = await getSession();
+  if (!session.userId) {
+    redirect("/login");
+  }
+  return session.userId;
+}
+
 export async function requireUser(): Promise<AuthUser> {
   const session = await getSession();
 
