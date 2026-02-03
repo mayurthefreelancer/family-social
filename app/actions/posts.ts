@@ -10,7 +10,7 @@ export async function createPost(content: string) {
   if (!content.trim()) return;
 
   const user = await requireUser();
-  const familyId = await getUserFamily(user.familyId);
+  const familyId = await getUserFamily(user.family_id);
 
   if (!familyId) throw new Error("User not in family");
 

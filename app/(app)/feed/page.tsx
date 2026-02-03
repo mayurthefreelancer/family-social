@@ -6,7 +6,7 @@ import { getFamilyFeed } from "@/app/lib/feed";
 
 export default async function FeedPage() {
   const user = await requireUser();
-  const posts = await getFamilyFeed(user.familyId, user.id);
+  const posts = await getFamilyFeed(user.family_id, user.id);
   console.log("posts in feed page:", posts);
   return <Feed posts={posts} />;
 }

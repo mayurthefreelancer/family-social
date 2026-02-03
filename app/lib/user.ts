@@ -46,3 +46,19 @@ export async function createUser({
 
   return { success: true };
 }
+
+export async function getOptionalUser() {
+  const session = await getSession();
+  if (!session.userId) return null;
+
+  const res = await pool.query(
+    `
+    SELECT id, name, email
+    FROM users
+    WHERE id = $1
+    `,
+    [session.userId]
+  );
+
+  return res.rows[0] ?? null;
+}

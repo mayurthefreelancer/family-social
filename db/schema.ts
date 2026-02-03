@@ -68,10 +68,13 @@ export const comments = pgTable("comments", {
 /* ================= INVITES ================= */
 
 export const invites = pgTable("invites", {
-  token: text("token").primaryKey(),
-  familyId: uuid("family_id").references(() => families.id),
-  expiresAt: timestamp("expires_at"),
-  createdAt: timestamp("created_at").defaultNow(),
+  id: uuid("id").primaryKey().defaultRandom(),
+  familyId: uuid("family_id").notNull(),
+  token: text("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  usedAt: timestamp("used_at"),
+  createdBy: uuid("created_by").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 /* ================= AUDIT LOGS ================= */

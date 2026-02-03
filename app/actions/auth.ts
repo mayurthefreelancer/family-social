@@ -83,3 +83,9 @@ export async function authenticateUser(
 
   return { success: true };
 }
+
+export async function createSession(userId: string) {
+  const session = await getSession();
+  session.userId = userId;
+  await session.save();
+}

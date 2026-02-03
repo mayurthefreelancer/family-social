@@ -7,7 +7,7 @@ import { requireUser } from "../lib/auth";
 
 export async function fetchComments(postId: string) {
   const user = await requireUser();
-  return getCommentsByPost(postId, user.familyId);
+  return getCommentsByPost(postId, user.family_id);
 }
 
 export async function addNewComment(postId: string, content: string) {
@@ -16,7 +16,7 @@ export async function addNewComment(postId: string, content: string) {
     id: globalThis.crypto.randomUUID(),
     postId,
     userId: user.id,
-    familyId: user.familyId,
+    familyId: user.family_id,
     content,
   });
   revalidatePath(`/feed`);

@@ -9,13 +9,15 @@ import { getUserFamily } from "../lib/family";
 
 export async function createPost(content: string) {
   const user = await requireUser();
-  const familyId = await getUserFamily(user.familyId);
+  const familyId = await getUserFamily(user.family_id);
 
+  console.log("🔥 createPost called", { content, user, familyId });
   await pool.query(
     `INSERT INTO posts (family_id, user_id, content)
      VALUES ($1, $2, $3)`,
     [familyId, user.id, content]
   );
+  console.log("Post created:", { familyId, userId: user.id, content });
   revalidatePath("/feed");
 }
 
@@ -28,7 +30,7 @@ export async function togglePostLike(postId: string) {
   // Ensure post exists & belongs to family
   const { rowCount } = await pool.query(
     `SELECT 1 FROM posts WHERE id = $1 AND family_id = $2`,
-    [postId, user.familyId]
+    [postId, user.family_id]
   );
 
   if (!rowCount) {
@@ -43,7 +45,7 @@ export async function togglePostLike(postId: string) {
       AND family_id = $3
     RETURNING id
     `,
-    [postId, user.id, user.familyId]
+    [postId, user.id, user.family_id]
   );
 
   // If nothing was deleted → insert (like)
@@ -53,7 +55,7 @@ export async function togglePostLike(postId: string) {
       INSERT INTO post_likes (id, post_id, user_id, family_id)
       VALUES (gen_random_uuid(), $1, $2, $3)
       `,
-      [postId, user.id, user.familyId]
+      [postId, user.id, user.family_id]
     );
   }
 
