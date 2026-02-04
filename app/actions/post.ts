@@ -9,24 +9,20 @@ import { getUserFamily } from "../lib/family";
 
 export async function createPost(content: string) {
   const user = await requireUser();
-  const familyId = await getUserFamily(user.family_id);
+  console.log("Creating post for user:", user);
+  const familyId = await getUserFamily(user.id);
 
-  console.log("🔥 createPost called", { content, user, familyId });
+  console.log("Creating post for family:", familyId);
   await pool.query(
     `INSERT INTO posts (family_id, user_id, content)
      VALUES ($1, $2, $3)`,
     [familyId, user.id, content]
   );
-  console.log("Post created:", { familyId, userId: user.id, content });
   revalidatePath("/feed");
 }
 
 export async function togglePostLike(postId: string) {
-  console.log("🔥 togglePostLike called", postId);
-
   const user = await requireUser();
-  console.log("👤 user", user.id);
-
   // Ensure post exists & belongs to family
   const { rowCount } = await pool.query(
     `SELECT 1 FROM posts WHERE id = $1 AND family_id = $2`,

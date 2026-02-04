@@ -7,6 +7,7 @@ import {
   jsonb,
   unique,
 } from "drizzle-orm/pg-core";
+import { join } from "path";
 
 /* ================= USERS ================= */
 
@@ -32,15 +33,16 @@ export const families = pgTable("families", {
 export const familyMembers = pgTable(
   "family_members",
   {
-    userId: uuid("user_id").references(() => users.id),
-    familyId: uuid("family_id").references(() => families.id),
+    userId: uuid("user_id").notNull(),
+    familyId: uuid("family_id").notNull(),
     role: text("role").notNull(),
-    joinedAt: timestamp("joined_at").defaultNow(),
+    joinedAt: timestamp("joined_at").defaultNow().notNull(),
   },
-  (table) => ({
-    pk: primaryKey(table.userId, table.familyId),
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.familyId] }),
   })
 );
+
 
 /* ================= POSTS ================= */
 

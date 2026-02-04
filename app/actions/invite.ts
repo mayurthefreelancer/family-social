@@ -10,6 +10,7 @@ import { logAuditEvent } from "../lib/audit";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { createSession } from "./auth";
+import crypto from "crypto";
 
 export async function createInvite() {
   const user = await requireUser();
@@ -88,7 +89,7 @@ export async function generateInvite() {
     throw new Error("Not authorized");
   }
 
-  const token = "dummy_token";//crypto.randomBytes(32).toString("hex");
+  const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   await pool.query(

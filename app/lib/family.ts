@@ -3,13 +3,11 @@
 import { pool } from "./db";
 
 export async function getUserFamily(userId: string) {
-  console.log("😊Getting family for userId:", userId);
   const res = await pool.query(
     `SELECT family_id FROM family_members WHERE user_id = $1`,
     [userId]
   );
 
-  console.log("👋🏼 Family query result:", res.rows);
   return res.rows[0]?.family_id;
 }
 
@@ -37,6 +35,5 @@ export async function getFamilyMembers(familyId: string) {
     [familyId]
   );
 
-  console.log("👋🏼 res.rows for familyId", familyId, "is", res.rows);
   return res.rows;
 }

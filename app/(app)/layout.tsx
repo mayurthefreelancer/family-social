@@ -29,7 +29,7 @@ export default async function AppLayout({
 
           <nav className="flex items-center gap-4">
             <Link
-              href="/family/members"
+              href="/family"
               className="text-sm text-[var(--color-text-muted)]
                          hover:text-[var(--color-text-primary)]"
             >

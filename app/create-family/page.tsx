@@ -14,11 +14,9 @@ export default function CreateFamilyPage() {
     setPending(true);
 
     try {
-      console.log("Form Data:", formData.get("name"));
       const result = await createFamily(
         formData.get("name") as string
       );
-      console.log("Create Family Result:", result);
       if (result?.error) {
         setError(result.error);
       }

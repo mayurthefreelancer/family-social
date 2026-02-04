@@ -39,7 +39,6 @@ export async function requireUser(): Promise<AuthUser> {
   );
 
   const user = res.rows[0];
-  console.log("👋🏼user: for session.userId", session.userId, "is", user);
 
   if (!res.rowCount) redirect("/login");
 

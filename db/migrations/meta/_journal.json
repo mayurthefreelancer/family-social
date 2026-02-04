@@ -43,6 +43,13 @@
       "when": 1770142442095,
       "tag": "0005_watery_blacklash",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770188956844,
+      "tag": "0006_huge_excalibur",
+      "breakpoints": true
     }
   ]
 }

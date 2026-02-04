@@ -9,7 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
+    "crypto": "^1.0.1",
     "drizzle-orm": "^0.45.1",
     "iron-session": "^8.0.4",
     "next": "16.1.6",

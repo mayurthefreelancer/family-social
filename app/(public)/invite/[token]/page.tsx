@@ -5,7 +5,7 @@ import { getOptionalUser } from "@/app/lib/user";
 
 // app/invite/[token]/page.tsx
 export default async function InvitePage({ params }: { params: { token: string } }) {
-  const { token } = params;
+  const { token } = await params;
 
   const inviteRes = await pool.query(
     `

@@ -9,7 +9,6 @@ export function CreatePost() {
 
   async function handleSubmit() {
     if (!content.trim()) return;
-
     setPending(true);
     await createPost(content);
     setContent("");
