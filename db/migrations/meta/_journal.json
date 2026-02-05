@@ -50,6 +50,13 @@
       "when": 1770188956844,
       "tag": "0006_huge_excalibur",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1770275502307,
+      "tag": "0007_fat_nightcrawler",
+      "breakpoints": true
     }
   ]
 }

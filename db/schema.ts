@@ -117,3 +117,22 @@ export const postLikes = pgTable(
     ),
   })
 );
+
+// ================= PROFILES ================= //
+export const profiles = pgTable("profiles", {
+  user_id: uuid("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+
+  family_id: uuid("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+
+  display_name: text("display_name").notNull(),
+  username: text("username"), // optional, family-unique later
+  bio: text("bio"),
+  avatar_url: text("avatar_url"),
+
+  created_at: timestamp("created_at").defaultNow().notNull(),
+  updated_at: timestamp("updated_at").defaultNow().notNull(),
+})

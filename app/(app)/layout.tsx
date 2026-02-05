@@ -36,6 +36,14 @@ export default async function AppLayout({
               Family
             </Link>
 
+            <Link
+              href="/profile"
+              className="text-sm text-[var(--color-text-muted)]
+                         hover:text-[var(--color-text-primary)]"
+            >
+              Profile
+            </Link>
+
             <LogoutButton />
           </nav>
         </div>

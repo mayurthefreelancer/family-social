@@ -10,7 +10,7 @@ export function LikeButton({ post }: { post: Post }) {
   return (
     <form action={togglePostLike.bind(null, post.id)}>
       <button type="submit">
-        {post.likedByMe ? "❤️" : "🤍"} {post.likeCount}
+        {post.likedByMe ? "❤️" : "🖤"} {post.likeCount}
       </button>
     </form>
   );
