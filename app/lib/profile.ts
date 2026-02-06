@@ -1,6 +1,39 @@
 import { requireUser } from "./auth"
 import { pool } from "./db"
 
+export interface Profile {
+  user_id: string
+  family_id: string
+  display_name: string
+  bio: string
+  avatar_url?: string
+  username?: string
+  created_at: string
+  updated_at: string
+  role?: string
+  post_count?: number
+}
+
+export async function updateProfile(formData: FormData) {
+  const user = await requireUser()
+  const displayName = formData.get("display_name") as string
+  const bio = formData.get("bio") as string
+  const avatarUrl = formData.get("avatar_url") as string
+
+  await pool.query(
+    `
+    UPDATE profiles
+    SET display_name = $1,
+        bio = $2,
+        avatar_url = $3,
+        updated_at = NOW()
+    WHERE user_id = $4
+      AND family_id = $5
+    `,
+    [displayName, bio, avatarUrl, user.id, user.family_id]
+  )
+}
+
 export async function getMyProfile() {
   const user = await requireUser()
 
