@@ -1,40 +1,56 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { pool } from "../lib/db"
-import { requireUser } from "../lib/auth"
+import { requireUser } from "@/app/lib/auth"
+import { pool } from "@/app/lib/db"
 import { saveAvatarLocally } from "../lib/avatar-storage"
 
-export async function uploadAvatar(formData: FormData) {
-  const user = await requireUser()
+type UploadState = {
+  error?: string
+}
 
-  const file = formData.get("avatar") as File | null
-  if (!file) throw new Error("No file selected")
+export async function uploadAvatar(
+  prevState: UploadState,
+  formData: FormData
+): Promise<UploadState> {
+  try {
+    const user = await requireUser()
 
-  if (!file.type.startsWith("image/")) {
-    throw new Error("Only images allowed")
+    const file = formData.get("avatar") as File | null
+
+    if (!file || file.size === 0) {
+      return { error: "Please select a photo before uploading." }
+    }
+
+    if (!file.type.startsWith("image/")) {
+      return { error: "Only image files are allowed." }
+    }
+
+    if (file.size > 2_000_000) {
+      return { error: "Image must be smaller than 2MB." }
+    }
+
+    const avatarUrl = await saveAvatarLocally(
+      file,
+      user.family_id,
+      user.id
+    )
+
+    await pool.query(
+      `
+      UPDATE profiles
+      SET avatar_url = $1,
+          updated_at = NOW()
+      WHERE user_id = $2
+        AND family_id = $3
+      `,
+      [avatarUrl, user.id, user.family_id]
+    )
+
+    revalidatePath("/profile")
+
+    return {} // success → no error
+  } catch {
+    return { error: "Something went wrong. Please try again." }
   }
-
-  if (file.size > 2_000_000) {
-    throw new Error("Max size is 2MB")
-  }
-
-  const avatarUrl = await saveAvatarLocally(
-    file,
-    user.family_id,
-    user.id
-  )
-
-  await pool.query(
-    `
-    UPDATE profiles
-    SET avatar_url = $1,
-        updated_at = NOW()
-    WHERE user_id = $2
-      AND family_id = $3
-    `,
-    [avatarUrl, user.id, user.family_id]
-  )
-
-  revalidatePath("/profile")
 }

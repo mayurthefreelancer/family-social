@@ -1,4 +1,3 @@
-// lib/avatar-storage.ts
 import fs from "fs/promises"
 import path from "path"
 
@@ -9,7 +8,7 @@ export async function saveAvatarLocally(
 ) {
   const buffer = Buffer.from(await file.arrayBuffer())
 
-  const uploadDir = path.join(
+  const dir = path.join(
     process.cwd(),
     "public",
     "uploads",
@@ -17,10 +16,13 @@ export async function saveAvatarLocally(
     familyId
   )
 
-  await fs.mkdir(uploadDir, { recursive: true })
+  await fs.mkdir(dir, { recursive: true })
 
-  const filePath = path.join(uploadDir, `${userId}.jpg`)
-  await fs.writeFile(filePath, buffer)
+  const filename = `${userId}.jpg`
+  const filepath = path.join(dir, filename)
 
-  return `/uploads/avatars/${familyId}/${userId}.jpg`
+  await fs.writeFile(filepath, buffer)
+
+  // cache-busting is IMPORTANT
+  return `/uploads/avatars/${familyId}/${filename}?v=${Date.now()}`
 }
