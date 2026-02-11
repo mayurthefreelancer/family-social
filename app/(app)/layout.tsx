@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { requireUser } from "../lib/auth";
+import { requireLoggedInUser } from "../lib/auth";
 import { LogoutButton } from "../components/LogoutButton";
 
 export default async function AppLayout({
@@ -7,6 +8,9 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const user = await requireLoggedInUser();
+  const { displayName, avatarUrl } = user;
+  console.log("AppLayout user:", user);
 
   return (
     <div className="min-h-screen">
@@ -44,7 +48,9 @@ export default async function AppLayout({
               Profile
             </Link>
 
-            <LogoutButton />
+            <LogoutButton displayName={displayName} avatarUrl={avatarUrl}/>
+
+
           </nav>
         </div>
       </header>

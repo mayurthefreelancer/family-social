@@ -8,6 +8,9 @@ export type AuthUser = {
   id: string;
   name: string;
   family_id: string;
+  email: string;
+  displayName: string;
+  avatarUrl: string | null;
   role: "admin" | "member";
 };
 
@@ -49,3 +52,51 @@ export async function requireUser(): Promise<AuthUser> {
 
   return user;
 }
+
+export async function requireLoggedInUser(): Promise<AuthUser> {
+  const session = await getSession();
+  if (!session?.userId) redirect("/login");
+
+  const { rows } = await pool.query(
+    `
+    SELECT
+      u.id,
+      u.email,
+
+      p.display_name,
+      p.avatar_url,
+
+      fm.family_id,
+      fm.role
+    FROM users u
+
+    JOIN family_members fm
+      ON fm.user_id = u.id
+
+    JOIN profiles p
+      ON p.user_id = u.id
+     AND p.family_id = fm.family_id
+
+    WHERE u.id = $1
+    `,
+    [session.userId]
+  );
+
+  const row = rows[0];
+
+  if (!row) {
+    // extremely defensive, but safe
+    redirect("/login");
+  }
+
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    displayName: row.display_name,
+    avatarUrl: row.avatar_url,
+    family_id: row.family_id,
+    role: row.role,
+  };
+}
+

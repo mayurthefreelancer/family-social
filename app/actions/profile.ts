@@ -40,6 +40,15 @@ export async function uploadAvatar(formData: FormData) {
     [avatarUrl, user.id, user.family_id]
   )
 
+  await pool.query(
+    `
+    UPDATE users
+    SET avatar_url = $1
+    WHERE id = $2
+    `,
+    [avatarUrl, user.id]
+  )
+
   redirect("/profile/edit")
 }
 

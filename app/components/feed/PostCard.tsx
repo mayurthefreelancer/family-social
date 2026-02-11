@@ -8,6 +8,7 @@ export function PostCard({
   post: {
     id: string;
     authorName: string;
+    authorAvatarUrl?: string | null;
     content: string;
     createdAt: string;
     commentCount?: number;
@@ -24,16 +25,47 @@ export function PostCard({
         space-y-3
       "
     >
-      <header className="flex items-center justify-between">
-        <span className="text-sm font-medium text-[var(--color-text-primary)]">
-          {post.authorName}
-        </span>
+      {/* Header */}
+      <header className="flex items-start gap-3">
+        {/* Avatar */}
+        <div className="shrink-0">
+          {post.authorAvatarUrl ? (
+            <img
+              src={post.authorAvatarUrl}
+              alt={post.authorName}
+              className="
+                h-9 w-9 rounded-full object-cover
+                border border-[var(--color-border)]
+              "
+            />
+          ) : (
+            <div
+              className="
+                h-9 w-9 rounded-full
+                bg-[var(--color-border)]
+                flex items-center justify-center
+                text-xs font-semibold
+                text-[var(--color-text-muted)]
+              "
+            >
+              {post.authorName.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
 
-        <time className="text-xs text-[var(--color-text-muted)]">
-          {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
-        </time>
+        {/* Name + time */}
+        <div className="flex flex-col leading-tight">
+          <span className="text-sm font-medium text-[var(--color-text-primary)]">
+            {post.authorName}
+          </span>
+
+          <time className="text-xs text-[var(--color-text-muted)]">
+            {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
+          </time>
+        </div>
       </header>
 
+      {/* Content */}
       <p
         className="
           text-sm leading-relaxed
@@ -49,13 +81,14 @@ export function PostCard({
         initialCount={post.commentCount ?? 0}
         currentUserName={post.authorName}
       />
-      
-      <LikeButton post={{
-        id: post.id,
-        likeCount: post.likeCount,
-        likedByMe: post.likedByMe,
-      }} />
 
+      <LikeButton
+        post={{
+          id: post.id,
+          likeCount: post.likeCount,
+          likedByMe: post.likedByMe,
+        }}
+      />
     </article>
   );
 }

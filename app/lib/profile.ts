@@ -32,6 +32,15 @@ export async function updateProfile(formData: FormData) {
     `,
     [displayName, bio, avatarUrl, user.id, user.family_id]
   )
+
+  await pool.query(
+    `
+    UPDATE users
+    SET avatar_url = $1
+    WHERE id = $2
+    `,
+    [avatarUrl, user.id]
+  )
 }
 
 export async function getMyProfile() {

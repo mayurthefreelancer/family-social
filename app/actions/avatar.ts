@@ -47,6 +47,15 @@ export async function uploadAvatar(
       [avatarUrl, user.id, user.family_id]
     )
 
+    await pool.query(
+      `
+      UPDATE users
+      SET avatar_url = $1
+      WHERE id = $2
+      `,
+      [avatarUrl, user.id]
+    )
+
     revalidatePath("/profile")
 
     return {} // success → no error

@@ -9,10 +9,8 @@ import { getUserFamily } from "../lib/family";
 
 export async function createPost(content: string) {
   const user = await requireUser();
-  console.log("Creating post for user:", user);
   const familyId = await getUserFamily(user.id);
 
-  console.log("Creating post for family:", familyId);
   await pool.query(
     `INSERT INTO posts (family_id, user_id, content)
      VALUES ($1, $2, $3)`,
