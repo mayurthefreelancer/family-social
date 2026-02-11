@@ -21,7 +21,7 @@ export function PostList({ posts }: { posts: any[] }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 max-w-2xl mx-auto">
       {posts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}

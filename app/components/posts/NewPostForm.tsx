@@ -2,11 +2,13 @@
 
 import { createPost } from "@/app/actions/post";
 import { useState } from "react";
+import { Avatar } from "../profile/Avatar";
 
-export function CreatePost() {
+export function CreatePost({ profile }: { profile: any }) {
   const [content, setContent] = useState("");
   const [pending, setPending] = useState(false);
 
+  
   async function handleSubmit() {
     if (!content.trim()) return;
     setPending(true);
@@ -16,34 +18,37 @@ export function CreatePost() {
   }
 
   return (
-    <div className="rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
-      <textarea
-        rows={3}
-        placeholder="What would you like to share?"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        className="
-          w-full resize-none bg-transparent text-sm
-          text-[var(--color-text-primary)]
-          placeholder:text-[var(--color-text-muted)]
-          focus:outline-none
-        "
-      />
-
-      <div className="mt-3 flex justify-end">
-        <button
-          onClick={handleSubmit}
-          disabled={pending || !content.trim()}
+    <div className="rounded-2xl bg-white shadow-sm border border-neutral-200 p-4 space-y-3">
+      <div className="flex gap-3">
+        <Avatar
+          avatar={profile.avatar_url}
+          name={profile.display_name}
+          size="lg"
+        />
+        <textarea
+          placeholder="What would you like to share?"
           className="
-            rounded-md px-4 py-1.5 text-sm
-            text-white
-            bg-[var(--color-accent)]
-            disabled:opacity-40
-          "
-        >
-          {pending ? "Posting…" : "Post"}
+        w-full resize-none
+        bg-transparent
+        text-base
+        placeholder:text-neutral-400
+        focus:outline-none
+      "
+        />
+      </div>
+
+      <div className="flex justify-end">
+        <button className="
+      px-4 py-2 rounded-full
+      bg-black text-white
+      text-sm font-medium
+      hover:opacity-90
+      transition
+    ">
+          Post
         </button>
       </div>
     </div>
+
   );
 }

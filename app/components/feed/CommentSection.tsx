@@ -33,7 +33,7 @@ export function CommentSection({
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 border-[var(--color-border)]">
       <button
         onClick={() => setOpen((v) => !v)}
         className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
@@ -42,7 +42,7 @@ export function CommentSection({
           ? `${initialCount + comments.length} comment${
               initialCount + comments.length > 1 ? "s" : ""
             }`
-          : "Comment"}
+          : <span className="text-sm text-[var(--color-text-muted)]">💬 Comment</span>}
       </button>
 
       {open && (

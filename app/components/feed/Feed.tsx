@@ -1,3 +1,4 @@
+import { getMyProfile } from "@/app/lib/profile";
 import { CreatePost } from "../posts/NewPostForm";
 import { PostList } from "./PostList";
 
@@ -5,11 +6,12 @@ type FeedProps = {
   posts: any[];
 };
 
-export function Feed({ posts }: FeedProps) {
+export async function Feed({ posts }: FeedProps) {
+  const profile = await getMyProfile();
+
   return (
     <section className="space-y-6">
-      <CreatePost />
-
+      <CreatePost profile={profile} />
       <PostList posts={posts} />
     </section>
   );

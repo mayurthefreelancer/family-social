@@ -1,6 +1,7 @@
 import { formatDistanceToNow } from "date-fns";
 import { CommentSection } from "./CommentSection";
 import { LikeButton } from "./LikeButton";
+import { Avatar } from "../profile/Avatar";
 
 export function PostCard({
   post,
@@ -19,25 +20,21 @@ export function PostCard({
   return (
     <article
       className="
-        rounded-md border border-[var(--color-border)]
-        bg-[var(--color-surface)]
-        px-4 py-3
-        space-y-3
+        rounded-2xl
+        bg-white
+        shadow-sm
+        overflow-hidden
+        border border-neutral-200
+        p-4
+        flex flex-col gap-4
       "
     >
       {/* Header */}
-      <header className="flex items-start gap-3">
+      <header className="flex items-center gap-3">
         {/* Avatar */}
-        <div className="shrink-0">
+        <div className="shrink-0 ">
           {post.authorAvatarUrl ? (
-            <img
-              src={post.authorAvatarUrl}
-              alt={post.authorName}
-              className="
-                h-9 w-9 rounded-full object-cover
-                border border-[var(--color-border)]
-              "
-            />
+            <Avatar avatar={post.authorAvatarUrl} name={post.authorName} size="sm" />
           ) : (
             <div
               className="
@@ -54,41 +51,36 @@ export function PostCard({
         </div>
 
         {/* Name + time */}
-        <div className="flex flex-col leading-tight">
-          <span className="text-sm font-medium text-[var(--color-text-primary)]">
+        <div>
+          <div className="font-medium text-neutral-900">
             {post.authorName}
-          </span>
-
-          <time className="text-xs text-[var(--color-text-muted)]">
+          </div>
+          <div className="text-xs text-neutral-500">
             {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
-          </time>
+          </div>
         </div>
       </header>
 
       {/* Content */}
-      <p
-        className="
-          text-sm leading-relaxed
-          text-[var(--color-text-primary)]
-          whitespace-pre-wrap
-        "
-      >
+      <p className="text-[15px] leading-relaxed text-neutral-800">
         {post.content}
       </p>
 
-      <CommentSection
-        postId={post.id}
-        initialCount={post.commentCount ?? 0}
-        currentUserName={post.authorName}
-      />
+      <div className="flex flex-col gap-6 mt-2 border-t border-[var(--color-border)] pt-3">
+        <LikeButton
+          post={{
+            id: post.id,
+            likeCount: post.likeCount,
+            likedByMe: post.likedByMe,
+          }}
+        />
+        <CommentSection
+          postId={post.id}
+          initialCount={post.commentCount ?? 0}
+          currentUserName={post.authorName}
+        />
 
-      <LikeButton
-        post={{
-          id: post.id,
-          likeCount: post.likeCount,
-          likedByMe: post.likedByMe,
-        }}
-      />
+      </div>
     </article>
   );
 }

@@ -9,7 +9,7 @@ interface Post {
 export function LikeButton({ post }: { post: Post }) {
   return (
     <form action={togglePostLike.bind(null, post.id)}>
-      <button type="submit">
+      <button type="submit" className="hover:scale-110 transition">
         {post.likedByMe ? "❤️" : "🖤"} {post.likeCount}
       </button>
     </form>

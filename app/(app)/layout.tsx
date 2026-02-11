@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
+import { logout } from "../actions/auth";
+import { UserMenu } from "../components/UserMenu";
 import { requireLoggedInUser } from "../lib/auth";
-import { LogoutButton } from "../components/LogoutButton";
 
 export default async function AppLayout({
   children,
@@ -9,48 +9,31 @@ export default async function AppLayout({
   children: React.ReactNode;
 }) {
   const user = await requireLoggedInUser();
-  const { displayName, avatarUrl } = user;
-  console.log("AppLayout user:", user);
 
   return (
     <div className="min-h-screen">
       {/* App Header */}
       <header className="
-        border-b border-[var(--color-border)]
-        bg-[var(--color-surface)]
-      ">
+  sticky top-0 z-50
+  bg-white/80 backdrop-blur-md
+  border-b border-neutral-200
+  px-6 
+">
         <div className="
           mx-auto max-w-[1024px]
           px-4 py-3
           flex items-center justify-between
         ">
-          <Link
-            href="/feed"
-            className="text-sm font-medium"
-          >
-            Family Social
-          </Link>
+          <h1 className="text-lg font-semibold tracking-tight">
+            <Link href="/feed">Family Social</Link>
+          </h1>
 
           <nav className="flex items-center gap-4">
-            <Link
-              href="/family"
-              className="text-sm text-[var(--color-text-muted)]
-                         hover:text-[var(--color-text-primary)]"
-            >
-              Family
-            </Link>
-
-            <Link
-              href="/profile"
-              className="text-sm text-[var(--color-text-muted)]
-                         hover:text-[var(--color-text-primary)]"
-            >
-              Profile
-            </Link>
-
-            <LogoutButton displayName={displayName} avatarUrl={avatarUrl}/>
-
-
+            <UserMenu
+              displayName={user.displayName}
+              avatarUrl={user.avatarUrl}
+              onLogout={logout}
+            />
           </nav>
         </div>
       </header>

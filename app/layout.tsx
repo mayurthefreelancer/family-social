@@ -15,15 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={`
-          ${inter.variable}
-          font-sans
-          bg-[var(--color-bg)]
-          text-[var(--color-text-primary)]
-          antialiased
-        `}
-      >
+      <body>
         {children}
       </body>
     </html>
