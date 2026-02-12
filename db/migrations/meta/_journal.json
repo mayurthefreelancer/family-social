@@ -64,6 +64,27 @@
       "when": 1770790012323,
       "tag": "0008_pink_squirrel_girl",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1770876490140,
+      "tag": "0009_peaceful_valkyrie",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1770878412529,
+      "tag": "0010_famous_thunderbolt_ross",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1770880749881,
+      "tag": "0011_young_whizzer",
+      "breakpoints": true
     }
   ]
 }

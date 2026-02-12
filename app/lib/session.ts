@@ -8,7 +8,7 @@ export type SessionData = {
   userId?: string;
 };
 
-const sessionOptions = {
+export const sessionOptions = {
   password: process.env.SESSION_SECRET!,
   cookieName: "family_social_session",
   cookieOptions: {

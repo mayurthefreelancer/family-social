@@ -49,6 +49,12 @@ export default function LoginPage() {
             Create one
           </Link>
         </p>
+
+        <p className="text-sm text-center text-[var(--color-text-muted)]">
+          <Link href="/forgot-password" className="hover:underline">
+            Forgot password?
+          </Link>
+        </p>
       </AuthCard>
     </>
   );

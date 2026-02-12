@@ -57,6 +57,7 @@ export async function updateProfile(formData: FormData) {
 
   const displayName = formData.get("display_name")?.toString().trim()
   const bio = formData.get("bio")?.toString().trim()
+  const username = formData.get("username")?.toString().trim()
 
   if (!displayName) {
     throw new Error("Display name is required")
@@ -67,11 +68,12 @@ export async function updateProfile(formData: FormData) {
     UPDATE profiles
     SET display_name = $1,
         bio = $2,
+        username = $3,
         updated_at = NOW()
-    WHERE user_id = $3
-      AND family_id = $4
+    WHERE user_id = $4
+      AND family_id = $5
     `,
-    [displayName, bio || null, user.id, user.family_id]
+    [displayName, bio || null, username || null, user.id, user.family_id]
   )
 
   // navigate to profile page after update

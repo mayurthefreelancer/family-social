@@ -12,7 +12,7 @@ export async function saveAvatarLocally(
     process.cwd(),
     "public",
     "uploads",
-    "avatars",
+    "avatar",
     familyId
   )
 
@@ -24,5 +24,5 @@ export async function saveAvatarLocally(
   await fs.writeFile(filepath, buffer)
 
   // cache-busting is IMPORTANT
-  return `/uploads/avatars/${familyId}/${filename}?v=${Date.now()}`
+  return `/uploads/avatar/${familyId}/${filename}?v=${Date.now()}`
 }

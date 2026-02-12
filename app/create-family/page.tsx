@@ -1,69 +1,40 @@
-"use client";
+"use client"
 
-import { createFamily } from "@/app/actions/family";
-import { AuthCard } from "@/app/components/auth/AuthCard";
-import { AuthField } from "@/app/components/auth/AuthField";
-import { useState } from "react";
+import { useState } from "react"
+import { createFamilyAdmin } from "./action"
+import { AuthCard } from "../components/auth/AuthCard"
+import { AuthField } from "../components/auth/AuthField"
 
 export default function CreateFamilyPage() {
-  const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    familyName: "",
+  })
 
-  async function action(formData: FormData) {
-    setError(null);
-    setPending(true);
-
-    try {
-      const result = await createFamily(
-        formData.get("name") as string
-      );
-      if (result?.error) {
-        setError(result.error);
-      }
-    } finally {
-      setPending(false);
-    }
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    await createFamilyAdmin(
+      form.name,
+      form.email,
+      form.password,
+      form.familyName
+    )
+    window.location.href = "/login"
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-[420px]">
-        <AuthCard
-          title="Create your family"
-          subtitle="This will be your private space"
-        >
-          <form action={action} className="space-y-4">
-            <AuthField
-              label="Family name"
-              name="name"
-              placeholder="e.g. The Sharma Family"
-              required
-            />
-
-            {error && (
-              <p className="text-sm text-[var(--color-danger)]">
-                {error}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={pending}
-              className="
-                w-full
-                rounded-md
-                bg-[var(--color-accent)]
-                py-2
-                text-sm
-                text-white
-                disabled:opacity-50
-              "
-            >
-              {pending ? "Creating…" : "Create family"}
-            </button>
-          </form>
-        </AuthCard>
-      </div>
-    </div>
-  );
+    <AuthCard title="Create Family" subtitle="Create a new family and become the admin.">
+      <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-20 space-y-4">
+        <AuthField label="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+        <AuthField label="Email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+        <AuthField label="Password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+        <AuthField label="Family Name" value={form.familyName} onChange={(e) => setForm({ ...form, familyName: e.target.value })} />
+        <button type="submit" className="w-full rounded-md
+            bg-[var(--color-accent)]
+            py-2 text-sm text-white">Create Family</button>
+      </form>
+    </AuthCard >
+  )
 }

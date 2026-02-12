@@ -130,10 +130,24 @@ export const profiles = pgTable("profiles", {
     .references(() => families.id, { onDelete: "cascade" }),
 
   display_name: text("display_name").notNull(),
+  email: text("email").notNull(),
   username: text("username"), // optional, family-unique later
   bio: text("bio"),
   avatar_url: text("avatar_url"),
 
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
+})
+
+// ================= PASSWORD RESET TOKENS ================= //
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  family_id: uuid("family_id").references(() => families.id),
+  userId: uuid("user_id").notNull(),
+  tokenHash: text("token_hash").notNull().unique(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  usedAt: timestamp("used_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 })

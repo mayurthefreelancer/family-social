@@ -1,45 +1,28 @@
-// middleware.ts
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse, NextRequest } from "next/server"
+import { getIronSession } from "iron-session"
+import { sessionOptions, SessionData } from "./app/lib/session"
 
-const PROTECTED_ROUTES = ["/feed", "/create-family"];
-const AUTH_ROUTES = ["/login", "/register"];
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next()
+  const session = await getIronSession<SessionData>(req, res, sessionOptions)
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const isAuthRoute =
+    req.nextUrl.pathname.startsWith("/login") ||
+    req.nextUrl.pathname.startsWith("/register") ||
+    req.nextUrl.pathname.startsWith("/forgot-password") ||
+    req.nextUrl.pathname.startsWith("/reset-password")
 
-  // VERY IMPORTANT:
-  // Middleware can ONLY check if a cookie exists.
-  // It must NOT read or decode sessions.
-  const hasSessionCookie = request.cookies.has("family_social_session");
+  const isProtectedRoute =
+    req.nextUrl.pathname.startsWith("/feed") ||
+    req.nextUrl.pathname.startsWith("/family")
 
-  // Home route routing
-  if (pathname === "/") {
-    if (!hasSessionCookie) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-    return NextResponse.redirect(new URL("/feed", request.url));
+  if (!session.userId && isProtectedRoute) {
+    return NextResponse.redirect(new URL("/", req.url))
   }
 
-  // Protect authenticated routes
-  if (
-    PROTECTED_ROUTES.some((path) => pathname.startsWith(path)) &&
-    !hasSessionCookie
-  ) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (session.userId && isAuthRoute) {
+    return NextResponse.redirect(new URL("/feed", req.url))
   }
 
-  // Prevent logged-in users from accessing auth pages
-  if (
-    AUTH_ROUTES.some((path) => pathname.startsWith(path)) &&
-    hasSessionCookie
-  ) {
-    return NextResponse.redirect(new URL("/feed", request.url));
-  }
-
-  return NextResponse.next();
+  return res
 }
-
-export const config = {
-  matcher: ["/", "/feed", "/login", "/register", "/create-family"],
-};

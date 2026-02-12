@@ -15,9 +15,11 @@ export function ProfileView({ profile }: { profile: any }) {
           <h1 className="text-2xl font-semibold">
             {profile.display_name}
           </h1>
-
           {profile.bio && (
             <p className="text-gray-600 mt-1">{profile.bio}</p>
+          )}
+          {profile.username && (
+            <p className="text-gray-600 mt-1">@{profile.username}</p>
           )}
         </div>
 

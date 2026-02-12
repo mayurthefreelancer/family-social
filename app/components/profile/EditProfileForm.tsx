@@ -51,6 +51,18 @@ export function EditProfileForm({ profile }: { profile: any }) {
             className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
           />
         </div>
+        {/* username */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Username
+          </label>
+          <input
+            name="username"
+            defaultValue={profile.username}
+            required
+            className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
 
         {/* Bio */}
         <div>
