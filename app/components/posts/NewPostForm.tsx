@@ -10,8 +10,14 @@ export function CreatePost({ profile }: { profile: any }) {
 
   
   async function handleSubmit() {
-    if (!content.trim()) return;
+    console.log("Submitting post with content:", content);
+    if (!content.trim()) {
+      console.warn("Post content cannot be empty");
+      return;
+    }
+    if (pending) 
     setPending(true);
+  console.log("Creating post with content:", content);
     await createPost(content);
     setContent("");
     setPending(false);
@@ -34,17 +40,20 @@ export function CreatePost({ profile }: { profile: any }) {
         placeholder:text-neutral-400
         focus:outline-none
       "
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          disabled={pending}
         />
       </div>
 
       <div className="flex justify-end">
         <button className="
       px-4 py-2 rounded-full
-      bg-black text-white
+      bg-black text-[var(--color-text)]
       text-sm font-medium
       hover:opacity-90
       transition
-    ">
+    " onClick={handleSubmit} disabled={pending}>
           Post
         </button>
       </div>

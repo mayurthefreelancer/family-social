@@ -16,6 +16,7 @@ export type FeedPost = {
 };
 
 export async function getFeed(): Promise<FeedPost[]> {
+  console.log("💡Fetching feed...");
   const user = await requireUser();
 
   const { rows } = await pool.query(

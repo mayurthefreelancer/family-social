@@ -35,7 +35,7 @@ export async function requireUser(): Promise<AuthUser> {
       fm.family_id,
       fm.role
     FROM users u
-    JOIN family_members fm ON fm.user_id = u.id
+    LEFT JOIN family_members fm ON fm.user_id = u.id
     WHERE u.id = $1
     `,
     [session.userId]
@@ -43,10 +43,10 @@ export async function requireUser(): Promise<AuthUser> {
 
   const user = res.rows[0];
 
-  if (!res.rowCount) redirect("/login");
+  if (!user) redirect("/login");
 
   // User exists but has no family (possible after register)
-  if (!user) {
+  if (!user.family_id) {
     redirect("/create-family");
   }
 

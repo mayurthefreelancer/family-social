@@ -13,7 +13,7 @@ export default function RoleBadge({ role }: { role: string }) {
             break;
     }
     return (
-        <span className={`inline-block px-2 py-1 text-xs font-semibold text-white bg-${roleColor}-500 rounded-full`}>
+        <span className={`inline-block px-2 py-1 text-xs font-semibold text-[var(--color-text)] bg-${roleColor}-500 rounded-full`}>
             {role}
         </span>
     );

@@ -33,7 +33,7 @@ export default function CreateFamilyPage() {
         <AuthField label="Family Name" value={form.familyName} onChange={(e) => setForm({ ...form, familyName: e.target.value })} />
         <button type="submit" className="w-full rounded-md
             bg-[var(--color-accent)]
-            py-2 text-sm text-white">Create Family</button>
+            py-2 text-sm text-[var(--color-text)]">Create Family</button>
       </form>
     </AuthCard >
   )

@@ -11,14 +11,17 @@ export default async function AppLayout({
   const user = await requireLoggedInUser();
 
   return (
-    <div className="min-h-screen">
+    <div className="flex-1 mx-auto w-full max-w-[720px] px-4 py-6">
       {/* App Header */}
-      <header className="
-  sticky top-0 z-50
-  bg-white/80 backdrop-blur-md
-  border-b border-neutral-200
-  px-6 
-">
+      <header
+        className="
+    sticky top-0 z-50
+    backdrop-blur-md
+    bg-[var(--color-surface)]/80
+    border-b border-[var(--color-border)]
+  "
+      >
+
         <div className="
           mx-auto max-w-[1024px]
           px-4 py-3
@@ -39,7 +42,16 @@ export default async function AppLayout({
       </header>
 
       {/* Page Content */}
-      <main className="mx-auto max-w-[720px] px-4 py-8">
+      <main className="
+  mx-auto
+  w-full
+  max-w-[720px]
+  px-4
+  py-6
+  sm:px-6
+  sm:py-8
+">
+
         {children}
       </main>
     </div>

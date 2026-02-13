@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
           className="
             w-full rounded-md
             bg-[var(--color-accent)]
-            py-2 text-sm text-white
+            py-2 text-sm text-[var(--color-text)]
           "
         >
           Reset Password

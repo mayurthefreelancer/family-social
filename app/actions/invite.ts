@@ -13,6 +13,7 @@ import { createSession } from "./auth";
 import crypto from "crypto";
 
 export async function createInvite() {
+  console.log("💡Creating invite...");
   const user = await requireUser();
   const familyId = await getUserFamily(user.family_id);
 
@@ -54,6 +55,7 @@ export async function createInvite() {
 }
 
 export async function revokeInvite(token: string) {
+  console.log("💡Revoking invite...");
   const user = await requireUser();
   const membership = await getUserFamilyWithRole(user.id);
 
@@ -83,6 +85,7 @@ export async function revokeInvite(token: string) {
 
 
 export async function generateInvite() {
+  console.log("💡Generating invite...");
   const user = await requireUser();
 
   if (user.role !== "admin") {
@@ -119,6 +122,7 @@ export async function acceptInvite(
   token: string,
   formData: FormData
 ) {
+  console.log("💡Accepting invite...");
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const name = formData.get("name") as string;
@@ -159,10 +163,19 @@ export async function acceptInvite(
     // Add to family
     await pool.query(
       `
-      INSERT INTO family_members (user_id, family_id, role)
-      VALUES ($1, $2, 'member')
-      `,
+  INSERT INTO family_members (user_id, family_id, role)
+  VALUES ($1, $2, 'member')
+  `,
       [userId, invite.family_id]
+    );
+
+    // Create profile
+    await pool.query(
+      `
+  INSERT INTO profiles (user_id, family_id, display_name, avatar_url, email)
+  VALUES ($1, $2, $3, NULL, $4)
+  `,
+      [userId, invite.family_id, name, email]
     );
 
     // Mark invite used

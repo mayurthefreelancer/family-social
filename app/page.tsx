@@ -1,16 +1,16 @@
 import { redirect } from "next/navigation"
-import { getSession } from "./lib/session"
+import { getSessionUser } from "./lib/session"
 
 export default async function HomePage() {
-  const session = await getSession()
+  const session = await getSessionUser()
 
-  if (session.userId) {
+  if (session) {
     redirect("/feed")
   }
 
   return (
     <div className="max-w-3xl mx-auto mt-20 text-center">
-      <h1 className="text-3xl font-bold">
+      <h1 className="text-3xl font-bold text-gray-800">
         Welcome to Family Social
       </h1>
 
@@ -19,7 +19,7 @@ export default async function HomePage() {
       </p>
 
       <div className="mt-8 space-x-4">
-        <a href="/create-family" className="bg-black text-white px-4 py-2 rounded">
+        <a href="/create-family" className="border-2 border-zinc-600 text-red-400 px-4 py-2 rounded">
           Create Family
         </a>
 

@@ -20,13 +20,12 @@ export function PostCard({
   return (
     <article
       className="
-        rounded-2xl
-        bg-white
-        shadow-sm
-        overflow-hidden
-        border border-neutral-200
-        p-4
-        flex flex-col gap-4
+        rounded-xl
+    bg-[var(--color-surface)]
+    border border-[var(--color-border)]
+    p-4
+    sm:p-5
+    shadow-sm
       "
     >
       {/* Header */}
