@@ -9,12 +9,7 @@ type Member = {
 export function FamilyMembersList({ members }: { members: Member[] }) {
   return (
     <div
-      className="
-        rounded-md
-        border border-[var(--color-border)]
-        bg-[var(--color-surface)]
-        divide-y divide-[var(--color-border)]
-      "
+      className="space-y-2"
     >
       {members.map((m) => (
         <FamilyMemberRow key={m.id} member={m} />

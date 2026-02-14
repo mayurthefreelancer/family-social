@@ -11,8 +11,9 @@ export function ProfileView({ profile }: { profile: any }) {
           size="lg"
         />
 
-        <div className="flex-1">
-          <h1 className="text-2xl font-semibold">
+        <div className="flex-1 min-w-0 overflow-hidden py-2 text-left sm:py-4 sm:text-left sm:gap-4 sm:flex-row sm:items-center
+           space-y-1">
+          <h1 className="">
             {profile.display_name}
           </h1>
           {profile.bio && (
@@ -23,10 +24,17 @@ export function ProfileView({ profile }: { profile: any }) {
           )}
         </div>
 
-        <Link href="/profile/edit" className="btn-secondary">
+        <Link href="/profile/edit" className="text-sm text-blue-600 hover:underline">
           Edit
         </Link>
       </div>
+      <div>
+        {/* Additional profile details can go here */}
+        <span className="text-sm text-gray-500">Joined on {new Date(profile.created_at).toLocaleDateString()}</span>
+        <br />
+
+      </div>
+      <span>Posts by the user will appear here.</span>
     </div>
   )
 }

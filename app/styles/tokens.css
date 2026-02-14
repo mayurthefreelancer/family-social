@@ -8,6 +8,9 @@
 
   --color-accent: #6366f1;
   --color-danger: #ef4444;
+  --color-btn-primary-bg: #6366f1;
+  --color-btn-primary-text: #ffffff;
+
 }
 
 .dark {
@@ -20,4 +23,6 @@
 
   --color-accent: #818cf8;
   --color-danger: #f87171;
+  --color-btn-primary-bg: #818cf8;
+  --color-btn-primary-text: #ffffff;
 }

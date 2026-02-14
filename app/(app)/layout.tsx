@@ -11,24 +11,31 @@ export default async function AppLayout({
   const user = await requireLoggedInUser();
 
   return (
-    <div className="flex-1 mx-auto w-full max-w-[720px] px-4 py-6">
-      {/* App Header */}
+    <div className="min-h-screen bg-[var(--bg)]">
+      
+      {/* Header */}
       <header
         className="
-    sticky top-0 z-50
-    backdrop-blur-md
-    bg-[var(--color-surface)]/80
-    border-b border-[var(--color-border)]
-  "
+          sticky top-0 z-50
+          backdrop-blur-xl
+          border-b border-[var(--border)]
+          bg-[var(--surface)]/80
+        "
       >
-
-        <div className="
-          mx-auto max-w-[1024px]
-          px-4 py-3
-          flex items-center justify-between
-        ">
-          <h1 className="text-lg font-semibold tracking-tight">
-            <Link href="/feed">Family Social</Link>
+        <div
+          className="
+            mx-auto max-w-[720px]
+            px-5 py-4
+            flex items-center justify-between
+          "
+        >
+          <h1 className="text-[var(--text-lg)] font-semibold tracking-tight">
+            <Link
+              href="/feed"
+              className="transition-opacity hover:opacity-80"
+            >
+              Family Social
+            </Link>
           </h1>
 
           <nav className="flex items-center gap-4">
@@ -41,18 +48,18 @@ export default async function AppLayout({
         </div>
       </header>
 
-      {/* Page Content */}
-      <main className="
-  mx-auto
-  w-full
-  max-w-[720px]
-  px-4
-  py-6
-  sm:px-6
-  sm:py-8
-">
-
-        {children}
+      {/* Main */}
+      <main
+        className="
+          mx-auto
+          w-full max-w-[720px]
+          px-5
+          py-8
+        "
+      >
+        <div className="surface-1 rounded-2xl p-6 sm:p-8">
+          {children}
+        </div>
       </main>
     </div>
   );

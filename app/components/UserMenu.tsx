@@ -32,7 +32,7 @@ export function UserMenu({
       {/* Avatar Button */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-border)]"
+        className="p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-border)]"
       >
         {avatarUrl ? (
           <img

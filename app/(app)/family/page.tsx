@@ -33,8 +33,6 @@ export default async function FamilyPage() {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-xl font-semibold">Family</h1>
-
             {/* Members */}
             <section className="space-y-6">
                 <header>
@@ -50,37 +48,42 @@ export default async function FamilyPage() {
             </section>
 
             {/* Invites */}
-            <section className="space-y-6">
-                <h2 className="text-lg font-medium">Invites</h2>
+            {/* only show invites sction to admin */}
+            {user.role === "admin" && (
+                <>
+                    <section className="space-y-6">
+                        <h1 className="text-xl font-medium">Invites</h1>
 
-                <header>
-                    <h1 className="text-lg font-medium">
-                        Active Invites
-                    </h1>
-                    <p className="text-sm text-[var(--color-text-muted)]">
-                        People who have been invited but haven't joined yet
-                    </p>
-                </header>
-                {invitesRes.rowCount === 0 && (
-                    <p className="text-sm text-gray-500">
-                        No active invites
-                    </p>
-                )}
-                <InviteList invites={invitesRes.rows} />
-            </section>
+                        <header>
+                            <h2 className="text-lg font-medium">
+                                Active Invites
+                            </h2>
+                            <p className="text-sm text-[var(--color-text-muted)]">
+                                People who have been invited but haven't joined yet
+                            </p>
+                        </header>
+                        {invitesRes.rowCount === 0 && (
+                            <p className="text-sm text-gray-500">
+                                No active invites
+                            </p>
+                        )}
+                        <InviteList invites={invitesRes.rows} />
+                    </section>
 
-            <section className="space-y-2">
-                <h2 className="text-lg font-medium">Generate Invite Link</h2>
-                <p className="text-sm text-[var(--color-text-muted)]">
-                    Generate a new invite link to share with others
-                </p>
-                {/* Admin-only */}
-                {user.role === "admin" && (
-                    <div className="mt-4">
-                        <GenerateInviteButton />
-                    </div>
-                )}
-            </section>
+                    <section className="space-y-2">
+                        <h2 className="text-lg font-medium">Generate Invite Link</h2>
+                        <p className="text-sm text-[var(--color-text-muted)]">
+                            Generate a new invite link to share with others
+                        </p>
+                        {/* Admin-only */}
+                        {user.role === "admin" && (
+                            <div className="mt-4">
+                                <GenerateInviteButton />
+                            </div>
+                        )}
+                    </section>
+                </>
+            )}
         </div>
     );
 }

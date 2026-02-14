@@ -34,19 +34,7 @@ export function CommentSection({
 
   return (
     <div className="space-y-3 border-[var(--color-border)]">
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
-      >
-        {initialCount + comments.length > 0
-          ? `${initialCount + comments.length} comment${
-              initialCount + comments.length > 1 ? "s" : ""
-            }`
-          : <span className="text-sm text-[var(--color-text-muted)]">💬 Comment</span>}
-      </button>
-
-      {open && (
-        <div className="pt-3 border-t border-[var(--color-border)] space-y-3">
+      <div className="pt-3 border-t border-[var(--color-border)] space-y-3">
           <CommentList
             postId={postId}
             optimisticComments={comments}
@@ -56,7 +44,6 @@ export function CommentSection({
             onOptimisticAdd={handleAdd}
           />
         </div>
-      )}
     </div>
   );
 }

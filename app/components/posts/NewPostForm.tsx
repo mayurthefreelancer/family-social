@@ -24,7 +24,8 @@ export function CreatePost({ profile }: { profile: any }) {
   }
 
   return (
-    <div className="rounded-2xl bg-white shadow-sm border border-neutral-200 p-4 space-y-3">
+    <div className="rounded-2xl bg-white shadow-sm border border-neutral-200 p-4 space-y-3 
+    dark:bg-surface-200 dark:border-gray-700 dark: bg-[var(--color-card-bg)] dark:border-[var(--color-card-border)]">
       <div className="flex gap-3">
         <Avatar
           avatar={profile.avatar_url}
@@ -49,7 +50,7 @@ export function CreatePost({ profile }: { profile: any }) {
       <div className="flex justify-end">
         <button className="
       px-4 py-2 rounded-full
-      bg-black text-[var(--color-text)]
+      bg-[var(--color-btn-primary-bg)] text-[var(--color-btn-primary-text)]
       text-sm font-medium
       hover:opacity-90
       transition
