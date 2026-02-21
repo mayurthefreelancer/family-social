@@ -1,0 +1,2 @@
+ALTER TABLE "password_reset_tokens" ADD COLUMN "family_id" uuid;--> statement-breakpoint
+ALTER TABLE "password_reset_tokens" ADD CONSTRAINT "password_reset_tokens_family_id_families_id_fk" FOREIGN KEY ("family_id") REFERENCES "public"."families"("id") ON DELETE no action ON UPDATE no action;

@@ -1,16 +1,23 @@
 // app/actions/invite.ts
 "use server";
 
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { logAuditEvent } from "../lib/audit";
 import { requireUser } from "../lib/auth";
 import { pool } from "../lib/db";
 import { getUserFamily, getUserFamilyWithRole } from "../lib/family";
 import { generateInviteToken } from "../lib/invite";
-import { logAuditEvent } from "../lib/audit";
 
 export async function createInvite() {
-  const userId = await requireUser();
-  const familyId = await getUserFamily(userId);
+  console.log("💡Creating invite...");
+  const user = await requireUser();
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
+  const familyId = await getUserFamily(user.family_id);
 
   if (!familyId) throw new Error("No family");
 
@@ -18,7 +25,7 @@ export async function createInvite() {
   const roleRes = await pool.query(
     `SELECT role FROM family_members
      WHERE user_id = $1 AND family_id = $2`,
-    [userId, familyId]
+    [user.id, familyId]
   );
 
   if (roleRes.rows[0]?.role !== "admin") {
@@ -37,7 +44,7 @@ export async function createInvite() {
   // Log audit event
   await logAuditEvent({
     familyId,
-    actorUserId: userId,
+    actorUserId: user.id,
     action: "invite_created",
     entityType: "invite",
     entityId: token,
@@ -50,8 +57,12 @@ export async function createInvite() {
 }
 
 export async function revokeInvite(token: string) {
-  const userId = await requireUser();
-  const membership = await getUserFamilyWithRole(userId);
+  console.log("💡Revoking invite...");
+  const user = await requireUser();
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
+  const membership = await getUserFamilyWithRole(user.id);
 
   if (!membership || membership.role !== "admin") {
     throw new Error("Unauthorized");
@@ -68,11 +79,136 @@ export async function revokeInvite(token: string) {
 
   await logAuditEvent({
     familyId: membership.family_id,
-    actorUserId: userId,
+    actorUserId: user.id,
     action: "invite_revoked",
     entityType: "invite",
     entityId: token,
   });
 
   revalidatePath("/family/invites");
+}
+
+
+export async function generateInvite() {
+  console.log("💡Generating invite...");
+  const user = await requireUser();
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
+  if (user.role !== "admin") {
+    throw new Error("Not authorized");
+  }
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+  await pool.query(
+    `
+    INSERT INTO invites (
+      id, family_id, token, expires_at, created_by
+    )
+    VALUES (gen_random_uuid(), $1, $2, $3, $4)
+    `,
+    [user.family_id, token, expiresAt, user.id]
+  );
+
+  await logAuditEvent({
+    familyId: user.family_id,
+    actorUserId: user.id,
+    action: "invite_created",
+    entityType: "invite",
+    entityId: token,
+    metadata: { expiresAt },
+  });
+
+  return token;
+}
+
+
+export async function acceptInvite(
+  token: string,
+  formData: FormData
+) {
+  console.log("💡Accepting invite...");
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const name = formData.get("name") as string;
+
+  await pool.query("BEGIN");
+
+  try {
+    const inviteRes = await pool.query(
+      `
+      SELECT *
+      FROM invites
+      WHERE token = $1
+        AND used_at IS NULL
+        AND expires_at > now()
+      FOR UPDATE
+      `,
+      [token]
+    );
+
+    if (!inviteRes.rowCount) {
+      throw new Error("Invalid invite");
+    }
+
+    const invite = inviteRes.rows[0];
+
+    // Create user
+    const userId = crypto.randomUUID();
+    const hash = await bcrypt.hash(password, 10);
+
+    await pool.query(
+      `
+      INSERT INTO users (id, email, password_hash, name)
+      VALUES ($1, $2, $3, $4)
+      `,
+      [userId, email, hash, name]
+    );
+
+    // Add to family
+    await pool.query(
+      `
+  INSERT INTO family_members (user_id, family_id, role)
+  VALUES ($1, $2, 'member')
+  `,
+      [userId, invite.family_id]
+    );
+
+    // Create profile
+    await pool.query(
+      `
+  INSERT INTO profiles (user_id, family_id, display_name, avatar_url, email)
+  VALUES ($1, $2, $3, NULL, $4)
+  `,
+      [userId, invite.family_id, name, email]
+    );
+
+    // Mark invite used
+    await pool.query(
+      `
+      UPDATE invites
+      SET used_at = now()
+      WHERE id = $1
+      `,
+      [invite.id]
+    );
+
+    await logAuditEvent({
+      familyId: invite.family_id,
+      actorUserId: userId,
+      action: "member_joined",
+      entityType: "user",
+      entityId: userId,
+      metadata: {},
+    });
+
+    await pool.query("COMMIT");
+
+    redirect("/feed");
+  } catch (e) {
+    await pool.query("ROLLBACK");
+    throw e;
+  }
 }

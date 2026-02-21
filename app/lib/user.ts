@@ -1,0 +1,46 @@
+// app/lib/user.ts — FIXED
+import 'server-only';
+import { pool } from "./db";
+import { hashPassword } from "./password";
+
+export async function createUser({
+  name,
+  email,
+  password,
+}: {
+  name: string;
+  email: string;
+  password: string;
+}) {
+  const normalizedEmail = email.toLowerCase().trim();
+
+  const existing = await pool.query(
+    `SELECT id FROM users WHERE email = $1`,
+    [normalizedEmail]
+  );
+
+  if (existing.rowCount != null && existing.rowCount > 0) {
+    return { success: false, error: "An account with this email already exists" };
+  }
+
+  const passwordHash = await hashPassword(password);
+  const userId = globalThis.crypto.randomUUID();
+
+  await pool.query(
+    `INSERT INTO users (id, name, email, password_hash) VALUES ($1, $2, $3, $4)`,
+    [userId, name.trim(), normalizedEmail, passwordHash]
+  );
+
+  // ✅ Do NOT attempt to create a session here. 
+  // Session is created by NextAuth when the user calls signIn().
+  return { success: true };
+}
+
+export async function getOptionalUser(token?: string) {
+  if (!token) return null;
+  const res = await pool.query(
+    `SELECT id, name, email FROM users WHERE id = $1`,
+    [token]
+  );
+  return res.rows[0] ?? null;
+}

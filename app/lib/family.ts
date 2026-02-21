@@ -1,4 +1,5 @@
 // lib/family.ts
+"use server";
 import { pool } from "./db";
 
 export async function getUserFamily(userId: string) {
@@ -21,4 +22,18 @@ export async function getUserFamilyWithRole(userId: string) {
   );
 
   return res.rows[0] ?? null;
+}
+
+export async function getFamilyMembers(familyId: string) {
+  const res = await pool.query(
+    `
+    SELECT u.id, u.name, fm.role
+    FROM users u
+    JOIN family_members fm ON fm.user_id = u.id
+    WHERE fm.family_id = $1
+    `,
+    [familyId]
+  );
+
+  return res.rows;
 }

@@ -1,10 +1,19 @@
 // lib/invite.ts
-import crypto from "crypto";
 import { pool } from "./db";
 
 export function generateInviteToken() {
-  return crypto.randomBytes(32).toString("hex");
+  return randomHex(32);
 }
+
+function randomHex(bytes = 32) {
+  const array = new Uint8Array(bytes);
+  globalThis.crypto.getRandomValues(array);
+
+  return Array.from(array, (b) =>
+    b.toString(16).padStart(2, "0")
+  ).join("");
+}
+
 
 export async function getActiveInvites(familyId: string) {
   const res = await pool.query(

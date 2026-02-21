@@ -1,26 +1,301 @@
 @import "tailwindcss";
+/* Global Variables */
+:root {
+  /* Typography */
+  --text-xs: 08px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 30px;
+}
+
+/* Spacing */
+:root {
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-9: 64px;
+}
+
+/* Theme */
+:root {
+  /* Theme */
+  --bg: #f6f6f7;
+  --surface: #ffffff;
+  --muted-surface: #f1f1f2; 
+  --muted-surface: #f1f1f2;
+  --text-primary: #1c1c1e;
+  --text-secondary: #5c5c60;
+  --text-muted: #8e8e93;
+  --text-red: #ef4444;
+  --border: #e5e5e7;
+  --border-strong: #d1d1d6;
+  --border-red: #ef4444;
+  --hover: #ededf0;
+  --active: #e2e2e6;
+  --elev-1: 0 1px 2px rgba(0,0,0,0.04);
+  --elev-2: 0 2px 6px rgba(0,0,0,0.06);
+  --elev-3: 0 6px 16px rgba(0,0,0,0.08);
+  --elev-4: 0 12px  28px rgba(0,0,0,0.12);
+}
+
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --elev-4: 0 12px 28px rgba(0,0,0,0.12);
+  --transition-theme: 180ms ease;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-9: 64px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Light Theme */
+html[data-theme="light"] {
+  --bg: #f6f6f7;
+  --surface: #ffffff;
+  --muted-surface: #f1f1f2;
+
+  --text-primary: #1c1c1e;
+  --text-secondary: #5c5c60;
+  --text-muted: #8e8e93;
+
+  --border: #e5e5e7;
+  --border-strong: #d1d1d6;
+  --border-red: #d1d1d6;
+
+  --hover: #ededf0;
+  --active: #e2e2e6;
+    --elev-1: 0 1px 2px rgba(0,0,0,0.04);
+  --elev-2: 0 2px 6px rgba(0,0,0,0.06);
+  --elev-3: 0 6px 16px rgba(0,0,0,0.08);
+  --elev-4: 0 12px 28px rgba(0,0,0,0.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Dark Theme */
+html[data-theme="dark"] {
+  --bg: #0f0f11;
+  --surface: #17171a;
+  --muted-surface: #1f1f23;
+
+  --text-primary: #f5f5f7;
+  --text-secondary: #b0b0b5;
+  --text-muted: #7a7a80;
+
+  --border: #2a2a2f;
+  --border-strong: #3a3a40;
+  --border-red: #ef4444;
+
+
+  --hover: #232328;
+  --active: #2c2c32;
+   --elev-1: 0 1px 2px rgba(0,0,0,0.5);
+  --elev-2: 0 2px 8px rgba(0,0,0,0.6);
+  --elev-3: 0 8px 24px rgba(0,0,0,0.7);
+  --elev-4: 0 16px 40px rgba(0,0,0,0.8);
+}
+
+
+html[data-theme="dark"] .surface-1 {
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(255,255,255,0.02) inset;
+}
+
+
+/* Base styles */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  transition: background var(--transition-theme),
+    color var(--transition-theme);
+}
+
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.muted-surface {
+  background: var(--muted-surface);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 10px 16px;
+  border-radius: 10px;
+  transition: background var(--transition-theme),
+    border var(--transition-theme);
+}
+
+.button:hover {
+  background: var(--hover);
+}
+
+.button:active {
+  background: var(--active);
+}
+
+.app-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .app-container {
+    padding: var(--space-5) var(--space-3);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.section {
+  margin-bottom: var(--space-7);
+}
+
+.section-title {
+  margin-bottom: var(--space-4);
+}
+
+.card {
+  padding: var(--space-5);
+  border-radius: 14px;
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: var(--space-4);
+  }
+}
+
+.feed-stack>*+* {
+  margin-top: var(--space-5);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+button,
+input,
+textarea {
+  min-height: 44px;
+}
+
+h1 {
+  font-size: var(--text-3xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-5);
+}
+
+h2 {
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+h3 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+p {
+  font-size: var(--text-md);
+  line-height: 1.6;
+}
+
+.text-secondary {
+  font-size: var(--text-sm);
+}
+h1, h2, h3 {
+  line-height: 1.25;
+}
+
+.surface-1 {
+  background: var(--surface);
+  box-shadow: var(--elev-1);
+  border: 1px solid var(--border);
+}
+
+.surface-2 {
+  background: var(--surface);
+  box-shadow: var(--elev-2);
+  border: 1px solid var(--border);
+}
+
+.surface-3 {
+  background: var(--surface);
+  box-shadow: var(--elev-3);
+  border: 1px solid var(--border);
+}
+
+.surface-4 {
+  background: var(--surface);
+  box-shadow: var(--elev-4);
+  border: 1px solid var(--border-strong);
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  margin-top: var(--space-4);
+}
+.post-comments {
+  margin-top: var(--space-4);
+  overflow: hidden;
+  animation: expand 200ms ease-in-out;
+}
+
+@keyframes expand {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.member-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.role-badge {
+  letter-spacing: 0.02em;
+  transition: all 160ms ease;
+}
+.badge-admin {
+  background: var(--surface);
+  border: 1px solid var(--border-red);
+  color: var(--text-red);
+}
+.badge-member {
+  background: var(--muted-surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
 }

@@ -1,24 +1,49 @@
-// components/posts/NewCommentForm.tsx
 "use client";
 
-import { addComment } from "@/app/actions/comments";
+import { addNewComment } from "@/app/actions/comments";
+import { useState, useTransition } from "react";
 
-export function NewCommentForm({ postId }: { postId: string }) {
+export function NewCommentForm({
+  postId,
+  onOptimisticAdd,
+}: {
+  postId: string;
+  onOptimisticAdd: (content: string) => void;
+}) {
+  const [content, setContent] = useState("");
+  const [isPending, startTransition] = useTransition();
+
+  function submit() {
+    if (!content.trim()) return;
+
+    // ✅ Optimistic UI
+    onOptimisticAdd(content);
+    setContent("");
+
+    // 🔁 Server write
+    startTransition(async () => {
+      await addNewComment(postId, content);
+    });
+  }
+
   return (
-    <form
-      action={async (formData) => {
-        await addComment(
-          postId,
-          formData.get("content") as string
-        );
-      }}
-    >
+    <div className="flex gap-2">
       <input
-        name="content"
-        placeholder="Write a comment..."
-        required
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        placeholder="Write a comment…"
+        className="
+          flex-1 rounded-md border border-[var(--color-border)]
+          px-3 py-1.5 text-sm focus:outline-none
+        "
       />
-      <button type="submit">Comment</button>
-    </form>
+      <button
+        onClick={submit}
+        disabled={isPending}
+        className="text-sm text-[var(--color-text-primary)] disabled:opacity-40"
+      >
+        Post
+      </button>
+    </div>
   );
 }

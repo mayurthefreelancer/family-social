@@ -1,61 +1,61 @@
-// middleware.ts
+// middleware.ts — FIXED
+import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-const PROTECTED_ROUTES = [
-    "/feed",
-    "/create-family",
-];
+export default withAuth(
+  function middleware(req) {
+    // At this point, withAuth has already verified the token exists.
+    // Redirect authenticated users away from auth pages.
+    const isAuthRoute =
+      req.nextUrl.pathname.startsWith("/login") ||
+      req.nextUrl.pathname.startsWith("/register") ||
+      req.nextUrl.pathname.startsWith("/forgot-password") ||
+      req.nextUrl.pathname.startsWith("/reset-password");
 
-const AUTH_ROUTES = [
-    "/login",
-    "/register",
-];
-
-export function middleware(request: NextRequest) {
-    const sessionCookie = request.cookies.get("family_social_session");
-
-    const isLoggedIn = !!sessionCookie;
-    const pathname = request.nextUrl.pathname;
-
-    // 1️⃣ Protect authenticated routes
-    if (
-        PROTECTED_ROUTES.some((path) => pathname.startsWith(path)) &&
-        !isLoggedIn
-    ) {
-        return NextResponse.redirect(
-            new URL("/login", request.url)
-        );
+    if (isAuthRoute) {
+      return NextResponse.redirect(new URL("/feed", req.url));
     }
-
-    // 2️⃣ Prevent logged-in users from accessing auth pages
-    if (
-        AUTH_ROUTES.some((path) => pathname.startsWith(path)) &&
-        isLoggedIn
-    ) {
-        return NextResponse.redirect(
-            new URL("/feed", request.url)
-        );
-    }
-
-    if (
-        pathname.startsWith("/invite") &&
-        isLoggedIn
-    ) {
-        return NextResponse.redirect(
-            new URL("/feed", request.url)
-        );
-    }
-
 
     return NextResponse.next();
-}
+  },
+  {
+    pages: {
+      signIn: "/login",
+    },
+    callbacks: {
+      // withAuth only runs the middleware function if this returns true.
+      // For auth routes, we want it to run (to redirect away if logged in).
+      // For protected routes, we need a valid token.
+      authorized: ({ token, req }) => {
+        const pathname = req.nextUrl.pathname;
+
+        const isAuthRoute =
+          pathname.startsWith("/login") ||
+          pathname.startsWith("/register") ||
+          pathname.startsWith("/forgot-password") ||
+          pathname.startsWith("/reset-password");
+
+        // Allow unauthenticated users to access auth routes
+        if (isAuthRoute) return true;
+
+        // For everything else, require token
+        return !!token;
+      },
+    },
+  }
+);
 
 export const config = {
-    matcher: [
-        "/feed/:path*",
-        "/login",
-        "/register",
-        "/create-family",
-    ],
+  // CRITICAL: Include auth routes so logged-in users get redirected away.
+  // Also include create-family and profile routes.
+  matcher: [
+    "/feed/:path*",
+    "/family/:path*",
+    "/post/:path*",
+    "/profile/:path*",
+    "/create-family",
+    "/login",
+    "/forgot-password",
+    "/reset-password",
+  ],
 };

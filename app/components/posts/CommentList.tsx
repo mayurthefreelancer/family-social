@@ -1,20 +1,43 @@
-// components/posts/CommentList.tsx
+"use client";
 
-import { getComments } from "@/app/lib/comments";
+import { useEffect, useState } from "react";
+import { fetchComments } from "@/app/actions/comments";
+import { Comment } from "../feed/CommentSection";
 
-export async function CommentList({ postId }: { postId: string }) {
-  const comments = await getComments(postId);
+export function CommentList({
+  postId,
+  optimisticComments,
+}: {
+  postId: string;
+  optimisticComments: Comment[];
+}) {
+  const [serverComments, setServerComments] = useState<Comment[]>([]);
 
-  if (comments.length === 0) {
-    return <p>No comments yet</p>;
+  useEffect(() => {
+    fetchComments(postId).then(setServerComments);
+  }, [postId]);
+
+  const allComments = [...serverComments, ...optimisticComments];
+
+  if (allComments.length === 0) {
+    return (
+      <p className="text-xs text-[var(--color-text-muted)]">
+        No comments yet.
+      </p>
+    );
   }
 
   return (
-    <div>
-      {comments.map((c) => (
-        <div key={c.id}>
-          <strong>{c.name}</strong>
-          <p>{c.content}</p>
+    <div className="space-y-2">
+      {allComments.map((c) => (
+        <div key={c.id} className="text-sm leading-relaxed">
+          <span className="font-medium text-[var(--color-text-primary)]">
+            {c.authorName}
+          </span>
+          <span className="text-[var(--color-text-secondary)]">
+            {": "}
+            {c.content}
+          </span>
         </div>
       ))}
     </div>
