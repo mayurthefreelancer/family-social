@@ -1,13 +1,12 @@
 import {
+  jsonb,
   pgTable,
-  uuid,
+  primaryKey,
   text,
   timestamp,
-  primaryKey,
-  jsonb,
   unique,
+  uuid,
 } from "drizzle-orm/pg-core";
-import { join } from "path";
 
 /* ================= USERS ================= */
 
@@ -15,7 +14,7 @@ export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  passwordHash: text("password_hash").notNull(),
+  passwordHash: text("password_hash"),
   avatarUrl: text("avatar_url"),
   createdAt: timestamp("created_at").defaultNow(),
 });

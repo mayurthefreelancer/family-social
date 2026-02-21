@@ -1,28 +1,61 @@
-import { NextResponse, NextRequest } from "next/server"
-import { getIronSession } from "iron-session"
-import { sessionOptions, SessionData } from "./app/lib/session"
+// middleware.ts — FIXED
+import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next()
-  const session = await getIronSession<SessionData>(req, res, sessionOptions)
+export default withAuth(
+  function middleware(req) {
+    // At this point, withAuth has already verified the token exists.
+    // Redirect authenticated users away from auth pages.
+    const isAuthRoute =
+      req.nextUrl.pathname.startsWith("/login") ||
+      req.nextUrl.pathname.startsWith("/register") ||
+      req.nextUrl.pathname.startsWith("/forgot-password") ||
+      req.nextUrl.pathname.startsWith("/reset-password");
 
-  const isAuthRoute =
-    req.nextUrl.pathname.startsWith("/login") ||
-    req.nextUrl.pathname.startsWith("/register") ||
-    req.nextUrl.pathname.startsWith("/forgot-password") ||
-    req.nextUrl.pathname.startsWith("/reset-password")
+    if (isAuthRoute) {
+      return NextResponse.redirect(new URL("/feed", req.url));
+    }
 
-  const isProtectedRoute =
-    req.nextUrl.pathname.startsWith("/feed") ||
-    req.nextUrl.pathname.startsWith("/family")
+    return NextResponse.next();
+  },
+  {
+    pages: {
+      signIn: "/login",
+    },
+    callbacks: {
+      // withAuth only runs the middleware function if this returns true.
+      // For auth routes, we want it to run (to redirect away if logged in).
+      // For protected routes, we need a valid token.
+      authorized: ({ token, req }) => {
+        const pathname = req.nextUrl.pathname;
 
-  if (!session.userId && isProtectedRoute) {
-    return NextResponse.redirect(new URL("/", req.url))
+        const isAuthRoute =
+          pathname.startsWith("/login") ||
+          pathname.startsWith("/register") ||
+          pathname.startsWith("/forgot-password") ||
+          pathname.startsWith("/reset-password");
+
+        // Allow unauthenticated users to access auth routes
+        if (isAuthRoute) return true;
+
+        // For everything else, require token
+        return !!token;
+      },
+    },
   }
+);
 
-  if (session.userId && isAuthRoute) {
-    return NextResponse.redirect(new URL("/feed", req.url))
-  }
-
-  return res
-}
+export const config = {
+  // CRITICAL: Include auth routes so logged-in users get redirected away.
+  // Also include create-family and profile routes.
+  matcher: [
+    "/feed/:path*",
+    "/family/:path*",
+    "/post/:path*",
+    "/profile/:path*",
+    "/create-family",
+    "/login",
+    "/forgot-password",
+    "/reset-password",
+  ],
+};

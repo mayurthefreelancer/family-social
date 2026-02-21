@@ -1,6 +1,7 @@
 // lib/session.ts
 import '../lib/server-only';
 import { cookies } from "next/headers";
+// @ts-ignore
 import { getIronSession } from "iron-session";
 
 
@@ -8,7 +9,7 @@ export type SessionData = {
   userId?: string;
 };
 
-export const sessionOptions = {
+const sessionOptions = {
   password: process.env.SESSION_SECRET!,
   cookieName: "family_social_session",
   cookieOptions: {

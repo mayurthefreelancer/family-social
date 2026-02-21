@@ -1,20 +1,22 @@
 // app/actions/invite.ts
 "use server";
 
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { logAuditEvent } from "../lib/audit";
 import { requireUser } from "../lib/auth";
 import { pool } from "../lib/db";
 import { getUserFamily, getUserFamilyWithRole } from "../lib/family";
 import { generateInviteToken } from "../lib/invite";
-import { logAuditEvent } from "../lib/audit";
-import bcrypt from "bcryptjs";
-import { redirect } from "next/navigation";
-import { createSession } from "./auth";
-import crypto from "crypto";
 
 export async function createInvite() {
   console.log("💡Creating invite...");
   const user = await requireUser();
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
   const familyId = await getUserFamily(user.family_id);
 
   if (!familyId) throw new Error("No family");
@@ -57,6 +59,9 @@ export async function createInvite() {
 export async function revokeInvite(token: string) {
   console.log("💡Revoking invite...");
   const user = await requireUser();
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
   const membership = await getUserFamilyWithRole(user.id);
 
   if (!membership || membership.role !== "admin") {
@@ -87,7 +92,9 @@ export async function revokeInvite(token: string) {
 export async function generateInvite() {
   console.log("💡Generating invite...");
   const user = await requireUser();
-
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
   if (user.role !== "admin") {
     throw new Error("Not authorized");
   }
@@ -199,7 +206,6 @@ export async function acceptInvite(
 
     await pool.query("COMMIT");
 
-    await createSession(userId);
     redirect("/feed");
   } catch (e) {
     await pool.query("ROLLBACK");

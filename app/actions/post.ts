@@ -5,10 +5,15 @@ import { revalidatePath } from "next/cache";
 import { requireUser } from "../lib/auth";
 import { pool } from "../lib/db";
 import { getUserFamily } from "../lib/family";
+import { redirect } from "next/navigation";
 
 
 export async function createPost(content: string) {
   const user = await requireUser();
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
+
   const familyId = await getUserFamily(user.id);
 
   await pool.query(
@@ -21,6 +26,9 @@ export async function createPost(content: string) {
 
 export async function togglePostLike(postId: string) {
   const user = await requireUser();
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
   // Ensure post exists & belongs to family
   const { rowCount } = await pool.query(
     `SELECT 1 FROM posts WHERE id = $1 AND family_id = $2`,

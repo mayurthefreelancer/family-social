@@ -25,7 +25,7 @@ export function Avatar({
 
   return (
     <div
-      className={`${sizes[size]} rounded-full bg-gray-300 flex items-center justify-center`}
+      className={`h-12 w-12 bg-gray-200  rounded-full flex items-center justify-center`}
     >
       <span className="font-medium text-gray-700">
         {name[0]?.toUpperCase()}

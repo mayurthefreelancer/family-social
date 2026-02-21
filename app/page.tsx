@@ -1,12 +1,17 @@
+import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation"
-import { getSessionUser } from "./lib/session"
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 export default async function HomePage() {
-  const session = await getSessionUser()
+  const session = await getServerSession(authOptions);
 
-  if (session) {
-    redirect("/feed")
+  if (!session) redirect("/login");
+
+  if (!session.user.familyId) {
+    redirect("/create-family");
   }
+
+  redirect("/feed");
 
   return (
     <div className="max-w-3xl mx-auto mt-20 text-center">

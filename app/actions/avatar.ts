@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import { requireUser } from "@/app/lib/auth"
 import { pool } from "@/app/lib/db"
 import { saveAvatarLocally } from "../lib/avatar-storage"
+import { redirect } from "next/navigation"
 
 type UploadState = {
   error?: string
@@ -15,7 +16,10 @@ export async function uploadAvatar(
 ): Promise<UploadState> {
   try {
     const user = await requireUser()
-
+    if (!user.family_id) {
+      redirect("/create-family");
+    }
+    
     const file = formData.get("avatar") as File | null
 
     if (!file || file.size === 0) {

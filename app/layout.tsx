@@ -1,5 +1,5 @@
 export const runtime = "nodejs";
-import { ThemeProvider } from "./components/ThemeProvider";
+import { Providers } from "./components/Providers";
 import { ThemeToggle } from "./components/ThemeToggle";
 import "./globals.css";
 import "./styles/tokens.css";
@@ -31,16 +31,15 @@ export default function RootLayout({
                   }
                 } catch (e) {}
               })();
-    `,
+            `,
           }}
         />
-
       </head>
       <body>
-        <ThemeProvider>
+        <Providers>
           {children}
           <ThemeToggle />
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

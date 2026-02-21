@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { requireUser } from "./auth";
 import { pool } from "./db";
 
@@ -18,7 +19,11 @@ export type FeedPost = {
 export async function getFeed(): Promise<FeedPost[]> {
   console.log("💡Fetching feed...");
   const user = await requireUser();
-
+  console.log("👤 User:", user);
+  if (!user.family_id) {
+    console.warn("User has no family_id, redirecting to create-family");
+    redirect("/create-family");
+  }
   const { rows } = await pool.query(
     `
     SELECT

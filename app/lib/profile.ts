@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation"
 import { requireUser } from "./auth"
 import { pool } from "./db"
 
@@ -16,7 +17,9 @@ export interface Profile {
 
 export async function getMyProfile() {
   const user = await requireUser()
-
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
   const { rows } = await pool.query(
     `
     SELECT *
@@ -33,6 +36,9 @@ export async function getMyProfile() {
 export async function getMemberProfile(memberUserId: string) {
   const user = await requireUser()
 
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
   const { rows } = await pool.query(
     `
     SELECT p.*, fm.role

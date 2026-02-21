@@ -1,40 +1,59 @@
 "use client"
 
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { createFamilyAdmin } from "./action"
 import { AuthCard } from "../components/auth/AuthCard"
 import { AuthField } from "../components/auth/AuthField"
+import { createFamily } from "./action"
 
 export default function CreateFamilyPage() {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: "",
-    familyName: "",
-  })
+  const [familyName, setFamilyName] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const { update } = useSession()
+  const router = useRouter()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    await createFamilyAdmin(
-      form.name,
-      form.email,
-      form.password,
-      form.familyName
-    )
-    window.location.href = "/login"
+    setError(null)
+    setLoading(true)
+
+    const result = await createFamily(familyName)
+
+    if (!result.success) {
+      // Show the actual error — no silent swallowing
+      setError(result.error ?? "Something went wrong. Please try again.")
+      setLoading(false)
+      return
+    }
+
+    // Family created in DB — refresh JWT so token.familyId is populated
+    await update()
+
+    // Hard navigation so the server re-reads the fresh cookie
+    // router.push() can use a cached layout; window.location forces a full round-trip
+    window.location.href = "/feed"
   }
 
   return (
-    <AuthCard title="Create Family" subtitle="Create a new family and become the admin.">
-      <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-20 space-y-4">
-        <AuthField label="Your Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-        <AuthField label="Email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-        <AuthField label="Password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
-        <AuthField label="Family Name" value={form.familyName} onChange={(e) => setForm({ ...form, familyName: e.target.value })} />
-        <button type="submit" className="w-full rounded-md
-            bg-[var(--color-accent)]
-            py-2 text-sm text-[var(--color-text)]">Create Family</button>
+    <AuthCard title="Create Family" subtitle="Set up your private family space.">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <AuthField
+          label="Family Name"
+          value={familyName}
+          onChange={(e) => setFamilyName(e.target.value)}
+          required
+        />
+        {error && <p className="text-sm text-red-500">{error}</p>}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-md bg-[var(--color-accent)] py-2 text-sm text-[var(--color-text)] disabled:opacity-50"
+        >
+          {loading ? "Creating..." : "Create Family"}
+        </button>
       </form>
-    </AuthCard >
+    </AuthCard>
   )
 }

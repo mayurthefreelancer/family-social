@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { logout } from "../actions/auth";
 import { UserMenu } from "../components/UserMenu";
-import { requireLoggedInUser } from "../lib/auth";
+import { requireFamilyUser } from "../lib/auth";
 
 export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await requireLoggedInUser();
+  const user = await requireFamilyUser();
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">

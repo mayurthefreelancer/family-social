@@ -1,14 +1,16 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 import { requireUser } from "../lib/auth"
 import { saveAvatarLocally } from "../lib/avatar-storage"
 import { pool } from "../lib/db"
-import { redirect } from "next/navigation"
 
 
 export async function uploadAvatar(formData: FormData) {
   const user = await requireUser()
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
   const file = formData.get("avatar") as File | null
   if (!file || file.size === 0) {
     // This case can happen if the user submits the form without selecting a file
@@ -54,7 +56,9 @@ export async function uploadAvatar(formData: FormData) {
 
 export async function updateProfile(formData: FormData) {
   const user = await requireUser()
-
+  if (!user.family_id) {
+    redirect("/create-family");
+  }
   const displayName = formData.get("display_name")?.toString().trim()
   const bio = formData.get("bio")?.toString().trim()
   const username = formData.get("username")?.toString().trim()
