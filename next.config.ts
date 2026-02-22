@@ -11,11 +11,9 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
       },
-    ],
-    localPatterns: [
       {
-        pathname: "/uploads/**",
-        search: "**",
+        protocol: "https",
+        hostname: "lpepmwfwilqavhsqfijy.supabase.co",  // add this
       },
     ],
   },
