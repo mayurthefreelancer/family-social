@@ -30,7 +30,6 @@ export const authOptions: AuthOptions = {
           if (!user.password_hash) return null;
           const valid = await bcrypt.compare(credentials.password.toString(), user.password_hash);
           if (!valid) return null;
-          console.log("[authorize] returning user id:", user.id);
           return { id: user.id, email: user.email };
         } finally {
           client.release();
@@ -41,13 +40,11 @@ export const authOptions: AuthOptions = {
 
   callbacks: {
     async signIn({ user, account }) {
-      console.log("[signIn] provider:", account?.provider, "user.email:", user.email);
       if (account?.provider === "credentials") return true;
 
       const client = await pool.connect();
       try {
         const existing = await client.query(`SELECT id FROM users WHERE email = $1`, [user.email]);
-        console.log("[signIn] existing user rows:", existing.rows.length);
 
         if (!existing.rows.length) {
           const name = user.name?.trim() || user.email?.split("@")[0] || "New User";
@@ -55,9 +52,7 @@ export const authOptions: AuthOptions = {
             `INSERT INTO users (email, name, avatar_url) VALUES ($1, $2, $3) RETURNING id`,
             [user.email, name, user.image ?? null]
           );
-          console.log("[signIn] inserted new user, DB id:", insertResult.rows[0]?.id);
         } else {
-          console.log("[signIn] existing user DB id:", existing.rows[0]?.id);
         }
         return true;
       } catch (err) {
@@ -69,7 +64,6 @@ export const authOptions: AuthOptions = {
     },
 
     async jwt({ token, user, trigger }) {
-      console.log("[jwt] trigger:", trigger, "has user:", !!user, "token.userId:", token.userId);
 
       if (user) {
         const client = await pool.connect();
@@ -82,7 +76,6 @@ export const authOptions: AuthOptions = {
             [user.email]
           );
           const row = result.rows[0];
-          console.log("[jwt] DB lookup by email:", user.email, "→ row:", row ? { id: row.id, family_id: row.family_id } : "NOT FOUND");
           if (row) {
             token.userId = row.id;
             token.email = row.email;
@@ -100,7 +93,6 @@ export const authOptions: AuthOptions = {
             [token.userId]
           );
           const row = result.rows[0];
-          console.log("[jwt:update] userId:", token.userId, "→ family_id:", row?.family_id ?? "NOT FOUND");
           if (row) {
             token.familyId = row.family_id;
             token.role = row.role;
@@ -110,7 +102,6 @@ export const authOptions: AuthOptions = {
         }
       }
 
-      console.log("[jwt] returning token.userId:", token.userId, "token.familyId:", token.familyId);
       return token;
     },
 
@@ -118,7 +109,6 @@ export const authOptions: AuthOptions = {
       session.user.id = token.userId;
       session.user.familyId = token.familyId;
       session.user.role = token.role;
-      console.log("[session] session.user.id:", session.user.id, "familyId:", session.user.familyId);
       return session;
     },
   },
