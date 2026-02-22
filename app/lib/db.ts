@@ -1,7 +1,7 @@
 import '../lib/server-only';
-
 import { Pool } from "pg";
 
 export const pool = new Pool({
-  connectionString: "postgresql://family_user:root@localhost:5432/family_social",
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
 });
