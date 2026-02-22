@@ -12,9 +12,9 @@ export function AvatarUploadForm({
   name: string
 }) {
   const [fileSelected, setFileSelected] = useState(false)
-  const [state, formAction] = useActionState(async (_state: any, formData: FormData) => {
+  const [state, formAction] = useActionState(async (_state: any, formData: FormData): Promise<any> => {
     return await uploadAvatar(formData)
-  }, {})
+  }, { success: false })
 
   return (
     <form
@@ -27,7 +27,7 @@ export function AvatarUploadForm({
       <div className="flex flex-col">
         <button
           type="submit"
-          disabled={!fileSelected || (fileSelected.length === 0)}
+          disabled={!fileSelected}
           className={`mt-3 inline-flex items-center rounded-lg border px-3 py-1.5 text-sm
             ${fileSelected
               ? "text-gray-700 hover:bg-gray-50"
