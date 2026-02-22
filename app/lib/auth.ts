@@ -22,11 +22,8 @@ export async function requireAuth() {
 
 export async function requireFamilyUser(): Promise<AuthUser> {
   const session = await getServerSession(authOptions);
-  console.log("[requireFamilyUser] session.user:", session?.user);
-  console.log("[requireFamilyUser] session.user.id:", session?.user?.id);
 
   if (!session?.user?.id) {
-    console.log("[requireFamilyUser] No user id → redirect /login");
     redirect("/login");
   }
 
@@ -45,14 +42,12 @@ export async function requireFamilyUser(): Promise<AuthUser> {
     [session.user.id]
   );
 
-  console.log("[requireFamilyUser] DB rows returned:", rows.length, "for user id:", session.user.id);
   if (rows.length > 0) {
     console.log("[requireFamilyUser] first row:", { id: rows[0].id, family_id: rows[0].family_id });
   }
 
   const row = rows[0];
   if (!row) {
-    console.log("[requireFamilyUser] No row found → redirect /create-family");
     redirect("/create-family");
   }
 

@@ -18,7 +18,6 @@ export type FeedPost = {
 
 export async function getFeed(): Promise<FeedPost[]> {
   const user = await requireUser();
-  console.log("👤 User:", user);
   if (!user.family_id) {
     console.warn("User has no family_id, redirecting to create-family");
     redirect("/create-family");

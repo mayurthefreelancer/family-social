@@ -12,7 +12,6 @@ import { getUserFamily, getUserFamilyWithRole } from "../lib/family";
 import { generateInviteToken } from "../lib/invite";
 
 export async function createInvite() {
-  console.log("💡Creating invite...");
   const user = await requireUser();
   if (!user.family_id) {
     redirect("/create-family");
@@ -57,7 +56,6 @@ export async function createInvite() {
 }
 
 export async function revokeInvite(token: string) {
-  console.log("💡Revoking invite...");
   const user = await requireUser();
   if (!user.family_id) {
     redirect("/create-family");
@@ -90,7 +88,6 @@ export async function revokeInvite(token: string) {
 
 
 export async function generateInvite() {
-  console.log("💡Generating invite...");
   const user = await requireUser();
   if (!user.family_id) {
     redirect("/create-family");
@@ -129,7 +126,6 @@ export async function acceptInvite(
   token: string,
   formData: FormData
 ) {
-  console.log("💡Accepting invite...");
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const name = formData.get("name") as string;

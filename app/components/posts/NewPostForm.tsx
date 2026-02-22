@@ -10,14 +10,12 @@ export function CreatePost({ profile }: { profile: any }) {
 
   
   async function handleSubmit() {
-    console.log("Submitting post with content:", content);
     if (!content.trim()) {
       console.warn("Post content cannot be empty");
       return;
     }
     if (pending) 
     setPending(true);
-  console.log("Creating post with content:", content);
     await createPost(content);
     setContent("");
     setPending(false);
