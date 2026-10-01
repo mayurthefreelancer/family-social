@@ -1,9 +1,18 @@
 "use client";
 
-import { acceptInvite } from "@/app/actions/invite";
 import { useState } from "react";
+import { acceptInvite } from "@/app/actions/invite";
+import { AuthCard } from "@/app/components/auth/AuthCard";
+import { AuthField } from "@/app/components/auth/AuthField";
+import { Button } from "@/app/components/ui/Button";
 
-export default function AcceptInviteForm({ token }: { token: string }) {
+export default function AcceptInviteForm({
+  token,
+  familyName = "your family",
+}: {
+  token: string;
+  familyName?: string;
+}) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -15,64 +24,55 @@ export default function AcceptInviteForm({ token }: { token: string }) {
       await acceptInvite(token, formData);
       // success → redirect happens inside server action
     } catch (e: any) {
-      setError(e.message ?? "Something went wrong");
+      setError(e.message ?? "Something went wrong while accepting your invitation.");
       setPending(false);
     }
   }
 
   return (
-    <form action={action} className="space-y-4 max-w-sm">
-      <h1 className="text-xl font-semibold">
-        Join your family
-      </h1>
-
-      <p className="text-sm text-gray-600">
-        Create your account to join the family.
-      </p>
-
-      <div>
-        <label className="block text-sm">Name</label>
-        <input
+    <AuthCard
+      title={`Join ${familyName}`}
+      subtitle="You've been invited into your private family sanctuary. Set up your profile to enter."
+    >
+      <form action={action} className="space-y-4">
+        <AuthField
+          label="Your Full Name"
           name="name"
+          placeholder="e.g. Uncle Raymond"
           required
-          className="input"
-          placeholder="Your name"
         />
-      </div>
 
-      <div>
-        <label className="block text-sm">Email</label>
-        <input
+        <AuthField
+          label="Email address"
           name="email"
           type="email"
-          required
-          className="input"
           placeholder="you@example.com"
+          required
         />
-      </div>
 
-      <div>
-        <label className="block text-sm">Password</label>
-        <input
+        <AuthField
+          label="Choose Password"
           name="password"
           type="password"
-          required
           minLength={8}
-          className="input"
+          placeholder="At least 8 characters"
+          required
         />
-      </div>
 
-      {error && (
-        <p className="text-sm text-red-600">{error}</p>
-      )}
+        {error && (
+          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-600 dark:text-red-400">
+            {error}
+          </div>
+        )}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="btn-primary w-full"
-      >
-        {pending ? "Joining..." : "Join family"}
-      </button>
-    </form>
+        <Button
+          type="submit"
+          disabled={pending}
+          className="w-full h-11 rounded-xl bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 font-medium text-sm transition-all"
+        >
+          {pending ? "Joining Family..." : "Accept Invitation & Enter Living Room →"}
+        </Button>
+      </form>
+    </AuthCard>
   );
 }

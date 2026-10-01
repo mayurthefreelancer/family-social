@@ -12,6 +12,7 @@ export type AuthUser = {
   avatarUrl: string | null;
   family_id: string;
   role: "admin" | "member";
+  familyName: string;
 };
 
 export async function requireAuth() {
@@ -34,10 +35,12 @@ export async function requireFamilyUser(): Promise<AuthUser> {
       p.display_name,
       p.avatar_url,
       fm.family_id,
-      fm.role
+      fm.role,
+      f.name
     FROM users u
     JOIN family_members fm ON fm.user_id = u.id
     JOIN profiles p ON p.user_id = u.id AND p.family_id = fm.family_id
+    JOIN families f ON f.id = fm.family_id
     WHERE u.id = $1`,
     [session.user.id]
   );
@@ -51,6 +54,7 @@ export async function requireFamilyUser(): Promise<AuthUser> {
     redirect("/create-family");
   }
 
+  console.log("[requireFamilyUser] user found:", { row });
   return {
     id: row.id,
     email: row.email,
@@ -58,6 +62,7 @@ export async function requireFamilyUser(): Promise<AuthUser> {
     avatarUrl: row.avatar_url,
     family_id: row.family_id,
     role: row.role,
+    familyName: row.name,
   };
 }
 

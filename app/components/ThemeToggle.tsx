@@ -18,6 +18,11 @@ export function ThemeToggle() {
     const next = theme === "light" ? "dark" : "light";
 
     document.documentElement.setAttribute("data-theme", next);
+    if (next === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
     localStorage.setItem("theme", next);
     setTheme(next);
   };

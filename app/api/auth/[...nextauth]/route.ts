@@ -81,6 +81,7 @@ export const authOptions: AuthOptions = {
             token.email = row.email;
             token.familyId = row.family_id ?? null;
             token.role = row.role ?? null;
+            token.accessToken = row.id;
           }
         } finally {
           client.release();
@@ -109,6 +110,7 @@ export const authOptions: AuthOptions = {
       session.user.id = token.userId;
       session.user.familyId = token.familyId;
       session.user.role = token.role;
+      session.accessToken = token.accessToken || token.userId;
       return session;
     },
   },

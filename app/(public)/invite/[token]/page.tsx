@@ -1,19 +1,27 @@
 import AcceptInviteForm from "@/app/components/invites/AcceptInviteForm";
-import { AlreadyJoined, InvalidInvite, WrongFamily } from "@/app/components/invites/InvalidInvite";
+import {
+  AlreadyJoined,
+  InvalidInvite,
+  WrongFamily,
+} from "@/app/components/invites/InvalidInvite";
 import { pool } from "@/app/lib/db";
 import { getOptionalUser } from "@/app/lib/user";
 
-// app/invite/[token]/page.tsx
-export default async function InvitePage({ params }: { params: { token: string } }) {
+export default async function InvitePage({
+  params,
+}: {
+  params: Promise<{ token: string }>;
+}) {
   const { token } = await params;
 
   const inviteRes = await pool.query(
     `
-    SELECT *
-    FROM invites
-    WHERE token = $1
-      AND used_at IS NULL
-      AND expires_at > now()
+    SELECT i.*, f.name AS family_name
+    FROM invites i
+    JOIN families f ON f.id = i.family_id
+    WHERE i.token = $1
+      AND i.used_at IS NULL
+      AND i.expires_at > now()
     `,
     [token]
   );
@@ -23,7 +31,6 @@ export default async function InvitePage({ params }: { params: { token: string }
   }
 
   const invite = inviteRes.rows[0];
-
   const user = await getOptionalUser();
 
   // Already logged in
@@ -38,5 +45,10 @@ export default async function InvitePage({ params }: { params: { token: string }
   }
 
   // Not logged in → show register form
-  return <AcceptInviteForm token={token} />;
+  return (
+    <AcceptInviteForm
+      token={token}
+      familyName={invite.family_name || "your family"}
+    />
+  );
 }

@@ -1,104 +1,117 @@
+import Link from "next/link";
 import { updateProfile } from "@/app/actions/profile";
 import { AvatarUploadForm } from "./AvatarUploadForm";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/app/components/ui/Card";
+import { Input } from "@/app/components/ui/Input";
+import { Label } from "@/app/components/ui/Label";
+import { Textarea } from "@/app/components/ui/Textarea";
+import { Button } from "@/app/components/ui/Button";
 
 export function EditProfileForm({ profile }: { profile: any }) {
   return (
-    <div className="max-w-xl mx-auto px-4 py-6">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-xl font-semibold text-gray-900">
-          Edit profile
-        </h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Update how your family sees you
-        </p>
-      </div>
+    <div className="max-w-2xl mx-auto space-y-6">
+      <Card className="rounded-[28px] border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
+            Edit Family Profile
+          </CardTitle>
+          <CardDescription className="text-sm text-zinc-500 dark:text-zinc-400">
+            Update how your relatives identify and connect with you.
+          </CardDescription>
+        </CardHeader>
 
-      {/* Preview existing avatar */}
-      <div className="mb-8 flex items-center gap-6 justify-center">
-        <div className="relative">
-          <img
-            src={profile.avatar_url ?? "/default-avatar.png"}
-            alt={profile.display_name}
-            className="w-24 h-24 rounded-full object-cover"
-          />
-        </div>
-      </div>
+        <CardContent className="space-y-6">
+          {/* Avatar Upload */}
+          <div className="p-4 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-850/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <p className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
+                Profile Portrait
+              </p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                Shown next to your memories, recipes, and comments.
+              </p>
+            </div>
+            <AvatarUploadForm
+              avatar={profile.avatar_url}
+              name={profile.display_name}
+            />
+          </div>
 
-      {/* Upload new avatar */}
-      <div className="mb-10">
-        <AvatarUploadForm
-          avatar={profile.avatar_url}
-          name={profile.display_name}
-        />
-      </div>
+          {/* Profile Form Fields */}
+          <form action={updateProfile} className="space-y-5">
+            <div className="space-y-1.5">
+              <Label htmlFor="display_name" className="text-xs font-semibold uppercase text-zinc-600 dark:text-zinc-400">
+                Display Name
+              </Label>
+              <Input
+                id="display_name"
+                name="display_name"
+                defaultValue={profile.display_name}
+                required
+                placeholder="e.g. Aunt Clara"
+                className="h-10 text-sm"
+              />
+            </div>
 
+            <div className="space-y-1.5">
+              <Label htmlFor="username" className="text-xs font-semibold uppercase text-zinc-600 dark:text-zinc-400">
+                Username / Handle
+              </Label>
+              <Input
+                id="username"
+                name="username"
+                defaultValue={profile.username ?? ""}
+                required
+                placeholder="e.g. clara"
+                className="h-10 text-sm font-mono"
+              />
+            </div>
 
-      {/* Divider */}
-      <div className="border-t mb-8" />
+            <div className="space-y-1.5">
+              <Label htmlFor="bio" className="text-xs font-semibold uppercase text-zinc-600 dark:text-zinc-400">
+                Bio / Favorite Family Note
+              </Label>
+              <Textarea
+                id="bio"
+                name="bio"
+                defaultValue={profile.bio ?? ""}
+                maxLength={160}
+                rows={3}
+                placeholder="A warm note about yourself or what you love doing for family get-togethers…"
+              />
+              <p className="text-[11px] text-zinc-400 text-right">
+                Max 160 characters
+              </p>
+            </div>
 
-      {/* Profile Fields */}
-      <form action={updateProfile} className="space-y-6">
-        {/* Display name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Display name
-          </label>
-          <input
-            name="display_name"
-            defaultValue={profile.display_name}
-            required
-            className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-          />
-        </div>
-        {/* username */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Username
-          </label>
-          <input
-            name="username"
-            defaultValue={profile.username}
-            required
-            className="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-          />
-        </div>
+            {/* Actions */}
+            <div className="flex items-center gap-3 pt-3 border-t border-zinc-100 dark:border-zinc-800/80">
+              <Button
+                type="submit"
+                className="h-10 px-5 rounded-full bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 text-xs font-semibold shadow-sm"
+              >
+                Save Changes
+              </Button>
 
-        {/* Bio */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Bio
-          </label>
-          <textarea
-            name="bio"
-            defaultValue={profile.bio ?? ""}
-            maxLength={160}
-            rows={4}
-            className="w-full rounded-lg border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-black"
-            placeholder="A short note about you…"
-          />
-          <p className="mt-1 text-xs text-gray-400">
-            Max 160 characters
-          </p>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-3 pt-2">
-          <button
-            type="submit"
-            className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-[var(--color-text)] hover:bg-gray-900"
-          >
-            Save changes
-          </button>
-
-          <a
-            href="/profile"
-            className="text-sm text-gray-600 hover:underline"
-          >
-            Cancel
-          </a>
-        </div>
-      </form>
+              <Link href="/profile">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="rounded-full text-xs"
+                >
+                  Cancel
+                </Button>
+              </Link>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }

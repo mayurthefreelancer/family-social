@@ -1,28 +1,37 @@
+/* Shadcn UI Monochrome Tokens (Zinc / Neutral) */
 :root {
-  --color-bg: #ffffff;
-  --color-surface: #f9fafb;
-  --color-border: #e5e7eb;
+  --color-bg: #fbfbfd;
+  --color-surface: #ffffff;
+  --color-subtle: #f4f4f6;
+  --color-border: #e6e6ec;
+  --color-border-subtle: #f0f0f4;
 
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
+  --color-text: #09090b;
+  --color-text-body: #18181b;
+  --color-text-secondary: #52525b;
+  --color-text-muted: #71717a;
 
-  --color-accent: #6366f1;
+  --color-accent: #18181b;
   --color-danger: #ef4444;
-  --color-btn-primary-bg: #6366f1;
-  --color-btn-primary-text: #ffffff;
-
+  --color-btn-primary-bg: #09090b;
+  --color-btn-primary-text: #fafafa;
 }
 
-.dark {
-  --color-bg: #0f172a;
-  --color-surface: #1e293b;
-  --color-border: #334155;
+.dark,
+[data-theme="dark"] {
+  --color-bg: #09090b;
+  --color-surface: #141417;
+  --color-subtle: #1f1f24;
+  --color-border: #282830;
+  --color-border-subtle: #1f1f26;
 
-  --color-text: #f1f5f9;
-  --color-text-muted: #94a3b8;
+  --color-text: #fafafa;
+  --color-text-body: #e4e4e7;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
 
-  --color-accent: #818cf8;
+  --color-accent: #fafafa;
   --color-danger: #f87171;
-  --color-btn-primary-bg: #818cf8;
-  --color-btn-primary-text: #ffffff;
+  --color-btn-primary-bg: #fafafa;
+  --color-btn-primary-text: #09090b;
 }

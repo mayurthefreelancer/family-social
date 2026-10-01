@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { Avatar } from "@/app/components/ui/Avatar";
+import { LogOut, User, Users } from "lucide-react";
 
 export function UserMenu({
   displayName,
@@ -32,77 +34,63 @@ export function UserMenu({
       {/* Avatar Button */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-border)]"
+        className="p-0.5 rounded-full ring-2 ring-transparent hover:ring-zinc-300 dark:hover:ring-zinc-700 transition-all focus:outline-none"
+        title={displayName}
       >
-        {avatarUrl ? (
-          <img
-            src={avatarUrl}
-            alt={displayName}
-            className="h-9 w-9 rounded-full object-cover"
-          />
-        ) : (
-          <div
-            className="
-              h-9 w-9 rounded-full
-              bg-[var(--color-border)]
-              flex items-center justify-center
-              text-xs font-semibold
-              text-[var(--color-text-muted)]
-            "
-          >
-            {displayName.charAt(0).toUpperCase()}
-          </div>
-        )}
+        <Avatar
+          src={avatarUrl ?? undefined}
+          fallback={displayName}
+          size="sm"
+        />
       </button>
 
       {/* Dropdown */}
       {open && (
-        <div
-          className="
-            absolute right-0 mt-2 w-48
-            rounded-md border border-[var(--color-border)]
-            bg-[var(--color-surface)]
-            shadow-lg
-            py-1
-            z-50
-          "
-        >
-          <Link
-            href="/profile"
-            className="
-              block px-4 py-2 text-sm
-              text-[var(--color-text-primary)]
-              hover:bg-[var(--color-border)]
-            "
-            onClick={() => setOpen(false)}
-          >
-            Profile
-          </Link>
+        <div className="absolute right-0 mt-2 w-52 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-100 text-xs">
+          <div className="px-3.5 py-2 border-b border-zinc-100 dark:border-zinc-800">
+            <p className="font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+              {displayName}
+            </p>
+            <p className="text-[11px] text-zinc-500">Active Kin</p>
+          </div>
 
-          <Link
-            href="/family"
-            className="
-              block px-4 py-2 text-sm
-              text-[var(--color-text-primary)]
-              hover:bg-[var(--color-border)]
-            "
-            onClick={() => setOpen(false)}
-          >
-            Family
-          </Link>
+          <div className="py-1">
+            <Link
+              href="/profile"
+              className="flex items-center gap-2.5 px-3.5 py-2 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              onClick={() => setOpen(false)}
+            >
+              <User className="w-3.5 h-3.5 text-zinc-400" />
+              <span>Your Profile</span>
+            </Link>
 
-          <div className="border-t border-[var(--color-border)] my-1" />
+            <Link
+              href="/family"
+              className="flex items-center gap-2.5 px-3.5 py-2 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              onClick={() => setOpen(false)}
+            >
+              <Users className="w-3.5 h-3.5 text-zinc-400" />
+              <span>Family Directory & Invites</span>
+            </Link>
+
+            <Link
+              href="/prototype"
+              className="flex items-center gap-2.5 px-3.5 py-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              onClick={() => setOpen(false)}
+            >
+              <span>Preview Prototype ↗</span>
+            </Link>
+          </div>
+
+          <div className="border-t border-zinc-100 dark:border-zinc-800 my-1" />
 
           <form action={onLogout}>
             <button
               type="submit"
-              className="
-                w-full text-left px-4 py-2 text-sm
-                text-red-500
-                hover:bg-[var(--color-border)]
-              "
+              className="w-full flex items-center gap-2.5 px-3.5 py-2 text-red-600 dark:text-red-400 hover:bg-red-500/10 transition-colors text-left font-medium"
             >
-              Logout
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Sign out</span>
             </button>
           </form>
         </div>

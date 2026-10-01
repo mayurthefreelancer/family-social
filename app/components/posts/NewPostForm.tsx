@@ -22,8 +22,7 @@ export function CreatePost({ profile }: { profile: any }) {
   }
 
   return (
-    <div className="rounded-2xl bg-white shadow-sm border border-neutral-200 p-4 space-y-3 
-    dark:bg-surface-200 dark:border-gray-700 dark: bg-[var(--color-card-bg)] dark:border-[var(--color-card-border)]">
+    <div className="rounded-2xl  shadow-sm border border-neutral-200 p-4 space-y-3 bg-[var(--color-card-bg)] border-[var(--color-card-border)]">
       <div className="flex gap-3">
         <Avatar
           avatar={profile.avatar_url}
