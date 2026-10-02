@@ -197,7 +197,14 @@ export function AdminDashboardView({
 
   // Execution Modal
   const [actionTicket, setActionTicket] = useState<AdminTicketOverview | null>(null);
-  const [actionType, setActionType] = useState<"remove_member" | "change_role" | "toggle_superadmin" | "delete_family">("remove_member");
+  const [actionType, setActionType] = useState<
+    | "remove_member"
+    | "change_role"
+    | "toggle_superadmin"
+    | "delete_family"
+    | "generate_reset_code"
+    | "approve_tag_change"
+  >("remove_member");
   const [actionNote, setActionNote] = useState("");
   const [actionRole, setActionRole] = useState<"admin" | "member">("admin");
 
