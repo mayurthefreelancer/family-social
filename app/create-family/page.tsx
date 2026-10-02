@@ -69,7 +69,7 @@ export default function CreateFamilyPage() {
         <Button
           type="submit"
           disabled={loading || !familyName.trim()}
-          className="w-full h-11 rounded-xl bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 font-medium text-sm transition-all"
+          className="w-full h-11 rounded-xl bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white font-medium text-sm transition-all"
         >
           {loading ? "Creating Family Space..." : "Open Family Living Room →"}
         </Button>

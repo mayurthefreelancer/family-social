@@ -12,7 +12,7 @@ export function LikeButton({ post }: { post: Post }) {
     <form action={togglePostLike.bind(null, post.id)}>
       <button type="submit" className="hover:scale-110 transition flex items-center gap-1">
         
-        {post.likedByMe ?  <Heart className="fill-red-500 text-red-500" /> : <Heart className="text-gray-400" />} {post.likeCount}
+        {post.likedByMe ? <Heart className="fill-red-500 text-red-500" /> : <Heart className="text-zinc-400 dark:text-zinc-500" />} {post.likeCount}
       </button>
     </form>
   );

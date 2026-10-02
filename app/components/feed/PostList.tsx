@@ -7,11 +7,21 @@ import {
 } from "@/app/components/ui/Card";
 import { Sparkles } from "lucide-react";
 
-export function PostList({ posts }: { posts: any[] }) {
+export function PostList({
+  posts,
+  currentUser,
+}: {
+  posts: any[];
+  currentUser?: {
+    user_id?: string;
+    display_name?: string;
+    avatar_url?: string | null;
+  };
+}) {
   if (posts.length === 0) {
     return (
       <Card className="rounded-[24px] border-zinc-200/80 dark:border-zinc-800 p-8 text-center bg-white dark:bg-zinc-900/60 shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-3">
-        <div className="w-12 h-12 mx-auto rounded-full bg-zinc-100 dark:bg-zinc-850 flex items-center justify-center text-zinc-500">
+        <div className="w-12 h-12 mx-auto rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500">
           <Sparkles className="w-5 h-5" />
         </div>
         <CardHeader className="p-0">
@@ -29,7 +39,19 @@ export function PostList({ posts }: { posts: any[] }) {
   return (
     <div className="space-y-6">
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
+        <PostCard
+          key={post.id}
+          post={post}
+          currentUser={
+            currentUser
+              ? {
+                  id: currentUser.user_id,
+                  name: currentUser.display_name,
+                  avatarUrl: currentUser.avatar_url,
+                }
+              : undefined
+          }
+        />
       ))}
     </div>
   );

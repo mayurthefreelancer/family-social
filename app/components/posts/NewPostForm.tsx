@@ -8,54 +8,47 @@ export function CreatePost({ profile }: { profile: any }) {
   const [content, setContent] = useState("");
   const [pending, setPending] = useState(false);
 
-  
   async function handleSubmit() {
     if (!content.trim()) {
-      console.warn("Post content cannot be empty");
       return;
     }
-    if (pending) 
+    if (pending) return;
     setPending(true);
-    await createPost(content);
-    setContent("");
-    setPending(false);
+    try {
+      await createPost(content);
+      setContent("");
+    } finally {
+      setPending(false);
+    }
   }
 
   return (
-    <div className="rounded-2xl  shadow-sm border border-neutral-200 p-4 space-y-3 bg-[var(--color-card-bg)] border-[var(--color-card-border)]">
-      <div className="flex gap-3">
+    <div className="rounded-[24px] border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-5 space-y-3 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+      <div className="flex gap-3.5">
         <Avatar
           avatar={profile.avatar_url}
           name={profile.display_name}
-          size="lg"
+          size="md"
         />
         <textarea
           placeholder="What would you like to share?"
-          className="
-        w-full resize-none
-        bg-transparent
-        text-base
-        placeholder:text-neutral-400
-        focus:outline-none
-      "
+          className="w-full resize-none bg-transparent text-sm sm:text-base text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           disabled={pending}
+          rows={3}
         />
       </div>
 
-      <div className="flex justify-end">
-        <button className="
-      px-4 py-2 rounded-full
-      bg-[var(--color-btn-primary-bg)] text-[var(--color-btn-primary-text)]
-      text-sm font-medium
-      hover:opacity-90
-      transition
-    " onClick={handleSubmit} disabled={pending}>
-          Post
+      <div className="flex justify-end pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
+        <button
+          className="px-5 py-2 rounded-full bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white text-xs font-semibold shadow-sm transition disabled:opacity-50 cursor-pointer"
+          onClick={handleSubmit}
+          disabled={pending || !content.trim()}
+        >
+          {pending ? "Posting..." : "Post to Family"}
         </button>
       </div>
     </div>
-
   );
 }

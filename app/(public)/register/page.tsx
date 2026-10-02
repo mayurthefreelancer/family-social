@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 import { AuthCard } from "@/app/components/auth/AuthCard";
 import { AuthField } from "@/app/components/auth/AuthField";
 import { Button } from "@/app/components/ui/Button";
@@ -10,17 +11,48 @@ import { register } from "@/app/actions/auth";
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [statusText, setStatusText] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    setStatusText(null);
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const result = await register(formData);
-    if (result?.error) {
-      setError(result.error);
+    const email = (formData.get("email") as string)?.toLowerCase().trim();
+    const password = formData.get("password") as string;
+
+    try {
+      setStatusText("Creating your family account...");
+      const result = await register(formData);
+
+      if (!result.success) {
+        setError(result.error ?? "Failed to create account.");
+        setLoading(false);
+        setStatusText(null);
+        return;
+      }
+
+      setStatusText("Signing you in automatically...");
+
+      // Automatically sign in upon registration
+      const signInRes = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (signInRes?.error) {
+        window.location.href = "/login?message=Account+created!+Please+sign+in.";
+      } else {
+        // Direct transition into the Family Creation wizard
+        window.location.href = "/create-family";
+      }
+    } catch (err: any) {
+      setError(err?.message ?? "An unexpected error occurred.");
       setLoading(false);
+      setStatusText(null);
     }
   }
 
@@ -61,12 +93,18 @@ export default function RegisterPage() {
           </div>
         )}
 
+        {statusText && !error && (
+          <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-700 dark:text-emerald-400 animate-pulse">
+            {statusText}
+          </div>
+        )}
+
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-11 rounded-xl bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 font-medium text-sm transition-all"
+          className="w-full h-11 rounded-xl bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white font-medium text-sm transition-all"
         >
-          {loading ? "Creating Account..." : "Create Account & Continue"}
+          {loading ? "Setting up..." : "Create Account & Continue →"}
         </Button>
       </form>
 

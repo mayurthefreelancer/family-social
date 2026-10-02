@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { cn } from "@/app/lib/utils";
 
@@ -5,6 +7,7 @@ export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string | null;
   alt?: string;
   fallbackText?: string;
+  fallback?: string;
   size?: "sm" | "md" | "lg" | "xl";
   online?: boolean;
 }
@@ -13,6 +16,7 @@ export function Avatar({
   src,
   alt = "Avatar",
   fallbackText,
+  fallback,
   size = "md",
   online,
   className,
@@ -21,15 +25,14 @@ export function Avatar({
   const [hasError, setHasError] = React.useState(false);
 
   const sizeClasses = {
-    sm: "w-7 h-7 text-[10px]",
-    md: "w-9 h-9 text-xs",
-    lg: "w-11 h-11 text-sm",
-    xl: "w-16 h-16 text-lg",
+    sm: "w-8 h-8 text-xs",
+    md: "w-10 h-10 text-sm",
+    lg: "w-12 h-12 text-base",
+    xl: "w-16 h-16 text-xl",
   };
 
-  const initial = fallbackText
-    ? fallbackText.charAt(0).toUpperCase()
-    : alt.charAt(0).toUpperCase() || "?";
+  const displayText = fallbackText || fallback || alt || "?";
+  const initial = displayText.charAt(0).toUpperCase();
 
   return (
     <div

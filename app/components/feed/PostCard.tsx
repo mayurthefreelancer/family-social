@@ -11,6 +11,7 @@ import { LikeButton } from "./LikeButton";
 
 export function PostCard({
   post,
+  currentUser,
 }: {
   post: {
     id: string;
@@ -22,6 +23,11 @@ export function PostCard({
     commentCount?: number;
     likeCount: number;
     likedByMe: boolean;
+  };
+  currentUser?: {
+    id?: string;
+    name?: string;
+    avatarUrl?: string | null;
   };
 }) {
   const [openComments, setOpenComments] = useState(false);
@@ -48,36 +54,39 @@ export function PostCard({
 
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-sm text-zinc-950 dark:text-zinc-50 tracking-tight">
+              <span className="font-semibold text-sm sm:text-base text-zinc-950 dark:text-zinc-50 tracking-tight">
                 {post.authorName}
               </span>
               <Badge
                 variant="secondary"
-                className="text-[10px] font-medium uppercase tracking-wider px-2 py-0.2"
+                className="text-xs font-mono uppercase tracking-wider px-2 py-0.5"
               >
                 Kin
               </Badge>
               {isRecipe && (
-                <span className="text-[10px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full">
                   🍲 Recipe
                 </span>
               )}
             </div>
-            <span className="text-xs text-zinc-400 dark:text-zinc-500 font-normal">
+            <span
+              className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-normal"
+              suppressHydrationWarning
+            >
               {formattedDate}
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-1.5 text-zinc-400">
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-zinc-200/60 dark:border-zinc-800 hidden sm:inline-flex items-center gap-1">
-            <ShieldCheck className="w-3 h-3" /> Family Only
+          <span className="text-xs font-mono px-2.5 py-0.5 rounded-full border border-zinc-200/60 dark:border-zinc-800 hidden sm:inline-flex items-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5" /> Family Only
           </span>
         </div>
       </header>
 
       {/* Editorial Post Body */}
-      <div className="text-[15px] leading-[1.65] font-normal text-zinc-800 dark:text-zinc-200 whitespace-pre-wrap">
+      <div className="text-base leading-relaxed font-normal text-zinc-800 dark:text-zinc-200 whitespace-pre-wrap">
         {cleanContent}
       </div>
 
@@ -96,7 +105,7 @@ export function PostCard({
       <footer className="pt-3 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between text-xs">
         <div className="flex items-center gap-2">
           {/* Like Pill */}
-          <div className="h-8 px-3 rounded-full border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-850/60 flex items-center gap-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+          <div className="h-8 px-3 rounded-full border border-zinc-200/80 dark:border-zinc-750 bg-zinc-50/70 dark:bg-zinc-800/60 flex items-center gap-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-700/60 transition-colors">
             <LikeButton post={post} />
           </div>
 
@@ -104,10 +113,10 @@ export function PostCard({
           <button
             type="button"
             onClick={() => setOpenComments(!openComments)}
-            className={`h-8 px-3 rounded-full border flex items-center gap-1.5 transition-colors font-medium ${
+            className={`h-8 px-3 rounded-full border flex items-center gap-1.5 transition-colors font-medium cursor-pointer ${
               openComments
-                ? "border-zinc-900 dark:border-zinc-100 bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900"
-                : "border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-850/60 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                ? "border-zinc-900 dark:border-zinc-200 bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-950"
+                : "border-zinc-200/80 dark:border-zinc-750 bg-zinc-50/70 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700/60"
             }`}
           >
             <MessageCircle className="w-3.5 h-3.5" />
@@ -129,7 +138,8 @@ export function PostCard({
           <CommentSection
             postId={post.id}
             initialCount={post.commentCount ?? 0}
-            currentUserName={post.authorName}
+            currentUserName={currentUser?.name}
+            currentUserAvatar={currentUser?.avatarUrl}
           />
         </div>
       )}

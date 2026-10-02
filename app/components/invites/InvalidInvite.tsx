@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardFooter,
 } from "@/app/components/ui/Card";
-import { Button } from "@/app/components/ui/Button";
+import { buttonVariants } from "@/app/components/ui/Button";
 
 export function InvalidInvite() {
   return (
@@ -24,10 +24,11 @@ export function InvalidInvite() {
         </CardDescription>
       </CardHeader>
       <CardFooter className="justify-center pb-8 pt-2">
-        <Link href="/login">
-          <Button variant="outline" className="rounded-full text-xs">
-            Return to Sign in
-          </Button>
+        <Link
+          href="/login"
+          className={buttonVariants({ variant: "outline", className: "rounded-full text-xs" })}
+        >
+          Return to Sign in
         </Link>
       </CardFooter>
     </Card>
@@ -49,10 +50,11 @@ export function AlreadyJoined() {
         </CardDescription>
       </CardHeader>
       <CardFooter className="justify-center pb-8 pt-2">
-        <Link href="/feed">
-          <Button variant="default" className="rounded-full text-xs">
-            Enter Family Living Room →
-          </Button>
+        <Link
+          href="/feed"
+          className={buttonVariants({ variant: "default", className: "rounded-full text-xs" })}
+        >
+          Enter Family Living Room →
         </Link>
       </CardFooter>
     </Card>
@@ -74,10 +76,11 @@ export function WrongFamily() {
         </CardDescription>
       </CardHeader>
       <CardFooter className="justify-center pb-8 pt-2">
-        <Link href="/feed">
-          <Button variant="outline" className="rounded-full text-xs">
-            Return to Your Family Feed
-          </Button>
+        <Link
+          href="/feed"
+          className={buttonVariants({ variant: "outline", className: "rounded-full text-xs" })}
+        >
+          Return to Your Family Feed
         </Link>
       </CardFooter>
     </Card>

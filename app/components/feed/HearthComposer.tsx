@@ -112,7 +112,7 @@ export function HearthComposer({
             <button
               type="button"
               onClick={() => setHasPhotoPrompt(!hasPhotoPrompt)}
-              className="h-8 px-3 rounded-full border border-zinc-200/80 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-850 text-xs font-medium flex items-center gap-1.5 transition-colors"
+              className="h-8 px-3 rounded-full border border-zinc-200/80 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Camera className="w-3.5 h-3.5" />
               <span>Photo</span>
@@ -121,7 +121,7 @@ export function HearthComposer({
             <button
               type="button"
               onClick={() => setHasAudioPrompt(!hasAudioPrompt)}
-              className="h-8 px-3 rounded-full border border-zinc-200/80 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-850 text-xs font-medium flex items-center gap-1.5 transition-colors"
+              className="h-8 px-3 rounded-full border border-zinc-200/80 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Mic className="w-3.5 h-3.5" />
               <span>Voice Note</span>
@@ -130,10 +130,10 @@ export function HearthComposer({
             <button
               type="button"
               onClick={() => setIsRecipe(!isRecipe)}
-              className={`h-8 px-3 rounded-full border text-xs font-medium flex items-center gap-1.5 transition-colors ${
+              className={`h-8 px-3 rounded-full border text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
                 isRecipe
                   ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400"
-                  : "border-zinc-200/80 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-850"
+                  : "border-zinc-200/80 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800"
               }`}
             >
               <Utensils className="w-3.5 h-3.5" />
@@ -150,7 +150,7 @@ export function HearthComposer({
             <Button
               type="submit"
               disabled={pending || !content.trim()}
-              className="h-9 px-4 rounded-full bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 text-xs font-semibold shadow-sm transition-all"
+              className="h-9 px-4 rounded-full bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
             >
               {pending ? (
                 <>

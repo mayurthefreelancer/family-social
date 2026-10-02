@@ -9,6 +9,7 @@ declare module "next-auth" {
       email?: string | null;
       name?: string | null;
       image?: string | null;
+      isSuperadmin?: boolean;
     };
     accessToken?: string;
   }
@@ -19,6 +20,7 @@ declare module "next-auth/jwt" {
     userId?: string;
     familyId?: string | null;
     role?: string | null;
+    isSuperadmin?: boolean;
     accessToken?: string;
   }
 }

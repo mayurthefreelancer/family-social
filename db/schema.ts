@@ -18,6 +18,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash"),
   avatarUrl: text("avatar_url"),
+  isSuperadmin: boolean("is_superadmin").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -26,8 +27,12 @@ export const users = pgTable("users", {
 export const families = pgTable("families", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
+  description: text("description"),
+  avatarUrl: text("avatar_url"),
+  backdropUrl: text("backdrop_url"),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 /* ================= FAMILY MEMBERS ================= */
@@ -133,6 +138,7 @@ export const profiles = pgTable("profiles", {
   username: text("username"), // optional, family-unique later
   bio: text("bio"),
   avatar_url: text("avatar_url"),
+  customTag: text("custom_tag").default("KIN"),
 
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
@@ -308,3 +314,23 @@ export const postReactions = pgTable(
     ),
   })
 );
+
+// ================= 9. PLATFORM GOVERNANCE & TICKETS ================= //
+export const adminTickets = pgTable("admin_tickets", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  ticketCode: text("ticket_code").notNull().unique(),
+  familyId: uuid("family_id").references(() => families.id, { onDelete: "set null" }),
+  requesterEmail: text("requester_email").notNull(),
+  category: text("category").notNull(), // 'member_removal', 'access_control', 'family_deletion', 'organizer_handover', 'general_support'
+  priority: text("priority").default("medium").notNull(), // 'critical', 'high', 'medium', 'low'
+  status: text("status").default("open").notNull(), // 'open', 'in_progress', 'resolved', 'closed'
+  subject: text("subject").notNull(),
+  description: text("description").notNull(),
+  targetEntityType: text("target_entity_type"), // 'user', 'family', 'invite', 'post'
+  targetEntityId: text("target_entity_id"),
+  resolutionNote: text("resolution_note"),
+  resolvedBy: uuid("resolved_by").references(() => users.id, { onDelete: "set null" }),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});

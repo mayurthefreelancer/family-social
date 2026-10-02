@@ -11,7 +11,7 @@ import {
 import { Input } from "@/app/components/ui/Input";
 import { Label } from "@/app/components/ui/Label";
 import { Textarea } from "@/app/components/ui/Textarea";
-import { Button } from "@/app/components/ui/Button";
+import { Button, buttonVariants } from "@/app/components/ui/Button";
 
 export function EditProfileForm({ profile }: { profile: any }) {
   return (
@@ -27,16 +27,8 @@ export function EditProfileForm({ profile }: { profile: any }) {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Avatar Upload */}
-          <div className="p-4 rounded-2xl border border-zinc-200/60 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-850/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div>
-              <p className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
-                Profile Portrait
-              </p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Shown next to your memories, recipes, and comments.
-              </p>
-            </div>
+          {/* Overhauled Avatar Upload Section */}
+          <div className="p-5 sm:p-6 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-800/40 shadow-2xs">
             <AvatarUploadForm
               avatar={profile.avatar_url}
               name={profile.display_name}
@@ -94,19 +86,19 @@ export function EditProfileForm({ profile }: { profile: any }) {
             <div className="flex items-center gap-3 pt-3 border-t border-zinc-100 dark:border-zinc-800/80">
               <Button
                 type="submit"
-                className="h-10 px-5 rounded-full bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 text-xs font-semibold shadow-sm"
+                className="h-10 px-5 rounded-full bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white text-xs font-semibold shadow-sm"
               >
                 Save Changes
               </Button>
 
-              <Link href="/profile">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="rounded-full text-xs"
-                >
-                  Cancel
-                </Button>
+              <Link
+                href="/profile"
+                className={buttonVariants({
+                  variant: "ghost",
+                  className: "rounded-full text-xs",
+                })}
+              >
+                Cancel
               </Link>
             </div>
           </form>

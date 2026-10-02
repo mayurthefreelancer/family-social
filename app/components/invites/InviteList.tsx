@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ClipboardCheck, ClipboardCopy, Link2 } from "lucide-react";
 import { RevokeInviteButton } from "./RevokeInviteButton";
 import { Badge } from "@/app/components/ui/Badge";
@@ -14,6 +14,11 @@ type Invite = {
 
 export function InviteList({ invites }: { invites: Invite[] }) {
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
+  const [origin, setOrigin] = useState("");
+
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   function copyToClipboard(token: string) {
     const inviteLink = `${window.location.origin}/invite/${token}`;
@@ -35,32 +40,30 @@ export function InviteList({ invites }: { invites: Invite[] }) {
       {invites.map((invite) => {
         const isCopied = copiedToken === invite.token;
         const expiresDate = new Date(invite.expires_at).toLocaleDateString(
-          undefined,
-          { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }
+          "en-US",
+          { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "UTC" }
         );
 
         return (
           <div
             key={invite.token}
-            className="flex items-center justify-between gap-3 p-3 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 text-xs"
+            className="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-white/60 dark:bg-zinc-900/40 text-xs sm:text-sm"
           >
-            <div className="min-w-0 flex-1 space-y-1">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-[10px] px-2 py-0.5">
-                  Expires {expiresDate}
+            <div className="min-w-0 flex-1 space-y-1.5">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="outline" className="text-xs px-2.5 py-0.5" suppressHydrationWarning>
+                  Expires {expiresDate} UTC
                 </Badge>
                 {isCopied && (
-                  <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                     Copied to clipboard!
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-1.5 font-mono text-zinc-500 dark:text-zinc-400 truncate text-[11px]">
+              <div className="flex items-center gap-1.5 font-mono text-zinc-500 dark:text-zinc-400 truncate text-xs">
                 <Link2 className="w-3.5 h-3.5 shrink-0" />
-                <span className="truncate">
-                  {typeof window !== "undefined"
-                    ? `${window.location.origin}/invite/${invite.token}`
-                    : `/invite/${invite.token}`}
+                <span className="truncate" suppressHydrationWarning>
+                  {origin ? `${origin}/invite/${invite.token}` : `/invite/${invite.token}`}
                 </span>
               </div>
             </div>

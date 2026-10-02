@@ -1,7 +1,7 @@
 # 🐛 Kinship UI & Hydration Sanity Audit Report
 
 > **Document Type:** Technical Quality Assurance & Hydration Sanity Audit  
-> **Status:** Pending Review (Code Modifications On Hold per User Request)  
+> **Status:** ✅ Resolved & Fully Patched  
 > **Focus Area:** Next.js 16 / React 19 Hydration Mismatches, HTML DOM Validity, SSR Tree Integrity  
 
 ---
@@ -60,8 +60,8 @@ Our code audit identified **7 distinct categories of hydration and UI issues** c
   3. When React hydrates `<html lang="en" data-theme="light">`, React compares the server's expected attribute (`data-theme="light"`) with the real DOM attribute (`data-theme="dark"`).
   4. React detects an attribute mismatch on the root HTML element and logs:
      `"A tree hydrated but some attributes of the server rendered HTML didn't match the client properties."`
-* **Remediation Plan:**
-  Add `suppressHydrationWarning` to the `<html>` and `<body>` tags in [`app/layout.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/layout.tsx). React specifically advises `suppressHydrationWarning` on `<html>` for theme initialization scripts that legitimately alter root attributes before hydration.
+* **Remediation & Resolution:** ✅ **Resolved**
+  Added `suppressHydrationWarning` to the `<html>` and `<body>` tags in [`app/layout.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/layout.tsx). React now reconciles root theme attributes mutated prior to React boot without logging hydration warnings.
 
 ---
 
@@ -81,8 +81,8 @@ Our code audit identified **7 distinct categories of hydration and UI issues** c
   1. On the server, `typeof window` is `"undefined"`. The server sends HTML containing `<span>/invite/xyz123</span>`.
   2. On the client, `typeof window` is `"object"`. During the initial client hydration render, React evaluates `${window.location.origin}/invite/xyz123` (e.g. `http://localhost:3000/invite/xyz123`).
   3. React discovers that the text child of `<span>` differs between server and client.
-* **Remediation Plan:**
-  Render a consistent relative URL `/invite/${invite.token}` initially, or populate the full URL only after mount in a `useEffect` / state hook.
+* **Remediation & Resolution:** ✅ **Resolved**
+  Populated the client-side origin after mount via a `useEffect` hook in [`app/components/invites/InviteList.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/invites/InviteList.tsx), ensuring server HTML and initial client hydration evaluate identical paths (`/invite/${invite.token}`), and attached `suppressHydrationWarning`.
 
 ---
 
@@ -101,9 +101,8 @@ Our code audit identified **7 distinct categories of hydration and UI issues** c
   2. When the server renders the page (or when Next.js generates static/cached HTML), `Date.now()` is recorded at $T_{server}$.
   3. When the user's browser hydrates the page seconds or minutes later, `Date.now()` is $T_{client}$.
   4. If the timestamp crosses a boundary (e.g. server renders `"less than a minute ago"` while client hydrates at `"1 minute ago"`), React throws a text content hydration mismatch.
-* **Remediation Plan:**
-  - Option A: Wrap the relative time in a `<span suppressHydrationWarning>{formattedDate}</span>`.
-  - Option B: Use a deterministic date formatter for SSR (e.g. `"Oct 2, 2026"`), and update to relative time only on the client after mount.
+* **Remediation & Resolution:** ✅ **Resolved**
+  Added `suppressHydrationWarning` to the relative time badge element in [`app/components/feed/PostCard.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/feed/PostCard.tsx), preventing timer boundary discrepancies between server render and client mount from triggering errors.
 
 ---
 
@@ -123,8 +122,8 @@ Our code audit identified **7 distinct categories of hydration and UI issues** c
 * **Why it happens:**
   Calling `toLocaleDateString(undefined, ...)` without specifying a fixed locale and timezone uses the host environment's default settings.
   If the server runs in UTC or US/Pacific and the client browser runs in India (UTC+5:30) or Europe, dates near midnight will render as different calendar days or localized language strings, triggering hydration mismatch warnings.
-* **Remediation Plan:**
-  Specify a fixed timezone (e.g. `timeZone: "UTC"`) or render date formatting inside a client-mounted hook, or attach `suppressHydrationWarning`.
+* **Remediation & Resolution:** ✅ **Resolved**
+  Enforced deterministic date formatting by specifying fixed locale (`"en-US"`) and timezone (`timeZone: "UTC"`) alongside `suppressHydrationWarning` on [`app/components/invites/InviteList.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/invites/InviteList.tsx) and [`app/components/profile/ProfileView.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/profile/ProfileView.tsx).
 
 ---
 
@@ -141,8 +140,13 @@ Our code audit identified **7 distinct categories of hydration and UI issues** c
 * **Why it happens:**
   In HTML5, an `<a>` element **cannot contain interactive content** such as `<button>`. When Next.js renders `<Link href="..."><Button>...</Button></Link>`, the output is `<a><button>...</button></a>`.
   Browser parsers will actively modify this invalid markup upon arrival, splitting the tags into siblings or popping the `<a>` element. When React attempts to hydrate against the browser's altered DOM, it reports that expected elements do not match.
-* **Remediation Plan:**
-  Remove the inner `<button>`/`<Button>` and style the `<Link>` directly using button utility classes (e.g. `className={buttonVariants({ variant: "outline" })}`), or use `router.push()` on the button, or provide an `asChild` slot mechanism.
+* **Remediation & Resolution:** ✅ **Resolved**
+  Exported `buttonVariants` helper from [`app/components/ui/Button.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/ui/Button.tsx) and updated all affected components to directly style `<Link>` elements instead of nesting interactive `<button>` tags within `<a>`:
+  - [`HearthHeader.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/navigation/HearthHeader.tsx): Removed `<Link>` wrapper around the invite button.
+  - [`InvalidInvite.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/invites/InvalidInvite.tsx): Converted 3 action buttons to styled `<Link className={buttonVariants(...)}>`.
+  - [`ProfileView.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/profile/ProfileView.tsx): Converted Edit Profile button to styled `<Link className={buttonVariants(...)}>`.
+  - [`EditProfileForm.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/profile/EditProfileForm.tsx): Converted Cancel button to styled `<Link className={buttonVariants(...)}>`.
+  - [`LivingRoomSidebar.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/feed/LivingRoomSidebar.tsx): Converted Sign Card button to styled `<Link className={buttonVariants(...)}>`.
 
 ---
 
@@ -159,8 +163,8 @@ Our code audit identified **7 distinct categories of hydration and UI issues** c
 * **Why it happens:**
   `ThemeProvider` is wrapped around `{children}` in [`app/layout.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/layout.tsx) via `Providers`. During server-side rendering, `mounted` is initialized to `false` and `useEffect` does not execute on the server.
   As a result, `ThemeProvider` returns `null` during SSR, stripping all children from the initial HTML. When the client loads and hydrates, a blank flash occurs followed by a sudden mount, triggering hydration warnings if any child components relied on server state.
-* **Remediation Plan:**
-  Remove `if (!mounted) return null;` and directly return `<>{children}</>`. The theme styling is already controlled via CSS tokens and the inline `<head>` script.
+* **Remediation & Resolution:** ✅ **Resolved**
+  Removed `if (!mounted) return null;` from [`app/components/ThemeProvider.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/ThemeProvider.tsx) to return `<>{children}</>` directly during SSR, maintaining the full DOM tree during server rendering while allowing client-side theme synchronization.
 
 ---
 
@@ -174,8 +178,8 @@ Our code audit identified **7 distinct categories of hydration and UI issues** c
   - Also rendered in [`app/components/navigation/HearthHeader.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/navigation/HearthHeader.tsx#L282)
 * **Why it happens:**
   Because `ThemeToggle` is already in the global `RootLayout`, any nested layout or component that also renders `<ThemeToggle />` causes two identical fixed-position buttons (`bottom: 24px, right: 24px`) to mount on top of each other, causing visual z-fighting and double-toggling.
-* **Remediation Plan:**
-  Keep `<ThemeToggle />` in `RootLayout` only and remove the redundant instances from sub-layouts and headers.
+* **Remediation & Resolution:** ✅ **Resolved**
+  Consolidated `<ThemeToggle />` to the global `RootLayout` in [`app/layout.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/layout.tsx) and removed all duplicate instances from sub-layouts (`(public)`, `(auth)`, `create-family`) and [`HearthHeader.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/navigation/HearthHeader.tsx).
 
 ---
 
@@ -190,24 +194,40 @@ Our code audit identified **7 distinct categories of hydration and UI issues** c
   ```
 * **Why it happens:**
   Missing braces and missing return statement. If `pending` is `true`, it calls `setPending(true)`. If `pending` is `false`, it bypasses setting pending to true and proceeds to submit.
-* **Remediation Plan:**
-  Change to `if (pending) return; setPending(true);`.
+* **Remediation & Resolution:** ✅ **Resolved**
+  Added early return guard `if (pending) return;` and wrapped asynchronous submission in a `try ... finally` block in [`app/components/posts/NewPostForm.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/posts/NewPostForm.tsx).
+
+---
+
+### 9. Foreign Key Constraint Violation on `audit_logs` during Invite Acceptance
+* **Severity:** 🔴 **Critical**
+* **Location:** [`app/actions/invite.ts`](file:///C:/Users/DELL/freelancing/family-social/app/actions/invite.ts) & [`app/lib/audit.ts`](file:///C:/Users/DELL/freelancing/family-social/app/lib/audit.ts)
+* **Error Encountered:**
+  `insert or update on table "audit_logs" violates foreign key constraint "audit_logs_actor_user_id_users_id_fk"`
+* **Why it happened:**
+  In `acceptInvite()`, a PostgreSQL transaction is initiated via `const client = await pool.connect()` and `client.query("BEGIN")`. The newly created user is inserted into `users` on this transactional `client`. Before `COMMIT`, `logAuditEvent()` was called. Because `logAuditEvent()` used `await pool.query(...)`, PostgreSQL borrowed a *separate* connection from the pool. Under PostgreSQL's default Read Committed isolation level, that second connection cannot view uncommitted rows from the first connection. When PostgreSQL validated `FOREIGN KEY (actor_user_id) REFERENCES users(id)`, it threw a foreign key violation, rolling back the entire user registration transaction.
+* **Remediation & Resolution:** ✅ **Resolved**
+  1. Updated [`logAuditEvent()`](file:///C:/Users/DELL/freelancing/family-social/app/lib/audit.ts) to accept an optional transactional `client?: PoolClient`. When provided, the insert executes within the same connection and transaction context.
+  2. Wrapped `logAuditEvent()` in a resilient `try ... catch` block with a console warning so transient audit logging errors never abort a user's family join transaction.
+  3. Updated [`acceptInvite()`](file:///C:/Users/DELL/freelancing/family-social/app/actions/invite.ts) and [`acceptInviteAuthenticated()`](file:///C:/Users/DELL/freelancing/family-social/app/actions/invite.ts) to pass `client` into `logAuditEvent()`.
 
 ---
 
 ## 🛠️ Summary Matrix & Remediation Blueprint
 
-| # | Bug Description | File | Error Type | Proposed Fix |
-|---|---|---|---|---|
-| **1** | Missing `suppressHydrationWarning` on `<html>` | [`app/layout.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/layout.tsx) | Root Attribute Mismatch | Add `suppressHydrationWarning` to `<html>` and `<body>` |
-| **2** | `typeof window !== 'undefined'` in render tree | [`app/components/invites/InviteList.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/invites/InviteList.tsx) | Text Content Mismatch | Use stable relative paths for SSR |
-| **3** | Dynamic relative date `formatDistanceToNow` | [`app/components/feed/PostCard.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/feed/PostCard.tsx) | Timestamp Mismatch | Add `suppressHydrationWarning` on date badge |
-| **4** | Timezone drift in `toLocaleDateString` | [`app/components/profile/ProfileView.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/profile/ProfileView.tsx) | Locale String Mismatch | Fix timezone to UTC or format deterministically |
-| **5** | Invalid HTML: `<button>` inside `<a>` (`<Link><Button>`) | [`app/components/navigation/HearthHeader.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/navigation/HearthHeader.tsx), [`InvalidInvite.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/invites/InvalidInvite.tsx), etc. | DOM Tag Nesting Mismatch | Style `<Link>` as button instead of nesting `<button>` in `<Link>` |
-| **6** | `ThemeProvider` returning `null` during SSR | [`app/components/ThemeProvider.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/ThemeProvider.tsx) | SSR Tree Blanking | Render `<>{children}</>` directly without blocking SSR |
-| **7** | Duplicate `<ThemeToggle />` floating buttons | Sub-layouts & [`HearthHeader.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/navigation/HearthHeader.tsx) | DOM Node Duplication | Consolidate to single instance in `RootLayout` |
-| **8** | Inverted `if (pending)` condition | [`app/components/posts/NewPostForm.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/posts/NewPostForm.tsx) | Form State Handling | Add guard return: `if (pending) return;` |
+| # | Bug Description | File | Error Type | Resolution Applied | Status |
+|---|---|---|---|---|---|
+| **1** | Missing `suppressHydrationWarning` on `<html>` | [`app/layout.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/layout.tsx) | Root Attribute Mismatch | Added `suppressHydrationWarning` to `<html>` and `<body>` | ✅ Resolved |
+| **2** | `typeof window !== 'undefined'` in render tree | [`app/components/invites/InviteList.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/invites/InviteList.tsx) | Text Content Mismatch | Set origin in `useEffect`, stable SSR relative path, `suppressHydrationWarning` | ✅ Resolved |
+| **3** | Dynamic relative date `formatDistanceToNow` | [`app/components/feed/PostCard.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/feed/PostCard.tsx) | Timestamp Mismatch | Added `suppressHydrationWarning` on date badge | ✅ Resolved |
+| **4** | Timezone drift in `toLocaleDateString` | [`app/components/profile/ProfileView.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/profile/ProfileView.tsx), [`InviteList.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/invites/InviteList.tsx) | Locale String Mismatch | Fixed timezone to UTC (`timeZone: "UTC"`, `"en-US"`) with `suppressHydrationWarning` | ✅ Resolved |
+| **5** | Invalid HTML: `<button>` inside `<a>` (`<Link><Button>`) | [`HearthHeader.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/navigation/HearthHeader.tsx), [`InvalidInvite.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/invites/InvalidInvite.tsx), etc. | DOM Tag Nesting Mismatch | Exported `buttonVariants`; styled `<Link>` directly instead of nesting `<button>` in `<Link>` | ✅ Resolved |
+| **6** | `ThemeProvider` returning `null` during SSR | [`app/components/ThemeProvider.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/ThemeProvider.tsx) | SSR Tree Blanking | Render `<>{children}</>` directly without blocking SSR | ✅ Resolved |
+| **7** | Duplicate `<ThemeToggle />` floating buttons | Sub-layouts & [`HearthHeader.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/navigation/HearthHeader.tsx) | DOM Node Duplication | Consolidated to single instance in `RootLayout`; removed sub-layout duplicates | ✅ Resolved |
+| **8** | Inverted `if (pending)` condition | [`app/components/posts/NewPostForm.tsx`](file:///C:/Users/DELL/freelancing/family-social/app/components/posts/NewPostForm.tsx) | Form State Handling | Added guard return: `if (pending) return;` with `try / finally` | ✅ Resolved |
+| **9** | Foreign key violation on `audit_logs_actor_user_id_users_id_fk` | [`app/actions/invite.ts`](file:///C:/Users/DELL/freelancing/family-social/app/actions/invite.ts), [`app/lib/audit.ts`](file:///C:/Users/DELL/freelancing/family-social/app/lib/audit.ts) | Transaction Pool Isolation | Passed transactional `client` to `logAuditEvent`; added non-fatal catch guard | ✅ Resolved |
 
 ---
 
-*Note: In accordance with instructions, **no application source code has been altered**. This audit document has been committed to [`docs/BUGFIX_AUDIT.md`](file:///C:/Users/DELL/freelancing/family-social/docs/BUGFIX_AUDIT.md) on branch `revamp/kinship-living-room` for your review before patching begins.*
+*Note: All 9 bugfixes documented in this audit report have been fully implemented across the application codebase and verified against Next.js 16 / React 19 hydration, DOM standards, and PostgreSQL transaction isolation.*
+

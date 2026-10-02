@@ -44,10 +44,14 @@ export default async function AppLayout({
     <div className="min-h-screen bg-[#fbfbfd] dark:bg-[#09090b] text-zinc-900 dark:text-zinc-50 transition-colors duration-200">
       <HearthHeader
         familyName={user.familyName}
+        familyDescription={user.familyDescription}
+        familyAvatarUrl={user.familyAvatarUrl}
+        familyBackdropUrl={user.familyBackdropUrl}
         user={{
           displayName: user.displayName,
           avatarUrl: user.avatarUrl,
           role: user.role,
+          isSuperadmin: user.isSuperadmin,
         }}
         members={membersRes.rows}
         totalMembersCount={totalMembersCount}

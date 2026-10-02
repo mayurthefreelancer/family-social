@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { FamilyMembersList } from "@/app/components/family/FamilyMembersList";
 import GenerateInviteButton from "@/app/components/family/GenerateInviteButtons";
 import { InviteList } from "@/app/components/invites/InviteList";
+import { FamilySettingsCard } from "@/app/components/family/FamilySettingsCard";
 import { requireUser } from "@/app/lib/auth";
 import { pool } from "@/app/lib/db";
 import {
@@ -15,6 +16,23 @@ import {
 
 export default async function FamilyPage() {
   const user = await requireUser();
+
+  const familyRes = await pool.query(
+    `
+    SELECT id, name, description, avatar_url, backdrop_url
+    FROM families
+    WHERE id = $1
+    `,
+    [user.family_id]
+  );
+
+  const family = familyRes.rows[0] ?? {
+    id: user.family_id,
+    name: user.familyName,
+    description: null,
+    avatar_url: null,
+    backdrop_url: null,
+  };
 
   const membersRes = await pool.query(
     `
@@ -44,6 +62,19 @@ export default async function FamilyPage() {
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
+      {/* Admin Family Settings & Branding */}
+      {isAdmin && (
+        <FamilySettingsCard
+          family={{
+            id: family.id,
+            name: family.name,
+            description: family.description,
+            avatarUrl: family.avatar_url,
+            backdropUrl: family.backdrop_url,
+          }}
+        />
+      )}
+
       {/* Family Directory */}
       <Card className="border-zinc-200/80 dark:border-zinc-800">
         <CardHeader className="pb-4">
@@ -55,7 +86,11 @@ export default async function FamilyPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <FamilyMembersList members={membersRes.rows} />
+          <FamilyMembersList
+            members={membersRes.rows}
+            isViewerAdmin={isAdmin}
+            currentUserId={user.id}
+          />
         </CardContent>
       </Card>
 

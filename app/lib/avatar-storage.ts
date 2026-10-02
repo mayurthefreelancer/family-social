@@ -1,32 +1,29 @@
 // app/lib/avatar-storage.ts
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import fs from "fs/promises";
+import path from "path";
 
 export async function saveAvatarLocally(
   file: File,
   familyId: string,
   userId: string
-) {
+): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
-  const filePath = `${familyId}/${userId}.jpg`;
 
-  const { error } = await supabase.storage
-    .from("avatars")
-    .upload(filePath, buffer, {
-      contentType: file.type,
-      upsert: true, // overwrite if exists
-    });
+  const dir = path.join(
+    process.cwd(),
+    "public",
+    "uploads",
+    "avatar",
+    familyId
+  );
 
-  if (error) throw new Error(error.message);
+  await fs.mkdir(dir, { recursive: true });
 
-  const { data } = supabase.storage
-    .from("avatars")
-    .getPublicUrl(filePath);
+  const filename = `${userId}.jpg`;
+  const filepath = path.join(dir, filename);
 
-  // cache-busting
-  return `${data.publicUrl}?v=${Date.now()}`;
+  await fs.writeFile(filepath, buffer);
+
+  // cache-busting query parameter ensures instant UI refresh
+  return `/uploads/avatar/${familyId}/${filename}?v=${Date.now()}`;
 }
