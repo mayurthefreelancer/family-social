@@ -6,13 +6,24 @@ type Member = {
   role: "admin" | "member";
 };
 
-export function FamilyMembersList({ members }: { members: Member[] }) {
+export function FamilyMembersList({
+  members,
+  isViewerAdmin,
+  currentUserId,
+}: {
+  members: Member[];
+  isViewerAdmin?: boolean;
+  currentUserId?: string;
+}) {
   return (
-    <div
-      className="space-y-2"
-    >
+    <div className="space-y-2">
       {members.map((m) => (
-        <FamilyMemberRow key={m.id} member={m} />
+        <FamilyMemberRow
+          key={m.id}
+          member={m}
+          isViewerAdmin={isViewerAdmin}
+          currentUserId={currentUserId}
+        />
       ))}
     </div>
   );

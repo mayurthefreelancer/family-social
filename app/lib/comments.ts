@@ -1,6 +1,4 @@
-import { UUID } from "crypto";
 import { pool } from "./db";
-
 
 export async function getComments(postId: string) {
   const { rows } = await pool.query(
@@ -38,10 +36,10 @@ export async function addComment({
   );
 }
 
-
 export type CommentView = {
   id: string;
   authorName: string;
+  authorAvatarUrl?: string | null;
   content: string;
   createdAt: string;
 };
@@ -54,11 +52,13 @@ export async function getCommentsByPost(
     `
     SELECT
       c.id,
-      u.name AS "authorName",
+      COALESCE(p.display_name, u.name) AS "authorName",
+      COALESCE(p.avatar_url, u.avatar_url) AS "authorAvatarUrl",
       c.content,
       c.created_at AS "createdAt"
     FROM comments c
     JOIN users u ON u.id = c.user_id
+    LEFT JOIN profiles p ON p.user_id = c.user_id AND p.family_id = c.family_id
     WHERE c.post_id = $1
       AND c.family_id = $2
     ORDER BY c.created_at ASC

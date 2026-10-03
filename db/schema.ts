@@ -1,4 +1,6 @@
 import {
+  boolean,
+  integer,
   jsonb,
   pgTable,
   primaryKey,
@@ -16,6 +18,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash"),
   avatarUrl: text("avatar_url"),
+  isSuperadmin: boolean("is_superadmin").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -24,8 +27,12 @@ export const users = pgTable("users", {
 export const families = pgTable("families", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
+  description: text("description"),
+  avatarUrl: text("avatar_url"),
+  backdropUrl: text("backdrop_url"),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 /* ================= FAMILY MEMBERS ================= */
@@ -42,7 +49,6 @@ export const familyMembers = pgTable(
     pk: primaryKey({ columns: [t.userId, t.familyId] }),
   })
 );
-
 
 /* ================= POSTS ================= */
 
@@ -65,7 +71,6 @@ export const comments = pgTable("comments", {
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
-
 
 /* ================= INVITES ================= */
 
@@ -133,10 +138,11 @@ export const profiles = pgTable("profiles", {
   username: text("username"), // optional, family-unique later
   bio: text("bio"),
   avatar_url: text("avatar_url"),
+  customTag: text("custom_tag").default("KIN"),
 
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
-})
+});
 
 // ================= PASSWORD RESET TOKENS ================= //
 export const passwordResetTokens = pgTable("password_reset_tokens", {
@@ -149,4 +155,182 @@ export const passwordResetTokens = pgTable("password_reset_tokens", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
-})
+});
+
+/* ========================================================================= */
+/*                   KINSHIP REVAMP SCHEMAS (PHASE 0)                        */
+/* ========================================================================= */
+
+// ================= 1. CELEBRATIONS & MILESTONES ================= //
+export const celebrations = pgTable("celebrations", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  familyId: uuid("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").references(() => users.id), // Celebrant relative (optional)
+  title: text("title").notNull(),
+  celebrationType: text("celebration_type").notNull(), // 'birthday', 'anniversary', 'milestone'
+  eventDate: timestamp("event_date").notNull(),
+  note: text("note"),
+  isRecurringYearly: boolean("is_recurring_yearly").default(false).notNull(),
+  createdBy: uuid("created_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ================= 2. CELEBRATION MESSAGES (DIGITAL CARDS) ================= //
+export const celebrationMessages = pgTable("celebration_messages", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  celebrationId: uuid("celebration_id")
+    .notNull()
+    .references(() => celebrations.id, { onDelete: "cascade" }),
+  familyId: uuid("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ================= 3. GATHERINGS & REUNIONS ================= //
+export const gatherings = pgTable("gatherings", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  familyId: uuid("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  location: text("location"),
+  scheduledAt: timestamp("scheduled_at").notNull(),
+  createdBy: uuid("created_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ================= 4. GATHERING RSVPS ================= //
+export const gatheringRsvps = pgTable(
+  "gathering_rsvps",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    gatheringId: uuid("gathering_id")
+      .notNull()
+      .references(() => gatherings.id, { onDelete: "cascade" }),
+    familyId: uuid("family_id")
+      .notNull()
+      .references(() => families.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id),
+    status: text("status").notNull(), // 'going', 'declined', 'tentative'
+    guestCount: integer("guest_count").default(1).notNull(),
+    note: text("note"),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    gatheringUserUnique: unique("gathering_user_unique").on(
+      table.gatheringId,
+      table.userId
+    ),
+  })
+);
+
+// ================= 5. GATHERING POTLUCK ITEMS ================= //
+export const gatheringPotluckItems = pgTable("gathering_potluck_items", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  gatheringId: uuid("gathering_id")
+    .notNull()
+    .references(() => gatherings.id, { onDelete: "cascade" }),
+  familyId: uuid("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  assignedUserId: uuid("assigned_user_id").references(() => users.id),
+  isClaimed: boolean("is_claimed").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ================= 6. GENERATIONAL FAMILY TREE NODES ================= //
+export const familyTreeNodes = pgTable("family_tree_nodes", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  familyId: uuid("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").references(() => users.id), // If relative has an account
+  fullName: text("full_name").notNull(),
+  relationLabel: text("relation_label").notNull(), // 'Grandmother', 'Mother', 'Son'
+  generationTier: integer("generation_tier").notNull(), // 1 = Grandparents, 2 = Parents, 3 = Children
+  birthYear: text("birth_year"),
+  deathYear: text("death_year"),
+  isDeceased: boolean("is_deceased").default(false).notNull(),
+  bio: text("bio"),
+  avatarUrl: text("avatar_url"),
+  parent1Id: uuid("parent1_id"),
+  parent2Id: uuid("parent2_id"),
+  spouseId: uuid("spouse_id"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ================= 7. MEDIA ASSETS (PHOTOS, AUDIO STORIES, VIDEOS) ================= //
+export const mediaAssets = pgTable("media_assets", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  familyId: uuid("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id),
+  postId: uuid("post_id").references(() => posts.id, { onDelete: "cascade" }),
+  mediaType: text("media_type").notNull(), // 'photo', 'audio', 'video'
+  url: text("url").notNull(),
+  thumbnailUrl: text("thumbnail_url"),
+  durationSeconds: integer("duration_seconds"),
+  caption: text("caption"),
+  isExifScrubbed: boolean("is_exif_scrubbed").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ================= 8. EXTENDED POST REACTIONS ================= //
+export const postReactions = pgTable(
+  "post_reactions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    postId: uuid("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    familyId: uuid("family_id")
+      .notNull()
+      .references(() => families.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id),
+    reactionType: text("reaction_type").notNull(), // 'love', 'laugh', 'proud', 'hug', 'recipe'
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    postUserReactionUnique: unique("post_user_reaction_unique").on(
+      table.postId,
+      table.userId,
+      table.reactionType
+    ),
+  })
+);
+
+// ================= 9. PLATFORM GOVERNANCE & TICKETS ================= //
+export const adminTickets = pgTable("admin_tickets", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  ticketCode: text("ticket_code").notNull().unique(),
+  familyId: uuid("family_id").references(() => families.id, { onDelete: "set null" }),
+  requesterEmail: text("requester_email").notNull(),
+  category: text("category").notNull(), // 'member_removal', 'access_control', 'family_deletion', 'organizer_handover', 'general_support'
+  priority: text("priority").default("medium").notNull(), // 'critical', 'high', 'medium', 'low'
+  status: text("status").default("open").notNull(), // 'open', 'in_progress', 'resolved', 'closed'
+  subject: text("subject").notNull(),
+  description: text("description").notNull(),
+  targetEntityType: text("target_entity_type"), // 'user', 'family', 'invite', 'post'
+  targetEntityId: text("target_entity_id"),
+  resolutionNote: text("resolution_note"),
+  resolvedBy: uuid("resolved_by").references(() => users.id, { onDelete: "set null" }),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});

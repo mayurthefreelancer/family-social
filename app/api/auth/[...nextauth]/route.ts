@@ -6,6 +6,10 @@ import { pool } from "@/app/lib/db";
 
 export const authOptions: AuthOptions = {
   session: { strategy: "jwt" as const },
+  pages: {
+    signIn: "/login",
+    signOut: "/login",
+  },
 
   providers: [
     Google({
@@ -69,7 +73,7 @@ export const authOptions: AuthOptions = {
         const client = await pool.connect();
         try {
           const result = await client.query(
-            `SELECT u.id, u.email, fm.family_id, fm.role
+            `SELECT u.id, u.email, u.is_superadmin, fm.family_id, fm.role
              FROM users u
              LEFT JOIN family_members fm ON fm.user_id = u.id
              WHERE u.email = $1`,
@@ -81,6 +85,8 @@ export const authOptions: AuthOptions = {
             token.email = row.email;
             token.familyId = row.family_id ?? null;
             token.role = row.role ?? null;
+            token.isSuperadmin = Boolean(row.is_superadmin);
+            token.accessToken = row.id;
           }
         } finally {
           client.release();
@@ -89,13 +95,17 @@ export const authOptions: AuthOptions = {
         const client = await pool.connect();
         try {
           const result = await client.query(
-            `SELECT fm.family_id, fm.role FROM family_members fm WHERE fm.user_id = $1`,
+            `SELECT u.is_superadmin, fm.family_id, fm.role
+             FROM users u
+             LEFT JOIN family_members fm ON fm.user_id = u.id
+             WHERE u.id = $1`,
             [token.userId]
           );
           const row = result.rows[0];
           if (row) {
-            token.familyId = row.family_id;
-            token.role = row.role;
+            token.familyId = row.family_id ?? null;
+            token.role = row.role ?? null;
+            token.isSuperadmin = Boolean(row.is_superadmin);
           }
         } finally {
           client.release();
@@ -109,6 +119,8 @@ export const authOptions: AuthOptions = {
       session.user.id = token.userId;
       session.user.familyId = token.familyId;
       session.user.role = token.role;
+      session.user.isSuperadmin = Boolean(token.isSuperadmin);
+      session.accessToken = token.accessToken || token.userId;
       return session;
     },
   },

@@ -1,4 +1,5 @@
 import { pool } from "./db";
+import type { PoolClient } from "pg";
 
 type AuditLogInput = {
   familyId: string;
@@ -7,6 +8,7 @@ type AuditLogInput = {
   entityType: string;
   entityId?: string;
   metadata?: Record<string, any>;
+  client?: PoolClient | any;
 };
 
 export async function logAuditEvent(input: AuditLogInput) {
@@ -17,29 +19,35 @@ export async function logAuditEvent(input: AuditLogInput) {
     entityType,
     entityId,
     metadata,
+    client,
   } = input;
 
-  await pool.query(
-    `
-    INSERT INTO audit_logs (
-      family_id,
-      actor_user_id,
-      action,
-      entity_type,
-      entity_id,
-      metadata
-    )
-    VALUES ($1, $2, $3, $4, $5, $6)
-    `,
-    [
-      familyId,
-      actorUserId ?? null,
-      action,
-      entityType,
-      entityId ?? null,
-      metadata ? JSON.stringify(metadata) : null,
-    ]
-  );
+  try {
+    const db = client || pool;
+    await db.query(
+      `
+      INSERT INTO audit_logs (
+        family_id,
+        actor_user_id,
+        action,
+        entity_type,
+        entity_id,
+        metadata
+      )
+      VALUES ($1, $2, $3, $4, $5, $6)
+      `,
+      [
+        familyId,
+        actorUserId ?? null,
+        action,
+        entityType,
+        entityId ?? null,
+        metadata ? JSON.stringify(metadata) : null,
+      ]
+    );
+  } catch (err) {
+    console.error("[logAuditEvent] Warning: Failed to record audit log event:", err);
+  }
 }
 
 export async function getAuditLogs(familyId: string, limit = 50) {
