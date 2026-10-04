@@ -9,23 +9,31 @@ export interface Profile {
   bio: string
   avatar_url?: string
   username?: string
+  custom_tag?: string
   created_at: string
   updated_at: string
   role?: string
   post_count?: number
+  family_name?: string
+  family_backdrop_url?: string | null
 }
 
-export async function getMyProfile() {
+export async function getMyProfile(): Promise<Profile> {
   const user = await requireUser()
   if (!user.family_id) {
     redirect("/create-family");
   }
   const { rows } = await pool.query(
     `
-    SELECT *
-    FROM profiles
-    WHERE user_id = $1
-      AND family_id = $2
+    SELECT p.*,
+           fm.role,
+           f.name AS family_name,
+           f.backdrop_url AS family_backdrop_url
+    FROM profiles p
+    LEFT JOIN family_members fm ON fm.user_id = p.user_id AND fm.family_id = p.family_id
+    LEFT JOIN families f ON f.id = p.family_id
+    WHERE p.user_id = $1
+      AND p.family_id = $2
     `,
     [user.id, user.family_id]
   )
