@@ -3,6 +3,18 @@ import { createClient } from "@supabase/supabase-js";
 import fs from "fs/promises";
 import path from "path";
 
+function isLocalEnvironment(): boolean {
+  if (process.env.STORAGE_PROVIDER === "local") return true;
+  if (process.env.STORAGE_PROVIDER === "supabase") return false;
+
+  const isServerless =
+    Boolean(process.env.VERCEL) ||
+    Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
+    process.env.NODE_ENV === "production";
+
+  return !isServerless;
+}
+
 function getSupabaseClient() {
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key =
@@ -17,10 +29,10 @@ function getSupabaseClient() {
 }
 
 /**
- * Saves a family avatar emblem image using a resilient multi-tier strategy:
- * 1. Supabase Storage bucket ('family' or 'avatars') if configured.
- * 2. Local filesystem in development.
- * 3. Base64 Data URL fallback for serverless/Vercel.
+ * Saves a family avatar emblem image:
+ * - Local Machine (Development): Stores in local filesystem (public/uploads/family/[familyId]/avatar.jpg).
+ * - Non-Dev (Vercel / Production): Stores in Supabase Storage bucket ('family' or 'avatars').
+ * - Fallback: Base64 Data URL if non-dev storage is unconfigured.
  */
 export async function saveFamilyAvatar(
   file: File,
@@ -30,7 +42,26 @@ export async function saveFamilyAvatar(
   const filename = `avatar.jpg`;
   const mimeType = file.type || "image/jpeg";
 
-  // Tier 1: Supabase Storage
+  // 1. Local Machine: Prioritize Local Filesystem
+  if (isLocalEnvironment()) {
+    try {
+      const dir = path.join(
+        process.cwd(),
+        "public",
+        "uploads",
+        "family",
+        familyId
+      );
+      await fs.mkdir(dir, { recursive: true });
+      const filepath = path.join(dir, filename);
+      await fs.writeFile(filepath, buffer);
+      return `/uploads/family/${familyId}/${filename}?v=${Date.now()}`;
+    } catch (err) {
+      console.warn("Local filesystem family avatar write failed, checking fallback:", err);
+    }
+  }
+
+  // 2. Non-Dev / Production: Use Supabase Storage (Cloud CDN)
   const supabase = getSupabaseClient();
   if (supabase) {
     try {
@@ -50,45 +81,21 @@ export async function saveFamilyAvatar(
           return `${publicUrlData.publicUrl}?v=${Date.now()}`;
         }
       }
-      console.warn("Supabase family avatar upload failed or bucket missing:", error?.message);
+      console.warn("Supabase family avatar upload failed:", error?.message);
     } catch (err) {
       console.warn("Supabase family avatar error:", err);
     }
   }
 
-  // Tier 2: Local Filesystem (Skipped on Vercel / serverless environments)
-  const isServerless =
-    Boolean(process.env.VERCEL) ||
-    Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
-    process.env.NODE_ENV === "production";
-
-  if (!isServerless) {
-    try {
-      const dir = path.join(
-        process.cwd(),
-        "public",
-        "uploads",
-        "family",
-        familyId
-      );
-      await fs.mkdir(dir, { recursive: true });
-      const filepath = path.join(dir, filename);
-      await fs.writeFile(filepath, buffer);
-      return `/uploads/family/${familyId}/${filename}?v=${Date.now()}`;
-    } catch (err) {
-      console.warn("Local filesystem family avatar write failed:", err);
-    }
-  }
-
-  // Tier 3: Fail-safe Base64 Data URL
+  // 3. Fail-safe Data URL
   return `data:${mimeType};base64,${buffer.toString("base64")}`;
 }
 
 /**
- * Saves a family canopy banner backdrop image using a resilient multi-tier strategy:
- * 1. Supabase Storage bucket ('family') if configured.
- * 2. Local filesystem in development.
- * 3. Base64 Data URL fallback for serverless/Vercel.
+ * Saves a family canopy banner backdrop image:
+ * - Local Machine (Development): Stores in local filesystem (public/uploads/family/[familyId]/backdrop.jpg).
+ * - Non-Dev (Vercel / Production): Stores in Supabase Storage bucket ('family').
+ * - Fallback: Base64 Data URL if non-dev storage is unconfigured.
  */
 export async function saveFamilyBackdrop(
   file: File,
@@ -98,7 +105,26 @@ export async function saveFamilyBackdrop(
   const filename = `backdrop.jpg`;
   const mimeType = file.type || "image/jpeg";
 
-  // Tier 1: Supabase Storage
+  // 1. Local Machine: Prioritize Local Filesystem
+  if (isLocalEnvironment()) {
+    try {
+      const dir = path.join(
+        process.cwd(),
+        "public",
+        "uploads",
+        "family",
+        familyId
+      );
+      await fs.mkdir(dir, { recursive: true });
+      const filepath = path.join(dir, filename);
+      await fs.writeFile(filepath, buffer);
+      return `/uploads/family/${familyId}/${filename}?v=${Date.now()}`;
+    } catch (err) {
+      console.warn("Local filesystem family backdrop write failed, checking fallback:", err);
+    }
+  }
+
+  // 2. Non-Dev / Production: Use Supabase Storage (Cloud CDN)
   const supabase = getSupabaseClient();
   if (supabase) {
     try {
@@ -118,36 +144,12 @@ export async function saveFamilyBackdrop(
           return `${publicUrlData.publicUrl}?v=${Date.now()}`;
         }
       }
-      console.warn("Supabase family backdrop upload failed or bucket missing:", error?.message);
+      console.warn("Supabase family backdrop upload failed:", error?.message);
     } catch (err) {
       console.warn("Supabase family backdrop error:", err);
     }
   }
 
-  // Tier 2: Local Filesystem (Skipped on Vercel / serverless environments)
-  const isServerless =
-    Boolean(process.env.VERCEL) ||
-    Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
-    process.env.NODE_ENV === "production";
-
-  if (!isServerless) {
-    try {
-      const dir = path.join(
-        process.cwd(),
-        "public",
-        "uploads",
-        "family",
-        familyId
-      );
-      await fs.mkdir(dir, { recursive: true });
-      const filepath = path.join(dir, filename);
-      await fs.writeFile(filepath, buffer);
-      return `/uploads/family/${familyId}/${filename}?v=${Date.now()}`;
-    } catch (err) {
-      console.warn("Local filesystem family backdrop write failed:", err);
-    }
-  }
-
-  // Tier 3: Fail-safe Base64 Data URL
+  // 3. Fail-safe Data URL
   return `data:${mimeType};base64,${buffer.toString("base64")}`;
 }

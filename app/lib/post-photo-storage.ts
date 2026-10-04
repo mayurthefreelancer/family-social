@@ -4,6 +4,18 @@ import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 
+function isLocalEnvironment(): boolean {
+  if (process.env.STORAGE_PROVIDER === "local") return true;
+  if (process.env.STORAGE_PROVIDER === "supabase") return false;
+
+  const isServerless =
+    Boolean(process.env.VERCEL) ||
+    Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
+    process.env.NODE_ENV === "production";
+
+  return !isServerless;
+}
+
 function getSupabaseClient() {
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key =
@@ -18,10 +30,10 @@ function getSupabaseClient() {
 }
 
 /**
- * Saves a post photo using a resilient multi-tier strategy:
- * 1. Supabase Storage bucket ('posts') if credentials are provided.
- * 2. Local filesystem (public/uploads/posts/) in local development.
- * 3. Base64 Data URL fallback for Vercel/serverless environments without external storage.
+ * Saves a post photo using environment-aware storage:
+ * - Local Machine (Development): Stores directly in local filesystem (public/uploads/posts/[familyId]/).
+ * - Non-Dev (Vercel / Production): Stores in Supabase Storage bucket ('posts').
+ * - Fallback: Base64 Data URL if non-dev storage is unconfigured.
  */
 export async function savePostPhoto(
   familyId: string,
@@ -34,7 +46,26 @@ export async function savePostPhoto(
   const filename = `${postId}_${index}_${uniqueId}.webp`;
   const mimeType = file.type || "image/webp";
 
-  // Tier 1: Supabase Storage (Cloud CDN)
+  // 1. Local Machine: Prioritize Local Filesystem
+  if (isLocalEnvironment()) {
+    try {
+      const dir = path.join(
+        process.cwd(),
+        "public",
+        "uploads",
+        "posts",
+        familyId
+      );
+      await fs.mkdir(dir, { recursive: true });
+      const filepath = path.join(dir, filename);
+      await fs.writeFile(filepath, buffer);
+      return `/uploads/posts/${familyId}/${filename}`;
+    } catch (err) {
+      console.warn("Local filesystem write failed, checking fallback:", err);
+    }
+  }
+
+  // 2. Non-Dev / Production: Use Supabase Storage (Cloud CDN)
   const supabase = getSupabaseClient();
   if (supabase) {
     try {
@@ -54,36 +85,12 @@ export async function savePostPhoto(
           return publicUrlData.publicUrl;
         }
       }
-      console.warn("Supabase upload returned error or empty data:", error?.message);
+      console.warn("Supabase upload returned error:", error?.message);
     } catch (err) {
-      console.warn("Supabase storage error in savePostPhoto:", err);
+      console.warn("Supabase storage exception:", err);
     }
   }
 
-  // Tier 2: Local Filesystem (Skipped on Vercel / serverless environments)
-  const isServerless =
-    Boolean(process.env.VERCEL) ||
-    Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
-    process.env.NODE_ENV === "production";
-
-  if (!isServerless) {
-    try {
-      const dir = path.join(
-        process.cwd(),
-        "public",
-        "uploads",
-        "posts",
-        familyId
-      );
-      await fs.mkdir(dir, { recursive: true });
-      const filepath = path.join(dir, filename);
-      await fs.writeFile(filepath, buffer);
-      return `/uploads/posts/${familyId}/${filename}`;
-    } catch (err) {
-      console.warn("Local filesystem write failed in savePostPhoto:", err);
-    }
-  }
-
-  // Tier 3: Fail-safe Base64 Data URL (guaranteed to work on Vercel with zero storage dependencies)
+  // 3. Fail-safe Data URL (Prevents Vercel serverless crashes if Supabase is unconfigured)
   return `data:${mimeType};base64,${buffer.toString("base64")}`;
 }
