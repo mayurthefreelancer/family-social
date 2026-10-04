@@ -11,7 +11,8 @@ docs/
 ├── architecture/          # System design, data models, components & deep-dives
 │   ├── documentation.md
 │   ├── COMPONENTS.md
-│   └── FAMILY_ONBOARDING_AND_ADMIN_ANALYSIS.md
+│   ├── FAMILY_ONBOARDING_AND_ADMIN_ANALYSIS.md
+│   └── VERCEL_DATABASE_MIGRATION_GUIDE.md
 ├── product/               # Product specifications, feature roadmaps & proposals
 │   ├── DELIVERED_AND_PROPOSED_FEATURES.md
 │   └── REVAMP_PROPOSAL.md
@@ -36,6 +37,7 @@ Deep technical specifications, relational database schemas, component trees, and
 - **[System Architecture & Documentation](architecture/documentation.md):** The core architectural guide for Kinship (v2.5.0), containing multi-tenant relational data models (Drizzle/PostgreSQL), session security (`accessToken` JWT strategy), ticket-based platform governance, and comprehensive version changelogs.
 - **[Component Architecture & Dependency Diagrams](architecture/COMPONENTS.md):** Mermaid dependency trees, parent-child component hierarchy, and functional descriptions for auth, feed, photo grids, lightboxes, and profiles.
 - **[Family Onboarding & Admin Analysis](architecture/FAMILY_ONBOARDING_AND_ADMIN_ANALYSIS.md):** Deep-dive technical analysis of multi-tenant onboarding flows, session concurrency locking, cryptographic invite acceptance, and error state mitigations.
+- **[Vercel Production Database Migration Guide](architecture/VERCEL_DATABASE_MIGRATION_GUIDE.md):** Step-by-step procedures for deploying PostgreSQL schema changes (Sprint 1: `post_photos`, `is_edited`, `updated_at`) to cloud databases (Supabase, Neon, Vercel Postgres) without SSH access.
 
 ### 2. 💡 Product Specifications & Roadmaps (`docs/product/`)
 Functional scope, feature matrices, living roadmaps, and architectural blueprints.

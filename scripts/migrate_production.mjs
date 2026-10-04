@@ -119,8 +119,12 @@ async function runMigration() {
         userId UUID REFERENCES users(id) ON DELETE CASCADE,
         content TEXT,
         image_url TEXT,
+        is_edited BOOLEAN DEFAULT false NOT NULL,
+        updated_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT NOW()
       );
+      ALTER TABLE posts ADD COLUMN IF NOT EXISTS is_edited BOOLEAN DEFAULT false NOT NULL;
+      ALTER TABLE posts ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP;
 
       CREATE TABLE IF NOT EXISTS comments (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -128,12 +132,35 @@ async function runMigration() {
         user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         family_id UUID NOT NULL REFERENCES families(id) ON DELETE CASCADE,
         content TEXT NOT NULL,
+        is_edited BOOLEAN DEFAULT false NOT NULL,
+        updated_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT NOW() NOT NULL
       );
+      ALTER TABLE comments ADD COLUMN IF NOT EXISTS is_edited BOOLEAN DEFAULT false NOT NULL;
+      ALTER TABLE comments ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP;
     `);
 
-    // 7. Post Likes table
-    console.log('7️⃣ Migrating post_likes table...');
+    // 7. Multi-Photo Mosaic table (Sprint 1)
+    console.log('7️⃣ Migrating post_photos table (Sprint 1)...');
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS post_photos (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+        family_id UUID NOT NULL REFERENCES families(id) ON DELETE CASCADE,
+        url TEXT NOT NULL,
+        thumbnail_url TEXT,
+        caption TEXT,
+        sort_order INTEGER DEFAULT 0 NOT NULL,
+        width INTEGER,
+        height INTEGER,
+        created_at TIMESTAMP DEFAULT NOW() NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS idx_post_photos_post ON post_photos(post_id);
+      CREATE INDEX IF NOT EXISTS idx_post_photos_family ON post_photos(family_id);
+    `);
+
+    // 8. Post Likes table
+    console.log('8️⃣ Migrating post_likes table...');
     await client.query(`
       CREATE TABLE IF NOT EXISTS post_likes (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -145,8 +172,8 @@ async function runMigration() {
       );
     `);
 
-    // 8. Password reset tokens table
-    console.log('8️⃣ Migrating password_reset_tokens table...');
+    // 9. Password reset tokens table
+    console.log('9️⃣ Migrating password_reset_tokens table...');
     await client.query(`
       CREATE TABLE IF NOT EXISTS password_reset_tokens (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -159,8 +186,8 @@ async function runMigration() {
       );
     `);
 
-    // 9. Audit logs table
-    console.log('9️⃣ Migrating audit_logs table...');
+    // 10. Audit logs table
+    console.log('🔟 Migrating audit_logs table...');
     await client.query(`
       CREATE TABLE IF NOT EXISTS audit_logs (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -174,8 +201,8 @@ async function runMigration() {
       );
     `);
 
-    // 10. Admin tickets table
-    console.log('🔟 Migrating admin_tickets table...');
+    // 11. Admin tickets table
+    console.log('1️⃣1️⃣ Migrating admin_tickets table...');
     await client.query(`
       CREATE TABLE IF NOT EXISTS admin_tickets (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -197,8 +224,8 @@ async function runMigration() {
       );
     `);
 
-    // 11. Seed / verify default platform superadmin
-    console.log('👑 Provisioning root superadmin: admin@kinship.local ...');
+    // 12. Seed / verify default platform superadmin
+    console.log('1️⃣2️⃣ Provisioning root superadmin: admin@kinship.local ...');
     const adminEmail = 'admin@kinship.local';
     const plainPassword = 'AdminPassword123!';
     const hash = await bcrypt.hash(plainPassword, 10);

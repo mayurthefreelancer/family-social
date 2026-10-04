@@ -383,6 +383,7 @@ Kinship documentation is organized by functional domain under [`docs/`](docs/REA
 - [🏡 Kinship: System Architecture & Living Room Documentation](docs/architecture/documentation.md)
 - [🧩 Component Architecture & Dependency Diagrams](docs/architecture/COMPONENTS.md)
 - [🔍 Family Onboarding & Admin Architecture Analysis](docs/architecture/FAMILY_ONBOARDING_AND_ADMIN_ANALYSIS.md)
+- [🚀 Vercel Production Database Migration Guide](docs/architecture/VERCEL_DATABASE_MIGRATION_GUIDE.md)
 
 ### 💡 Product & Features
 - [📋 Delivered Functionalities & Proposed Features Specification](docs/product/DELIVERED_AND_PROPOSED_FEATURES.md)
