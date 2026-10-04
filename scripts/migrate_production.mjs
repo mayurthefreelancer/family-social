@@ -10,10 +10,20 @@ import bcrypt from 'bcryptjs';
  * If DATABASE_URL is not passed as an argument, it reads process.env.DATABASE_URL.
  */
 
-const connectionString = process.argv[2] || process.env.DATABASE_URL || 'postgresql://family_user:root@localhost:5432/family_social';
+const connectionString =
+  process.argv[2] ||
+  process.env.DATABASE_URL ||
+  process.env.DATABASE_POSTGRES_URL ||
+  process.env.DATABASE_POSTGRES_URL_NON_POOLING ||
+  process.env.POSTGRES_URL ||
+  process.env.DATABASE_POSTGRES_PRISMA_URL ||
+  (!process.env.VERCEL && !process.env.CI && !process.env.AWS_LAMBDA_FUNCTION_NAME
+    ? 'postgresql://family_user:root@localhost:5432/family_social'
+    : null);
 
 if (!connectionString) {
-  console.error('❌ Error: No DATABASE_URL provided. Pass it as an argument or set DATABASE_URL environment variable.');
+  console.error('❌ Migration aborted: No database connection string found.');
+  console.error('👉 Please configure DATABASE_URL or DATABASE_POSTGRES_URL in your Vercel Project Settings > Environment Variables.');
   process.exit(1);
 }
 

@@ -1,8 +1,18 @@
 import pg from 'pg';
 import bcrypt from 'bcryptjs';
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://family_user:root@localhost:5432/family_social';
-const pool = new pg.Pool({ connectionString });
+const connectionString =
+  process.env.DATABASE_URL ||
+  process.env.DATABASE_POSTGRES_URL ||
+  process.env.DATABASE_POSTGRES_URL_NON_POOLING ||
+  process.env.POSTGRES_URL ||
+  'postgresql://family_user:root@localhost:5432/family_social';
+
+const isRemote = !connectionString.includes('localhost') && !connectionString.includes('127.0.0.1');
+const pool = new pg.Pool({
+  connectionString,
+  ssl: isRemote ? { rejectUnauthorized: false } : undefined,
+});
 
 async function main() {
   console.log('Connecting to database...');

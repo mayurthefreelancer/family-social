@@ -13,7 +13,19 @@ import bcrypt from "bcryptjs";
 const connectionString =
   process.argv[2] ||
   process.env.DATABASE_URL ||
-  "postgresql://family_user:root@localhost:5432/family_social";
+  process.env.DATABASE_POSTGRES_URL ||
+  process.env.DATABASE_POSTGRES_URL_NON_POOLING ||
+  process.env.POSTGRES_URL ||
+  process.env.DATABASE_POSTGRES_PRISMA_URL ||
+  (!process.env.VERCEL && !process.env.CI && !process.env.AWS_LAMBDA_FUNCTION_NAME
+    ? "postgresql://family_user:root@localhost:5432/family_social"
+    : null);
+
+if (!connectionString) {
+  console.error("❌ Reset aborted: No database connection string found.");
+  console.error("👉 Please configure DATABASE_URL or DATABASE_POSTGRES_URL in environment variables.");
+  process.exit(1);
+}
 
 const isRemote =
   !connectionString.includes("localhost") &&
