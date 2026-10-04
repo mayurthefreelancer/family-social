@@ -58,8 +58,25 @@ export const posts = pgTable("posts", {
   userId: uuid("user_id").references(() => users.id),
   content: text("content"),
   imageUrl: text("image_url"),
+  isEdited: boolean("is_edited").default(false).notNull(),
+  updatedAt: timestamp("updated_at"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+/* ================= POST PHOTOS (MULTI-IMAGE MOSAIC) ================= */
+export const postPhotos = pgTable("post_photos", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  postId: uuid("post_id").notNull().references(() => posts.id, { onDelete: "cascade" }),
+  familyId: uuid("family_id").notNull().references(() => families.id, { onDelete: "cascade" }),
+  url: text("url").notNull(),
+  thumbnailUrl: text("thumbnail_url"),
+  caption: text("caption"),
+  sortOrder: integer("sort_order").default(0).notNull(),
+  width: integer("width"),
+  height: integer("height"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 
 /* ================= COMMENTS ================= */
 
@@ -69,6 +86,8 @@ export const comments = pgTable("comments", {
   userId: uuid("user_id").notNull(),
   familyId: uuid("family_id").notNull(),
   content: text("content").notNull(),
+  isEdited: boolean("is_edited").default(false).notNull(),
+  updatedAt: timestamp("updated_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

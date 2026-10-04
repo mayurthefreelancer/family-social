@@ -8,9 +8,12 @@ import { NewCommentForm } from "../posts/NewCommentForm";
 
 export type Comment = {
   id: string;
+  userId?: string;
   authorName: string;
   authorAvatarUrl?: string | null;
   content: string;
+  isEdited?: boolean;
+  updatedAt?: string | null;
   createdAt?: string;
 };
 
@@ -19,11 +22,17 @@ export function CommentSection({
   initialCount,
   currentUserName,
   currentUserAvatar,
+  currentUserId: propUserId,
+  currentUserRole: propUserRole,
+  onCommentCountChange,
 }: {
   postId: string;
   initialCount: number;
   currentUserName?: string;
   currentUserAvatar?: string | null;
+  currentUserId?: string;
+  currentUserRole?: string;
+  onCommentCountChange?: (delta: number) => void;
 }) {
   const { data: session } = useSession();
   const effectiveUserName =
@@ -32,6 +41,8 @@ export function CommentSection({
     session?.user?.email?.split("@")[0] ||
     "You";
   const effectiveUserAvatar = currentUserAvatar || session?.user?.image || null;
+  const currentUserId = propUserId || (session?.user as any)?.id;
+  const currentUserRole = propUserRole || (session?.user as any)?.role;
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,13 +70,16 @@ export function CommentSection({
     const tempId = `temp-${Date.now()}`;
     const optimisticComment: Comment = {
       id: tempId,
+      userId: currentUserId,
       authorName: effectiveUserName,
       authorAvatarUrl: effectiveUserAvatar,
       content,
+      isEdited: false,
       createdAt: new Date().toISOString(),
     };
 
     setComments((prev) => [...prev, optimisticComment]);
+    onCommentCountChange?.(1);
 
     try {
       const saved = await addNewComment(postId, content);
@@ -78,12 +92,20 @@ export function CommentSection({
       console.error("Failed to add comment:", err);
       // Remove temp comment on failure
       setComments((prev) => prev.filter((c) => c.id !== tempId));
+      onCommentCountChange?.(-1);
     }
   }
 
   return (
     <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800/80 space-y-3">
-      <CommentList comments={comments} isLoading={isLoading} />
+      <CommentList
+        comments={comments}
+        isLoading={isLoading}
+        postId={postId}
+        currentUserId={currentUserId}
+        currentUserRole={currentUserRole}
+        onCommentCountChange={onCommentCountChange}
+      />
       <NewCommentForm
         postId={postId}
         currentUserName={effectiveUserName}

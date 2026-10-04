@@ -160,7 +160,7 @@ export async function acceptInvite(
         await client.query("ROLLBACK");
         return {
           success: false,
-          error: "An account with this email exists via Google login. Please sign in with Google first.",
+          error: "An account with this email exists but has no password set. Please contact your family admin.",
         };
       }
 

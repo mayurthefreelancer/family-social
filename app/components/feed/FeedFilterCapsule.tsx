@@ -25,26 +25,36 @@ export function FeedFilterCapsule({ totalCount }: { totalCount: number }) {
         </span>
       </button>
 
-      <Link
-        href="/prototype?tab=moments"
-        className="h-8 px-3.5 rounded-full font-medium flex items-center gap-1.5 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all shrink-0"
+      <button
+        type="button"
+        onClick={() => setFilter("milestones")}
+        className={`h-8 px-3.5 rounded-full font-medium flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+          filter === "milestones"
+            ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 shadow-sm"
+            : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+        }`}
       >
         <Cake className="w-3.5 h-3.5 text-zinc-500" />
         <span>Milestones</span>
-      </Link>
+      </button>
 
-      <Link
-        href="/prototype?tab=audio"
-        className="h-8 px-3.5 rounded-full font-medium flex items-center gap-1.5 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all shrink-0"
+      <button
+        type="button"
+        onClick={() => setFilter("audio")}
+        className={`h-8 px-3.5 rounded-full font-medium flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+          filter === "audio"
+            ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 shadow-sm"
+            : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+        }`}
       >
         <Mic className="w-3.5 h-3.5 text-zinc-500" />
         <span>Audio Notes</span>
-      </Link>
+      </button>
 
       <button
         type="button"
         onClick={() => setFilter("recipes")}
-        className={`h-8 px-3.5 rounded-full font-medium flex items-center gap-1.5 transition-all shrink-0 ${
+        className={`h-8 px-3.5 rounded-full font-medium flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
           filter === "recipes"
             ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 shadow-sm"
             : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800"
@@ -54,13 +64,18 @@ export function FeedFilterCapsule({ totalCount }: { totalCount: number }) {
         <span>Recipes</span>
       </button>
 
-      <Link
-        href="/prototype?tab=vault"
-        className="h-8 px-3.5 rounded-full font-medium flex items-center gap-1.5 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all shrink-0"
+      <button
+        type="button"
+        onClick={() => setFilter("vault")}
+        className={`h-8 px-3.5 rounded-full font-medium flex items-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+          filter === "vault"
+            ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 shadow-sm"
+            : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 border border-zinc-200/80 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+        }`}
       >
         <Archive className="w-3.5 h-3.5 text-zinc-500" />
         <span>Vault</span>
-      </Link>
+      </button>
     </div>
   );
 }

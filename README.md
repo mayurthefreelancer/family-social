@@ -375,10 +375,13 @@ SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
 
 ---
 
-## 6. Documentation Index
-
+- [📋 Delivered Functionalities & Proposed Features Specification](docs/DELIVERED_AND_PROPOSED_FEATURES.md)
+- [🚀 Sprint 1 Master Implementation Prompt for Autonomous LLM](docs/SPRINT_1_IMPLEMENTATION_PROMPT.md)
+- [📖 User Handbook & Operations Manual](docs/USER_HANDBOOK.md)
+- [🏡 Kinship: System Architecture & Living Room Documentation](docs/documentation.md)
 - [🏡 Kinship: The Digital Living Room – Architectural Specification & Visual Blueprint](docs/REVAMP_PROPOSAL.md)
+- [🐛 UI & Hydration Sanity Audit Report](docs/BUGFIX_AUDIT.md)
+- [Family Onboarding & Admin Analysis](docs/FAMILY_ONBOARDING_AND_ADMIN_ANALYSIS.md)
 - [Phase 1 MVP Architecture & Implementation Details](docs/phase_1.md)
 - [Component Architecture & Dependency Diagrams](docs/COMPONENTS.md)
 - [LLM Technical Continuation Context](docs/llm-context.md)
-- [Original Roadmap Notes](docs/documentation.md)

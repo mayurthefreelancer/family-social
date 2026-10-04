@@ -1,0 +1,16 @@
+{
+  "name": "Kinship: The Digital Living Room",
+  "short_name": "Kinship",
+  "description": "Private, sovereign family sanctuary for intimate memories and gatherings.",
+  "start_url": "/feed",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

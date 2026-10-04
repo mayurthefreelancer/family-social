@@ -16,6 +16,7 @@ export function PostList({
     user_id?: string;
     display_name?: string;
     avatar_url?: string | null;
+    role?: string;
   };
 }) {
   if (posts.length === 0) {
@@ -48,6 +49,7 @@ export function PostList({
                   id: currentUser.user_id,
                   name: currentUser.display_name,
                   avatarUrl: currentUser.avatar_url,
+                  role: currentUser.role,
                 }
               : undefined
           }

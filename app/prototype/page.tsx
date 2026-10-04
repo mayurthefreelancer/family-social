@@ -5,68 +5,100 @@ import {
   Heart,
   MessageCircle,
   Camera,
-  Mic,
   Cake,
   Calendar,
   Users,
   Clock,
   ChevronRight,
   MapPin,
-  Utensils,
   Sun,
   Moon,
   ArrowLeft,
   Sparkles,
-  Volume2,
-  Bookmark,
-  Layers,
   Flame,
   CheckCircle2,
   ShieldCheck,
   Plus,
+  Compass,
+  KeyRound,
+  QrCode,
+  Smartphone,
+  Layers,
+  Fish,
+  HelpCircle,
+  Share2,
+  Image as ImageIcon,
+  Check,
+  Send,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 
-// Mock Family Data
+// =========================================================================
+// MOCK MARATHI FAMILY DATA (Kadam Family - Girgaon, Mumbai & Pune)
+// English Wording with Authentic Marathi Cultural Kinship Context
+// =========================================================================
+
 const INITIAL_POSTS = [
   {
     id: "p1",
-    author: "Sarah Miller",
-    relationship: "Mother",
+    author: "Supriya Kadam",
+    relationship: "Aai (Mother)",
     category: "photos",
     avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=160&q=80",
-    timeAgo: "2h ago",
-    badge: "Milestone",
-    content: "Lucas finally mastered riding his bicycle without training wheels today at the park! Two weeks of skinned knees and persistence paid off. 🚲",
+    timeAgo: "2 hours ago",
+    badge: "Big Milestone",
+    content: "Aryan mastered riding his two-wheeler bicycle without training wheels today at Shivaji Park! 🚲 Two weeks of scraped knees and determination finally paid off. Suman Aaji and Anand Baba couldn't stop cheering him on!",
     images: [
       "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1476703993599-0035a21b17a9?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1000&q=80",
     ],
-    likes: 8,
+    likes: 18,
     hasLiked: false,
     comments: [
-      { id: "c1", author: "Rose Miller (Grandma)", text: "Look at my big boy! Reminds me so much of your brother at that age." },
-      { id: "c2", author: "Uncle Dave", text: "Big milestone! Bringing him a classic bell this Sunday." },
+      { id: "c1", author: "Suman Kadam (Aaji)", text: "My sweet grandson! Reminds me so much of Anand learning to ride his bicycle at that very same age." },
+      { id: "c2", author: "Rajesh Kadam (Kaka)", text: "Proud of you, Aryan! Bringing you a shiny new bicycle bell and helmet when I visit Girgaon this Sunday." },
+      { id: "c3", author: "Amit Kadam (Dada)", text: "No more borrowing my cycle now! Super proud of you, little champ." },
     ],
   },
   {
     id: "p2",
-    author: "Rose Miller",
-    relationship: "Grandmother",
-    category: "audio",
+    author: "Suman Kadam",
+    relationship: "Aaji (Matriarch)",
+    category: "moments",
     avatar: "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=160&q=80",
-    timeAgo: "Yesterday",
-    badge: "Family Recipe",
-    content: "Made the traditional cinnamon apple skillet tart from our 1954 family cookbook. Leaving two fresh slices in the fridge for whoever drops by this afternoon.",
+    timeAgo: "Yesterday evening",
+    badge: "Family Tradition",
+    content: "Made freshly steamed Ukadiche Modak and crispy multigrain Thalipeeth for Ashwin Shuddha Dwadashi today. 🥟 Packed two lunchboxes for Amit and Tanya when they return from classes. The hearth doors are always open for anyone dropping by!",
     images: [
       "https://images.unsplash.com/photo-1568571780765-9276ac8b75a2?auto=format&fit=crop&w=1000&q=80",
     ],
-    hasAudioMemo: true,
-    audioDuration: "1:42",
-    likes: 12,
+    likes: 24,
     hasLiked: true,
     comments: [
-      { id: "c3", author: "Lucas", text: "Dibs on the bigger slice! Coming over right after practice." },
+      { id: "c4", author: "Amit Kadam (Dada)", text: "Aaji, I'm heading home straight from college! Please keep four modaks set aside for me." },
+      { id: "c5", author: "Anjali Kadam (Kaku)", text: "Aaji, the pleats on your modaks are perfection! You must teach me the secret technique tomorrow." },
+    ],
+  },
+  {
+    id: "p3",
+    author: "Anand Kadam",
+    relationship: "Baba (Organizer)",
+    category: "gatherings",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+    timeAgo: "2 days ago",
+    badge: "Trip Planner",
+    content: "Bookings are confirmed for our Alibaug Beach Farmhouse getaway next weekend! All family members, please check the 'Family Trips & Events' tab to review the essentials checklist and claim what you're bringing.",
+    images: [
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=1000&q=80",
+    ],
+    likes: 15,
+    hasLiked: true,
+    comments: [
+      { id: "c6", author: "Rajesh Kadam (Kaka)", text: "I've booked the Mandwa Ro-Ro ferry tickets. We can all drive down together." },
     ],
   },
 ];
@@ -74,72 +106,89 @@ const INITIAL_POSTS = [
 const CELEBRATIONS = [
   {
     id: "m1",
-    title: "Rose's 78th Birthday",
+    title: "Suman Aaji's 76th Birthday 🎂",
     date: "In 4 Days",
-    exactDate: "Oct 6",
+    exactDate: "Oct 8",
     type: "Birthday",
-    pill: "Birthday Card Open",
-    note: "Digital card is open. 5 relatives have written secret messages.",
+    pill: "Secret Greeting Card Open",
+    note: "Digital card is open for Suman Aaji. 5 relatives have already written secret birthday wishes!",
   },
   {
     id: "m2",
-    title: "David & Clara's 15th Anniversary",
+    title: "Anand & Supriya's 20th Anniversary 💐",
     date: "Oct 24",
     exactDate: "Oct 24",
     type: "Anniversary",
-    pill: "Coordination",
-    note: "Coordinating a private family anniversary dinner.",
+    pill: "Family Surprise",
+    note: "Coordinating a private family celebration dinner during the Alibaug beach getaway.",
   },
 ];
 
 const FAMILY_MEMBERS = [
-  { name: "Rose Miller (Grandma)", role: "Matriarch", img: "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=160&q=80" },
-  { name: "Mark Miller (Dad)", role: "Father", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80" },
-  { name: "Sarah Miller (Mom)", role: "Mother", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=160&q=80" },
-  { name: "Clara Vance (Aunt)", role: "Aunt", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80" },
-  { name: "David Vance (Uncle)", role: "Uncle", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80" },
-  { name: "Lucas Miller (Son)", role: "Son", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=160&q=80" },
+  { name: "Suman Kadam", role: "Aaji (Matriarch)", img: "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=160&q=80" },
+  { name: "Anand Kadam", role: "Baba (Organizer)", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80" },
+  { name: "Supriya Kadam", role: "Aai (Mother)", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=160&q=80" },
+  { name: "Rajesh Kadam", role: "Kaka (Uncle)", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80" },
+  { name: "Anjali Kadam", role: "Kaku (Aunt)", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80" },
+  { name: "Amit Kadam", role: "Dada (Elder Son)", img: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=160&q=80" },
+  { name: "Tanya Kadam", role: "Tai (Daughter)", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=160&q=80" },
+  { name: "Aryan Kadam", role: "Natu (Grandson)", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=160&q=80" },
 ];
 
-const FAMILY_TREE_NODES = [
+const MARATHI_FAMILY_TREE = [
   {
-    generation: "1st Generation &bull; Grandparents",
+    generation: "1st Generation • Founders & Grandparents",
     members: [
-      { name: "Arthur Miller †", relation: "Grandfather", lifespan: "1942–2021", pill: "Patriarch", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" },
-      { name: "Rose Miller", relation: "Grandmother", lifespan: "Born 1948", pill: "Matriarch", avatar: "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=120&q=80" },
+      { name: "Late Bhalchandra Kadam †", relation: "Ajoba (Grandfather)", lifespan: "1942–2020", pill: "Founding Patriarch", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" },
+      { name: "Suman Bhalchandra Kadam", relation: "Aaji (Grandmother)", lifespan: "Born 1949", pill: "Family Matriarch", avatar: "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=120&q=80" },
     ],
   },
   {
-    generation: "2nd Generation &bull; Parents & Relatives",
+    generation: "2nd Generation • Parents & Uncles",
     members: [
-      { name: "Mark Miller", relation: "Father", lifespan: "Born 1976", pill: "Organizer", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" },
-      { name: "Sarah Miller", relation: "Mother", lifespan: "Born 1978", pill: "Editor", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" },
-      { name: "Clara Vance", relation: "Aunt", lifespan: "Born 1982", pill: "Member", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" },
-      { name: "David Vance", relation: "Uncle", lifespan: "Born 1980", pill: "Member", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" },
+      { name: "Anand Bhalchandra Kadam", relation: "Baba (Father / Eldest)", lifespan: "Born 1975", pill: "Family Organizer", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" },
+      { name: "Supriya Anand Kadam", relation: "Aai (Mother)", lifespan: "Born 1978", pill: "Core Anchor", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80" },
+      { name: "Rajesh Bhalchandra Kadam", relation: "Kaka (Uncle / Youngest)", lifespan: "Born 1980", pill: "Trip Coordinator", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" },
+      { name: "Anjali Rajesh Kadam", relation: "Kaku (Aunt)", lifespan: "Born 1983", pill: "Family Member", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" },
     ],
   },
   {
-    generation: "3rd Generation &bull; Children & Cousins",
+    generation: "3rd Generation • Grandchildren & Youth",
     members: [
-      { name: "Maya Miller", relation: "Daughter", lifespan: "Born 2012", pill: "Youth", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80" },
-      { name: "Lucas Miller", relation: "Son", lifespan: "Born 2015", pill: "Youth", avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&q=80" },
-      { name: "Leo Vance", relation: "Cousin", lifespan: "Born 2018", pill: "Youth", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&q=80" },
+      { name: "Amit Anand Kadam", relation: "Dada (Elder Son / College)", lifespan: "Born 2005", pill: "Youth Circle", avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=120&q=80" },
+      { name: "Tanya Anand Kadam", relation: "Tai (Sister / High School)", lifespan: "Born 2010", pill: "Youth Circle", avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80" },
+      { name: "Aryan Rajesh Kadam", relation: "Natu (Youngest Cyclist)", lifespan: "Born 2017", pill: "Little Champ", avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&q=80" },
     ],
   },
 ];
 
 export default function KinshipPrototype() {
-  const [activeTab, setActiveTab] = useState<"feed" | "moments" | "gatherings" | "tree">("feed");
-  const [feedFilter, setFeedFilter] = useState<"all" | "photos" | "audio">("all");
+  const [activeTab, setActiveTab] = useState<"feed" | "trips" | "tree" | "gamification" | "auth">("feed");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [posts, setPosts] = useState(INITIAL_POSTS);
   const [newPostText, setNewPostText] = useState("");
-  const [rsvpStatus, setRsvpStatus] = useState<"going" | "tentative" | null>("going");
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [invitedRelative, setInvitedRelative] = useState(false);
+  const [rsvpStatus, setRsvpStatus] = useState<"going" | "tentative" | "cant">("going");
+  const [activePackingItems, setActivePackingItems] = useState<Record<string, boolean>>({
+    speaker: false,
+    faral: false,
+  });
 
-  // High-Contrast Monochrome Tokens with Guaranteed Legibility
+  // Gamification States
+  const [hearthLogs, setHearthLogs] = useState(21);
+  const [hasTossedLog, setHasTossedLog] = useState(false);
+  const [babyPollVote, setBabyPollVote] = useState<string | null>(null);
+  const [isFishing, setIsFishing] = useState(false);
+  const [caughtKeepsake, setCaughtKeepsake] = useState<string | null>(null);
+
+  // Mobile Shell Preview Toggle
+  const [isMobilePreview, setIsMobilePreview] = useState(false);
+
+  // Auth Demo States
+  const [enteredPin, setEnteredPin] = useState<string>("");
+  const [pinSuccess, setPinSuccess] = useState(false);
+
+  // High-contrast Monochrome Tokens
   const theme = {
     canvas: isDarkMode ? "#09090b" : "#fbfbfd",
     surface: isDarkMode ? "#141417" : "#ffffff",
@@ -154,11 +203,6 @@ export default function KinshipPrototype() {
     textMuted: isDarkMode ? "#71717a" : "#71717a",
     btnPrimaryBg: isDarkMode ? "#fafafa" : "#09090b",
     btnPrimaryText: isDarkMode ? "#09090b" : "#fafafa",
-    pillActiveBg: isDarkMode ? "#fafafa" : "#09090b",
-    pillActiveText: isDarkMode ? "#09090b" : "#fafafa",
-    pillInactiveBg: isDarkMode ? "#1f1f24" : "#f0f0f3",
-    pillInactiveText: isDarkMode ? "#a1a1aa" : "#52525b",
-    pillBorder: isDarkMode ? "#282830" : "#e4e4e7",
   };
 
   const handleLike = (id: string) => {
@@ -185,7 +229,7 @@ export default function KinshipPrototype() {
         if (p.id === postId) {
           return {
             ...p,
-            comments: [...p.comments, { id: `c-${Date.now()}`, author: "Mark (Dad)", text }],
+            comments: [...p.comments, { id: `c-${Date.now()}`, author: "Anand (Baba)", text }],
           };
         }
         return p;
@@ -200,10 +244,10 @@ export default function KinshipPrototype() {
 
     const newPost = {
       id: `p-${Date.now()}`,
-      author: "Mark Miller",
-      relationship: "Father",
+      author: "Anand Kadam",
+      relationship: "Baba (Organizer)",
       category: "all",
-      badge: "Quick Note",
+      badge: "Family Note",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
       timeAgo: "Just now",
       content: newPostText,
@@ -217,12 +261,36 @@ export default function KinshipPrototype() {
     setNewPostText("");
   };
 
-  // Filter posts based on active quick filter pill
-  const filteredPosts = posts.filter((p) => {
-    if (feedFilter === "photos") return p.images && p.images.length > 0;
-    if (feedFilter === "audio") return p.hasAudioMemo;
-    return true;
-  });
+  const handleTossLog = () => {
+    if (!hasTossedLog) {
+      setHearthLogs((prev) => prev + 1);
+      setHasTossedLog(true);
+    }
+  };
+
+  const handleFish = () => {
+    setIsFishing(true);
+    setCaughtKeepsake(null);
+    setTimeout(() => {
+      setIsFishing(false);
+      const keepsakes = [
+        "📜 Aaji's Keepsake: 'In the Diwali of 1975, we stitched Anand's very first Balmohan school uniform right at home.'",
+        "📜 Ajoba's Wisdom: 'A tree and a family that sink deep roots stand tall through every passing storm.'",
+        "📜 Throwback Humor: 'During the 1988 Ganpati festival, Kaka quietly polished off five steamed modaks before lunch!'",
+      ];
+      setCaughtKeepsake(keepsakes[Math.floor(Math.random() * keepsakes.length)]);
+    }, 1800);
+  };
+
+  const handlePinInput = (num: string) => {
+    if (enteredPin.length < 6) {
+      const nextPin = enteredPin + num;
+      setEnteredPin(nextPin);
+      if (nextPin === "240819") {
+        setPinSuccess(true);
+      }
+    }
+  };
 
   return (
     <div
@@ -231,7 +299,7 @@ export default function KinshipPrototype() {
         color: theme.textPrimary,
         minHeight: "100vh",
         fontFamily:
-          'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          'Inter, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif',
       }}
       className={`antialiased selection:bg-zinc-900 selection:text-white dark:selection:bg-zinc-100 dark:selection:text-zinc-900 transition-colors duration-200 ${
         isDarkMode ? "dark" : ""
@@ -249,102 +317,78 @@ export default function KinshipPrototype() {
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to App</span>
             </Link>
-            <span style={{ color: theme.border }} className="hidden sm:inline">|</span>
-            <span
-              style={{
-                backgroundColor: theme.subtle,
-                color: theme.textPrimary,
-                borderColor: theme.border,
-              }}
-              className="text-[11px] font-mono uppercase px-2.5 py-0.5 rounded-full border font-semibold tracking-wider hidden sm:inline"
-            >
-              Prototype Sandbox
-            </span>
-          </div>
-
-          {/* Theme & Profile Controls */}
-          <div className="flex items-center gap-2.5">
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              style={{
-                backgroundColor: theme.subtle,
-                borderColor: theme.border,
-                color: theme.textPrimary,
-              }}
-              className="h-8 px-3.5 rounded-full border text-xs font-medium flex items-center gap-1.5 hover:opacity-80 transition"
-              aria-label="Toggle theme"
-            >
-              {isDarkMode ? (
-                <>
-                  <Sun className="w-3.5 h-3.5 text-zinc-100 stroke-[1.8]" />
-                  <span className="text-[11px] font-medium">Light</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="w-3.5 h-3.5 text-zinc-800 stroke-[1.8]" />
-                  <span className="text-[11px] font-medium">Dark</span>
-                </>
-              )}
-            </button>
-
-            <img
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-              alt="You"
-              style={{ borderColor: theme.border }}
-              className="w-8 h-8 rounded-full object-cover border"
-            />
-          </div>
-        </div>
-      </header>
-
-      {/* Main Living Room Canvas */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-24">
-        {/* REFINED ARCHITECTURAL FAMILY LIVING ROOM BANNER */}
-        <section
-          style={{
-            backgroundColor: theme.surface,
-            borderColor: theme.border,
-          }}
-          className="border rounded-[32px] shadow-[0_4px_30px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_30px_rgba(0,0,0,0.25)] mb-8 overflow-hidden relative"
-        >
-          {/* Subtle Panoramic Hearth Cover */}
-          <div className="relative h-32 sm:h-44 w-full overflow-hidden">
-            <img
-              src="https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&w=1600&q=80"
-              alt="Family Lake Scenery"
-              className="w-full h-full object-cover object-center filter grayscale-[35%] dark:grayscale-[50%] brightness-[94%] dark:brightness-[55%]"
-            />
-            {/* Seamless Gradient Fade to Card Surface */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: isDarkMode
-                  ? "linear-gradient(to top, #141417 0%, rgba(20,20,23,0.7) 45%, rgba(20,20,23,0.1) 100%)"
-                  : "linear-gradient(to top, #ffffff 0%, rgba(255,255,255,0.7) 45%, rgba(255,255,255,0.1) 100%)",
-              }}
-            />
-
-            {/* Top Right Location & Heritage Pill */}
-            <div className="absolute top-4 right-4 sm:top-5 sm:right-6 flex items-center gap-2">
-              <span
-                style={{
-                  backgroundColor: isDarkMode ? "rgba(0,0,0,0.65)" : "rgba(255,255,255,0.85)",
-                  borderColor: isDarkMode ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.08)",
-                  color: theme.textPrimary,
-                }}
-                className="backdrop-blur-md border px-3 py-1 rounded-full text-[11px] font-medium flex items-center gap-1.5 shadow-sm"
-              >
-                <MapPin className="w-3.5 h-3.5 text-zinc-500" />
-                <span>Oakridge Estate &bull; Established 2010</span>
+            <span style={{ color: theme.border }} className="text-sm">/</span>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+                The Kadam Hearth &bull; Marathi Family Prototype
               </span>
             </div>
           </div>
 
-          {/* Main Content Area Overlapping the Cover */}
-          <div className="px-6 sm:px-8 pb-6 sm:pb-7 -mt-12 sm:-mt-14 relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-            {/* Monogram Seal & Family Identity */}
-            <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-5">
-              {/* Double-Ring Seal Monogram */}
+          <div className="flex items-center gap-2">
+            {/* Mobile View Toggle */}
+            <button
+              onClick={() => setIsMobilePreview(!isMobilePreview)}
+              style={{
+                backgroundColor: isMobilePreview ? theme.btnPrimaryBg : theme.subtle,
+                color: isMobilePreview ? theme.btnPrimaryText : theme.textSecondary,
+                borderColor: theme.border,
+              }}
+              className="h-8 px-3 rounded-full border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <Smartphone className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{isMobilePreview ? "Mobile Shell (Active)" : "Preview Mobile Shell"}</span>
+            </button>
+
+            {/* Dark / Light Toggle */}
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              style={{
+                backgroundColor: theme.subtle,
+                color: theme.textPrimary,
+                borderColor: theme.border,
+              }}
+              className="w-8 h-8 rounded-full border flex items-center justify-center transition hover:opacity-80 cursor-pointer"
+              title="Toggle Theme"
+            >
+              {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-zinc-600" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Container - Supports Desktop or Mobile Container */}
+      <div className={`mx-auto transition-all duration-300 ${isMobilePreview ? "max-w-md py-4 px-2" : "max-w-6xl px-4 sm:px-6 py-6"}`}>
+        
+        {/* ========================================================================= */}
+        {/* PANORAMIC HEARTH CANOPY (The Kadam Family Hearth)                         */}
+        {/* ========================================================================= */}
+        <div
+          style={{
+            backgroundColor: theme.surface,
+            borderColor: theme.border,
+          }}
+          className="rounded-[32px] border shadow-sm overflow-hidden mb-6 relative"
+        >
+          {/* Cover Panorama */}
+          <div className="h-36 sm:h-48 w-full bg-linear-to-r from-amber-900/30 via-zinc-800/40 to-stone-900/40 relative overflow-hidden">
+            <img
+              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80"
+              alt="Konkan Landscape"
+              className="w-full h-full object-cover opacity-60 mix-blend-overlay"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white text-xs font-mono">
+              <MapPin className="w-3.5 h-3.5 text-amber-400" />
+              <span>Girgaon, Mumbai &bull; Roots: Sangameshwar, Ratnagiri</span>
+            </div>
+          </div>
+
+          {/* Canopy Profile Content */}
+          <div className="px-6 pb-6 pt-0 relative -mt-12 sm:-mt-14 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+            <div className="flex items-end gap-4 sm:gap-5">
+              {/* Crest Monogram */}
               <div
                 style={{
                   backgroundColor: theme.surface,
@@ -359,17 +403,12 @@ export default function KinshipPrototype() {
                   }}
                   className="w-full h-full rounded-[20px] flex flex-col items-center justify-center font-bold text-2xl sm:text-3xl tracking-tight shadow-sm"
                 >
-                  M
+                  K
                   <span className="text-[8px] font-mono tracking-widest uppercase font-semibold opacity-70 leading-none mt-0.5">
-                    MILLER
+                    KADAM
                   </span>
                 </div>
-
-                {/* Pulsing Active Indicator */}
-                <span
-                  title="Sanctuary Active &bull; 6 Members Online"
-                  className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white dark:border-zinc-900 flex items-center justify-center shadow-sm"
-                >
+                <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white dark:border-zinc-900 flex items-center justify-center shadow-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-white dark:bg-zinc-900" />
                 </span>
               </div>
@@ -379,9 +418,9 @@ export default function KinshipPrototype() {
                 <div className="flex items-center gap-2.5 flex-wrap">
                   <h1
                     style={{ color: theme.textPrimary }}
-                    className="font-bold text-2xl sm:text-3xl tracking-[-0.03em] leading-tight"
+                    className="font-bold text-2xl sm:text-3xl tracking-tight leading-tight"
                   >
-                    The Miller Family
+                    The Kadam Family Hearth
                   </h1>
                   <span
                     style={{
@@ -389,1198 +428,948 @@ export default function KinshipPrototype() {
                       borderColor: theme.border,
                       color: theme.textSecondary,
                     }}
-                    className="text-[11px] font-semibold tracking-wide uppercase px-2.5 py-0.5 rounded-full border inline-flex items-center gap-1.5"
+                    className="text-[11px] font-semibold tracking-wide px-2.5 py-0.5 rounded-full border inline-flex items-center gap-1.5"
                   >
-                    <ShieldCheck className="w-3.5 h-3.5 text-zinc-500" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                     <span>Private Sanctuary</span>
                   </span>
                 </div>
                 <p
-                  style={{ color: theme.textSecondary }}
-                  className="text-[13px] sm:text-[14px] font-normal italic leading-relaxed"
+                  style={{ color: theme.textSecondary, fontFamily: 'Georgia, Cambria, serif' }}
+                  className="text-xs sm:text-sm font-normal italic leading-relaxed"
                 >
-                  “Cherishing small moments, holding close across every distance.”
+                  “Cherishing small moments, holding close across every distance, rooted in our generational bonds.”
                 </p>
               </div>
             </div>
 
-            {/* Member Facepile & Interactive Invite Button */}
-            <div className="flex flex-col sm:items-end gap-2 shrink-0 pt-2 lg:pt-0">
-              <div className="flex items-center gap-2">
-                <span style={{ color: theme.textSecondary }} className="text-xs font-medium hidden sm:inline">
-                  Circle:
-                </span>
-                <div className="flex -space-x-2.5 overflow-hidden py-1">
-                  {FAMILY_MEMBERS.map((m, idx) => (
-                    <img
-                      key={idx}
-                      src={m.img}
-                      alt={m.name}
-                      title={`${m.name} (${m.role})`}
-                      style={{ borderColor: theme.surface }}
-                      className="w-8 h-8 rounded-full object-cover border-2 shadow-sm hover:-translate-y-1 transition duration-150 cursor-pointer"
-                    />
-                  ))}
-                </div>
-
-                {/* Invite Relative Action Pill */}
-                <button
-                  onClick={() => {
-                    setInvitedRelative(true);
-                    setTimeout(() => setInvitedRelative(false), 2500);
-                  }}
-                  style={{
-                    backgroundColor: invitedRelative ? "#10b981" : theme.subtle,
-                    borderColor: theme.border,
-                    color: invitedRelative ? "#ffffff" : theme.textPrimary,
-                  }}
-                  className="h-8 px-3 rounded-full border text-[11px] font-semibold flex items-center gap-1.5 hover:opacity-80 transition ml-1 shadow-sm"
-                >
-                  {invitedRelative ? (
-                    <>
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Link Copied</span>
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-3.5 h-3.5 stroke-[2]" />
-                      <span>Invite</span>
-                    </>
-                  )}
-                </button>
+            {/* Member Facepile & Fire Streak Counter */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold">
+                <Flame className="w-4 h-4 fill-amber-500 text-amber-500 animate-bounce" />
+                <span>Hearth burning for {hearthLogs} consecutive days</span>
               </div>
-              <span style={{ color: theme.textMuted }} className="text-[11px]">
-                6 Family Members Connected &bull; 0 Outsiders
-              </span>
+
+              <div className="flex -space-x-2 overflow-hidden py-1">
+                {FAMILY_MEMBERS.map((m, idx) => (
+                  <img
+                    key={idx}
+                    src={m.img}
+                    alt={m.name}
+                    title={`${m.name} (${m.role})`}
+                    className="w-8 h-8 rounded-full object-cover border-2 border-white dark:border-zinc-900 shadow-xs"
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Lower Architectural Vitals Tray */}
+          {/* Vitals Tray */}
           <div
-            style={{
-              backgroundColor: theme.subtle,
-              borderColor: theme.border,
-            }}
-            className="border-t px-6 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 text-xs"
+            style={{ borderColor: theme.border }}
+            className="border-t px-6 py-3 bg-zinc-50/50 dark:bg-zinc-900/30 flex flex-wrap items-center justify-between gap-4 text-xs"
           >
-            {/* 3 Metric Clusters */}
-            <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
-              <div className="flex items-center gap-2.5">
-                <span className="text-zinc-400 dark:text-zinc-600 font-mono text-[11px] font-bold">01</span>
-                <div>
-                  <span
-                    style={{ color: theme.textPrimary }}
-                    className="font-bold block text-sm leading-none"
-                  >
-                    324
-                  </span>
-                  <span style={{ color: theme.textSecondary }} className="text-[11px]">
-                    Memories Shared
-                  </span>
-                </div>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <span className="font-mono font-bold text-zinc-900 dark:text-zinc-100">46</span>
+                <span style={{ color: theme.textSecondary }}>Preserved Moments</span>
               </div>
-
-              <div className="flex items-center gap-2.5">
-                <span className="text-zinc-400 dark:text-zinc-600 font-mono text-[11px] font-bold">02</span>
-                <div>
-                  <span
-                    style={{ color: theme.textPrimary }}
-                    className="font-bold block text-sm leading-none"
-                  >
-                    3
-                  </span>
-                  <span style={{ color: theme.textSecondary }} className="text-[11px]">
-                    Generations
-                  </span>
-                </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono font-bold text-zinc-900 dark:text-zinc-100">3</span>
+                <span style={{ color: theme.textSecondary }}>Connected Generations</span>
               </div>
-
-              <div className="flex items-center gap-2.5">
-                <span className="text-zinc-400 dark:text-zinc-600 font-mono text-[11px] font-bold">03</span>
-                <div>
-                  <span
-                    style={{ color: theme.textPrimary }}
-                    className="font-bold block text-sm leading-none"
-                  >
-                    Oct 6
-                  </span>
-                  <span style={{ color: theme.textSecondary }} className="text-[11px]">
-                    Rose's 78th Birthday
-                  </span>
-                </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono font-bold text-zinc-900 dark:text-zinc-100">Oct 8</span>
+                <span style={{ color: theme.textSecondary }}>Suman Aaji's 76th Birthday</span>
               </div>
             </div>
+            <div className="text-zinc-400 font-mono text-[11px]">
+              Est. 1942 &bull; Founded by Late Bhalchandra Ajoba
+            </div>
+          </div>
+        </div>
 
-            {/* Upcoming Event Pill */}
-            <div className="flex items-center gap-2">
-              <span style={{ color: theme.textSecondary }} className="text-[11px] font-medium hidden md:inline">
-                Next gathering:
-              </span>
-              <span
+        {/* ========================================================================= */}
+        {/* TACTILE PROPOSAL TABS (English Wording)                                    */}
+        {/* ========================================================================= */}
+        <div
+          style={{
+            backgroundColor: theme.subtle,
+            borderColor: theme.border,
+          }}
+          className="p-1 rounded-2xl border flex items-center gap-1 overflow-x-auto scrollbar-none mb-6 text-xs sm:text-sm font-semibold select-none"
+        >
+          <button
+            onClick={() => setActiveTab("feed")}
+            style={{
+              backgroundColor: activeTab === "feed" ? theme.surface : "transparent",
+              color: activeTab === "feed" ? theme.textPrimary : theme.textSecondary,
+              boxShadow: activeTab === "feed" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
+            }}
+            className="flex-1 py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+          >
+            <Layers className="w-4 h-4 stroke-[2]" />
+            <span>Living Room Feed</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("trips")}
+            style={{
+              backgroundColor: activeTab === "trips" ? theme.surface : "transparent",
+              color: activeTab === "trips" ? theme.textPrimary : theme.textSecondary,
+              boxShadow: activeTab === "trips" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
+            }}
+            className="flex-1 py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+          >
+            <Calendar className="w-4 h-4 stroke-[2]" />
+            <span>Family Trips & Events</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("tree")}
+            style={{
+              backgroundColor: activeTab === "tree" ? theme.surface : "transparent",
+              color: activeTab === "tree" ? theme.textPrimary : theme.textSecondary,
+              boxShadow: activeTab === "tree" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
+            }}
+            className="flex-1 py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+          >
+            <Users className="w-4 h-4 stroke-[2]" />
+            <span>Family Tree & Roots</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("gamification")}
+            style={{
+              backgroundColor: activeTab === "gamification" ? theme.surface : "transparent",
+              color: activeTab === "gamification" ? theme.textPrimary : theme.textSecondary,
+              boxShadow: activeTab === "gamification" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
+            }}
+            className="flex-1 py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+          >
+            <Flame className="w-4 h-4 stroke-[2] text-amber-500" />
+            <span>Living Hearth & Games</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("auth")}
+            style={{
+              backgroundColor: activeTab === "auth" ? theme.surface : "transparent",
+              color: activeTab === "auth" ? theme.textPrimary : theme.textSecondary,
+              boxShadow: activeTab === "auth" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
+            }}
+            className="flex-1 py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+          >
+            <KeyRound className="w-4 h-4 stroke-[2]" />
+            <span>Frictionless Auth (PIN/QR)</span>
+          </button>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* TAB 1: LIVING ROOM FEED (ASYMMETRICAL 7:5 EDITORIAL CANVAS)               */}
+        {/* ========================================================================= */}
+        {activeTab === "feed" && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            {/* Left 7 Columns: Memory Stream */}
+            <div className="lg:col-span-7 space-y-6">
+              
+              {/* Hearth Composer */}
+              <div
                 style={{
                   backgroundColor: theme.surface,
                   borderColor: theme.border,
-                  color: theme.textPrimary,
                 }}
-                className="text-[11px] font-semibold px-3 py-1 rounded-full border shadow-sm flex items-center gap-1.5"
+                className="p-5 rounded-[28px] border shadow-xs space-y-3"
               >
-                <Calendar className="w-3.5 h-3.5 text-zinc-500" />
-                <span>Sunday Lawn Roast &bull; Oct 12</span>
-              </span>
-            </div>
-          </div>
-        </section>
+                <div className="flex items-center gap-3">
+                  <img
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80"
+                    alt="Current user"
+                    className="w-10 h-10 rounded-full object-cover ring-2 ring-zinc-200 dark:ring-zinc-800"
+                  />
+                  <input
+                    type="text"
+                    value={newPostText}
+                    onChange={(e) => setNewPostText(e.target.value)}
+                    placeholder="Anand, what family memory or moment would you like to share today?"
+                    className="w-full bg-zinc-100 dark:bg-zinc-850 px-4 py-2.5 rounded-full text-xs sm:text-sm border-none focus:outline-none focus:ring-1 focus:ring-zinc-400"
+                  />
+                </div>
 
-        {/* Dynamic Editorial Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* PRIMARY COLUMN: Activity Stream & Modules (7 cols) */}
-          <div className="lg:col-span-7 space-y-6">
-            {/* UPGRADED PROMINENT TAB BAR WITH MATCHING FONT, SIZES & PILLS */}
-            <nav
-              style={{
-                backgroundColor: theme.subtle,
-                borderColor: theme.border,
-              }}
-              className="p-1.5 rounded-full border flex items-center shadow-sm gap-1"
-            >
-              <button
-                onClick={() => setActiveTab("feed")}
-                style={{
-                  backgroundColor: activeTab === "feed" ? theme.surface : "transparent",
-                  color: activeTab === "feed" ? theme.textPrimary : theme.textSecondary,
-                  boxShadow: activeTab === "feed" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
-                }}
-                className="flex-1 h-10 px-3 rounded-full transition-all duration-150 flex items-center justify-center gap-2 text-sm font-semibold tracking-[-0.01em]"
-              >
-                <Layers className="w-4 h-4 stroke-[1.8]" />
-                <span>Stream</span>
-                <span
-                  style={{
-                    backgroundColor: activeTab === "feed" ? theme.subtle : "transparent",
-                    color: theme.textSecondary,
-                  }}
-                  className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-black/5 dark:border-white/10 hidden sm:inline"
-                >
-                  {posts.length}
-                </span>
-              </button>
+                <div className="flex items-center justify-between pt-1 border-t border-zinc-100 dark:border-zinc-800/80">
+                  <div className="flex items-center gap-2 text-xs text-zinc-500">
+                    <span className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer">
+                      <Camera className="w-4 h-4 text-emerald-500" />
+                      <span>Attach Photos (Mosaic)</span>
+                    </span>
+                    <span className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer">
+                      <Sparkles className="w-4 h-4 text-amber-500" />
+                      <span>Milestone</span>
+                    </span>
+                  </div>
 
-              <button
-                onClick={() => setActiveTab("moments")}
-                style={{
-                  backgroundColor: activeTab === "moments" ? theme.surface : "transparent",
-                  color: activeTab === "moments" ? theme.textPrimary : theme.textSecondary,
-                  boxShadow: activeTab === "moments" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
-                }}
-                className="flex-1 h-10 px-3 rounded-full transition-all duration-150 flex items-center justify-center gap-2 text-sm font-semibold tracking-[-0.01em]"
-              >
-                <Cake className="w-4 h-4 stroke-[1.8]" />
-                <span>Milestones</span>
-                <span
-                  style={{
-                    backgroundColor: activeTab === "moments" ? theme.subtle : "transparent",
-                    color: theme.textSecondary,
-                  }}
-                  className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-black/5 dark:border-white/10 hidden sm:inline"
-                >
-                  {CELEBRATIONS.length}
-                </span>
-              </button>
+                  <button
+                    onClick={handleCreatePost}
+                    style={{
+                      backgroundColor: theme.btnPrimaryBg,
+                      color: theme.btnPrimaryText,
+                    }}
+                    className="px-5 py-2 rounded-full text-xs font-semibold shadow-xs hover:opacity-90 transition cursor-pointer"
+                  >
+                    Post to Hearth
+                  </button>
+                </div>
+              </div>
 
-              <button
-                onClick={() => setActiveTab("gatherings")}
-                style={{
-                  backgroundColor: activeTab === "gatherings" ? theme.surface : "transparent",
-                  color: activeTab === "gatherings" ? theme.textPrimary : theme.textSecondary,
-                  boxShadow: activeTab === "gatherings" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
-                }}
-                className="flex-1 h-10 px-3 rounded-full transition-all duration-150 flex items-center justify-center gap-2 text-sm font-semibold tracking-[-0.01em]"
-              >
-                <Calendar className="w-4 h-4 stroke-[1.8]" />
-                <span>Gatherings</span>
-                <span
-                  style={{
-                    backgroundColor: activeTab === "gatherings" ? theme.subtle : "transparent",
-                    color: theme.textSecondary,
-                  }}
-                  className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-black/5 dark:border-white/10 hidden sm:inline"
-                >
-                  1
-                </span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("tree")}
-                style={{
-                  backgroundColor: activeTab === "tree" ? theme.surface : "transparent",
-                  color: activeTab === "tree" ? theme.textPrimary : theme.textSecondary,
-                  boxShadow: activeTab === "tree" ? "0 2px 8px rgba(0,0,0,0.06)" : "none",
-                }}
-                className="flex-1 h-10 px-3 rounded-full transition-all duration-150 flex items-center justify-center gap-2 text-sm font-semibold tracking-[-0.01em]"
-              >
-                <Users className="w-4 h-4 stroke-[1.8]" />
-                <span>Roots</span>
-                <span
-                  style={{
-                    backgroundColor: activeTab === "tree" ? theme.subtle : "transparent",
-                    color: theme.textSecondary,
-                  }}
-                  className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-black/5 dark:border-white/10 hidden sm:inline"
-                >
-                  3G
-                </span>
-              </button>
-            </nav>
-
-            {/* TAB: STREAM / FEED */}
-            {activeTab === "feed" && (
+              {/* Feed Post List */}
               <div className="space-y-6">
-                {/* INTERACTIVE TOPIC FILTER PILLS */}
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5 scrollbar-none">
-                  <span
-                    style={{ color: theme.textSecondary }}
-                    className="text-xs font-medium mr-1 uppercase tracking-wider text-[11px] shrink-0"
-                  >
-                    Filter:
-                  </span>
-                  <button
-                    onClick={() => setFeedFilter("all")}
-                    style={{
-                      backgroundColor:
-                        feedFilter === "all" ? theme.pillActiveBg : theme.pillInactiveBg,
-                      color:
-                        feedFilter === "all" ? theme.pillActiveText : theme.pillInactiveText,
-                      borderColor: theme.pillBorder,
-                    }}
-                    className="h-7 px-3.5 rounded-full border text-xs font-semibold tracking-tight transition-all duration-150 flex items-center gap-1.5 shrink-0 shadow-sm"
-                  >
-                    <Flame className="w-3 h-3" />
-                    <span>All Moments</span>
-                  </button>
-
-                  <button
-                    onClick={() => setFeedFilter("photos")}
-                    style={{
-                      backgroundColor:
-                        feedFilter === "photos" ? theme.pillActiveBg : theme.pillInactiveBg,
-                      color:
-                        feedFilter === "photos" ? theme.pillActiveText : theme.pillInactiveText,
-                      borderColor: theme.pillBorder,
-                    }}
-                    className="h-7 px-3.5 rounded-full border text-xs font-semibold tracking-tight transition-all duration-150 flex items-center gap-1.5 shrink-0"
-                  >
-                    <Camera className="w-3 h-3" />
-                    <span>Photos Only</span>
-                  </button>
-
-                  <button
-                    onClick={() => setFeedFilter("audio")}
-                    style={{
-                      backgroundColor:
-                        feedFilter === "audio" ? theme.pillActiveBg : theme.pillInactiveBg,
-                      color:
-                        feedFilter === "audio" ? theme.pillActiveText : theme.pillInactiveText,
-                      borderColor: theme.pillBorder,
-                    }}
-                    className="h-7 px-3.5 rounded-full border text-xs font-semibold tracking-tight transition-all duration-150 flex items-center gap-1.5 shrink-0"
-                  >
-                    <Volume2 className="w-3 h-3" />
-                    <span>Voice Stories</span>
-                  </button>
-                </div>
-
-                {/* Clean Floating Post Composer */}
-                <div
-                  style={{
-                    backgroundColor: theme.surface,
-                    borderColor: theme.border,
-                  }}
-                  className="border rounded-[24px] p-5 shadow-[0_2px_12px_rgba(0,0,0,0.02)] transition-shadow hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)]"
-                >
-                  <form onSubmit={handleCreatePost}>
-                    <div className="flex gap-3.5">
-                      <img
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-                        alt="Mark Miller"
-                        style={{ borderColor: theme.border }}
-                        className="w-9 h-9 rounded-full object-cover shrink-0 border"
-                      />
-                      <div className="flex-1">
-                        <textarea
-                          value={newPostText}
-                          onChange={(e) => setNewPostText(e.target.value)}
-                          placeholder="Share a thought, school win, or family story..."
-                          rows={2}
-                          style={{ color: theme.textPrimary }}
-                          className="w-full bg-transparent resize-none text-[14px] leading-relaxed placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none"
-                        />
-                      </div>
-                    </div>
-
-                    <div
-                      style={{ borderColor: theme.borderSubtle }}
-                      className="flex items-center justify-between pt-3 mt-2 border-t"
-                    >
-                      {/* COMPOSER PILLS */}
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          type="button"
-                          style={{
-                            color: theme.textSecondary,
-                            backgroundColor: theme.subtle,
-                            borderColor: theme.border,
-                          }}
-                          className="h-8 px-3 rounded-full border text-xs font-medium flex items-center gap-1.5 hover:opacity-80 transition"
-                        >
-                          <Camera className="w-3.5 h-3.5 stroke-[1.8]" />
-                          <span>Photos</span>
-                        </button>
-                        <button
-                          type="button"
-                          style={{
-                            color: theme.textSecondary,
-                            backgroundColor: theme.subtle,
-                            borderColor: theme.border,
-                          }}
-                          className="h-8 px-3 rounded-full border text-xs font-medium flex items-center gap-1.5 hover:opacity-80 transition"
-                        >
-                          <Mic className="w-3.5 h-3.5 stroke-[1.8]" />
-                          <span>Voice</span>
-                        </button>
-                        <button
-                          type="button"
-                          style={{
-                            color: theme.textSecondary,
-                            backgroundColor: theme.subtle,
-                            borderColor: theme.border,
-                          }}
-                          className="h-8 px-3 rounded-full border text-xs font-medium flex items-center gap-1.5 hover:opacity-80 transition hidden sm:flex"
-                        >
-                          <Utensils className="w-3.5 h-3.5 stroke-[1.8]" />
-                          <span>Recipe</span>
-                        </button>
-                      </div>
-
-                      <button
-                        type="submit"
-                        disabled={!newPostText.trim()}
-                        style={{
-                          backgroundColor: newPostText.trim()
-                            ? theme.btnPrimaryBg
-                            : theme.subtle,
-                          color: newPostText.trim()
-                            ? theme.btnPrimaryText
-                            : theme.textSecondary,
-                        }}
-                        className="h-8 px-4 rounded-full text-xs font-semibold tracking-tight transition disabled:cursor-not-allowed shadow-sm"
-                      >
-                        Publish
-                      </button>
-                    </div>
-                  </form>
-                </div>
-
-                {/* Filtered Stream Posts */}
-                {filteredPosts.map((post) => (
-                  <article
+                {posts.map((post) => (
+                  <div
                     key={post.id}
                     style={{
                       backgroundColor: theme.surface,
                       borderColor: theme.border,
                     }}
-                    className="border rounded-[24px] p-5 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-4"
+                    className="p-5 sm:p-6 rounded-[28px] border shadow-xs space-y-4"
                   >
-                    {/* Post Header with Badge Pill */}
+                    {/* Post Header */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <img
                           src={post.avatar}
                           alt={post.author}
-                          style={{ borderColor: theme.border }}
-                          className="w-10 h-10 rounded-full object-cover border"
+                          className="w-10 h-10 rounded-full object-cover ring-2 ring-zinc-100 dark:ring-zinc-800"
                         />
                         <div>
                           <div className="flex items-center gap-2">
-                            <span
-                              style={{ color: theme.textPrimary }}
-                              className="font-semibold text-[14px] tracking-tight"
-                            >
-                              {post.author}
-                            </span>
-                            <span
-                              style={{
-                                backgroundColor: theme.subtle,
-                                color: theme.textSecondary,
-                                borderColor: theme.border,
-                              }}
-                              className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full border"
-                            >
+                            <span className="font-bold text-sm text-zinc-950 dark:text-zinc-50">{post.author}</span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">
                               {post.relationship}
                             </span>
                           </div>
-                          <span
-                            style={{ color: theme.textSecondary }}
-                            className="text-xs font-normal"
-                          >
-                            {post.timeAgo}
-                          </span>
+                          <span className="text-[11px] text-zinc-400">{post.timeAgo}</span>
                         </div>
                       </div>
 
-                      {/* Pill Badge */}
-                      <span
-                        style={{
-                          backgroundColor: theme.subtle,
-                          borderColor: theme.border,
-                          color: theme.textPrimary,
-                        }}
-                        className="text-[11px] font-medium px-2.5 py-0.5 rounded-full border"
-                      >
+                      <span className="text-xs font-medium px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-850 text-zinc-700 dark:text-zinc-300">
                         {post.badge}
                       </span>
                     </div>
 
-                    {/* Post Content */}
-                    <p
-                      style={{ color: theme.textBody }}
-                      className="text-[15px] leading-[1.65] font-normal tracking-[-0.005em]"
-                    >
+                    {/* Post Body Content */}
+                    <p className="text-sm sm:text-[15px] leading-relaxed text-zinc-800 dark:text-zinc-200">
                       {post.content}
                     </p>
 
-                    {/* Audio Player Card if Present */}
-                    {post.hasAudioMemo && (
-                      <div
-                        style={{
-                          backgroundColor: theme.subtle,
-                          borderColor: theme.border,
-                        }}
-                        className="border rounded-2xl p-3.5 flex items-center justify-between text-xs"
-                      >
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => setIsPlayingAudio(!isPlayingAudio)}
-                            style={{
-                              backgroundColor: theme.btnPrimaryBg,
-                              color: theme.btnPrimaryText,
-                            }}
-                            className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs shadow-sm hover:scale-105 transition"
-                            aria-label="Play audio memo"
-                          >
-                            {isPlayingAudio ? "⏸" : "▶"}
-                          </button>
-                          <div>
-                            <span
-                              style={{ color: theme.textPrimary }}
-                              className="font-semibold text-xs block"
-                            >
-                              Rose's Apple Pie Recipe Story
-                            </span>
-                            <span
-                              style={{ color: theme.textSecondary }}
-                              className="text-[11px]"
-                            >
-                              Recorded voice note &bull; {post.audioDuration}
-                            </span>
+                    {/* Adaptive Multi-Photo Mosaic Grid (Proposal 1) */}
+                    {post.images && post.images.length > 0 && (
+                      <div className="pt-1">
+                        {post.images.length === 1 ? (
+                          <div className="rounded-2xl overflow-hidden max-h-96 bg-zinc-100 dark:bg-zinc-800">
+                            <img src={post.images[0]} alt="Post visual" className="w-full h-full object-cover hover:scale-102 transition duration-300" />
                           </div>
-                        </div>
-
-                        {/* Interactive Waveform Visualizer */}
-                        <div className="flex items-center gap-1 px-3">
-                          {[30, 60, 90, 45, 80, 100, 60, 40, 75, 50, 30].map(
-                            (h, idx) => (
-                              <div
-                                key={idx}
-                                style={{
-                                  height: `${h * 0.22}px`,
-                                  backgroundColor: isPlayingAudio
-                                    ? theme.textPrimary
-                                    : theme.textSecondary,
-                                }}
-                                className="w-1 rounded-full transition-all duration-300"
-                              />
-                            )
-                          )}
-                        </div>
+                        ) : post.images.length === 2 ? (
+                          <div className="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden max-h-80">
+                            {post.images.map((img, i) => (
+                              <img key={i} src={img} alt="Post visual" className="w-full h-72 object-cover hover:scale-102 transition duration-300" />
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-2 gap-2 rounded-2xl overflow-hidden">
+                            <img src={post.images[0]} alt="Hero visual" className="w-full h-72 object-cover col-span-1 rounded-xl" />
+                            <div className="grid grid-rows-2 gap-2 h-72">
+                              <img src={post.images[1]} alt="Sub visual" className="w-full h-35 object-cover rounded-xl" />
+                              <div className="relative rounded-xl overflow-hidden h-35">
+                                <img src={post.images[2]} alt="Sub visual" className="w-full h-full object-cover" />
+                                {post.images.length > 3 && (
+                                  <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center text-white font-bold text-sm">
+                                    +{post.images.length - 3} more photos
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
 
-                    {/* Magazine Photo Display */}
-                    {post.images.length > 0 && (
-                      <div
-                        className={`grid gap-2.5 rounded-2xl overflow-hidden ${
-                          post.images.length > 1 ? "grid-cols-2" : "grid-cols-1"
-                        }`}
-                      >
-                        {post.images.map((src, i) => (
-                          <div
-                            key={i}
-                            className="relative overflow-hidden group rounded-xl"
-                          >
-                            <img
-                              src={src}
-                              alt="Family moment"
-                              className="w-full h-64 object-cover group-hover:scale-105 transition duration-500 cursor-pointer"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Action Bar with Tactile Reaction Pills */}
-                    <div
-                      style={{ borderColor: theme.borderSubtle }}
-                      className="flex items-center justify-between pt-3 border-t text-xs"
-                    >
+                    {/* Reactions Bar */}
+                    <div className="flex items-center justify-between pt-3 border-t border-zinc-100 dark:border-zinc-800 text-xs">
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleLike(post.id)}
-                          style={{
-                            backgroundColor: post.hasLiked
-                              ? theme.subtle
-                              : "transparent",
-                            borderColor: post.hasLiked
-                              ? theme.border
-                              : "transparent",
-                            color: post.hasLiked
-                              ? theme.textPrimary
-                              : theme.textSecondary,
-                          }}
-                          className="flex items-center gap-1.5 h-8 px-3 rounded-full border transition font-medium text-xs hover:bg-zinc-500/5"
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition cursor-pointer ${
+                            post.hasLiked
+                              ? "bg-rose-50 dark:bg-rose-950/30 border-rose-300 dark:border-rose-800 text-rose-600 dark:text-rose-400 font-bold"
+                              : "border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50"
+                          }`}
                         >
-                          <Heart
-                            className={`w-3.5 h-3.5 ${
-                              post.hasLiked
-                                ? "fill-current text-rose-500"
-                                : ""
-                            }`}
-                          />
-                          <span>{post.likes}</span>
+                          <Heart className={`w-3.5 h-3.5 ${post.hasLiked ? "fill-rose-500 text-rose-500" : ""}`} />
+                          <span>Love ({post.likes})</span>
                         </button>
 
-                        <button
-                          style={{ color: theme.textSecondary }}
-                          className="flex items-center gap-1.5 h-8 px-3 rounded-full hover:bg-zinc-500/5 font-medium transition"
-                        >
+                        <span className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400">
                           <MessageCircle className="w-3.5 h-3.5" />
-                          <span>{post.comments.length}</span>
-                        </button>
+                          <span>Comments ({post.comments.length})</span>
+                        </span>
                       </div>
 
-                      <span
-                        style={{ color: theme.textMuted }}
-                        className="text-[11px] font-medium"
-                      >
-                        Miller Family circle
-                      </span>
+                      <span className="text-[11px] text-zinc-400 font-mono">The Kadam Sanctuary</span>
                     </div>
 
-                    {/* Discussion Thread */}
-                    <div
-                      style={{ backgroundColor: theme.subtle }}
-                      className="rounded-2xl p-4 space-y-3 text-[13px]"
-                    >
-                      {post.comments.map((c) => (
-                        <div key={c.id} className="leading-snug">
-                          <span
-                            style={{ color: theme.textPrimary }}
-                            className="font-semibold mr-1.5"
-                          >
-                            {c.author}:
-                          </span>
-                          <span style={{ color: theme.textSecondary }}>
-                            {c.text}
-                          </span>
-                        </div>
-                      ))}
-
-                      {/* Inline Reply Input */}
-                      <div className="flex items-center gap-2 pt-1.5">
-                        <input
-                          type="text"
-                          placeholder="Write a warm note..."
-                          value={commentInputs[post.id] || ""}
-                          onChange={(e) =>
-                            setCommentInputs({
-                              ...commentInputs,
-                              [post.id]: e.target.value,
-                            })
-                          }
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleAddComment(post.id);
-                          }}
-                          style={{
-                            backgroundColor: theme.surface,
-                            borderColor: theme.border,
-                            color: theme.textPrimary,
-                          }}
-                          className="flex-1 h-9 rounded-full border px-4 text-xs placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 transition"
-                        />
-                        <button
-                          onClick={() => handleAddComment(post.id)}
-                          style={{
-                            backgroundColor: theme.btnPrimaryBg,
-                            color: theme.btnPrimaryText,
-                          }}
-                          className="h-9 px-4 rounded-full text-xs font-semibold tracking-tight transition"
-                        >
-                          Reply
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
-
-            {/* TAB: MILESTONES */}
-            {activeTab === "moments" && (
-              <div
-                style={{
-                  backgroundColor: theme.surface,
-                  borderColor: theme.border,
-                }}
-                className="border rounded-[24px] p-6 shadow-sm space-y-4"
-              >
-                <div>
-                  <h2
-                    style={{ color: theme.textPrimary }}
-                    className="text-base font-semibold tracking-tight"
-                  >
-                    Family Celebrations & Milestones
-                  </h2>
-                  <p
-                    style={{ color: theme.textSecondary }}
-                    className="text-xs leading-relaxed mt-1"
-                  >
-                    Perpetual calendar tracking birthdays, anniversaries, and collective greeting cards.
-                  </p>
-                </div>
-
-                <div className="space-y-3 pt-2">
-                  {CELEBRATIONS.map((c) => (
-                    <div
-                      key={c.id}
-                      style={{
-                        backgroundColor: theme.subtle,
-                        borderColor: theme.border,
-                      }}
-                      className="border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span
-                            style={{ color: theme.textPrimary }}
-                            className="font-semibold text-sm"
-                          >
-                            {c.title}
-                          </span>
-                          <span
-                            style={{
-                              backgroundColor: theme.surface,
-                              borderColor: theme.border,
-                              color: theme.textPrimary,
-                            }}
-                            className="text-[10px] font-mono uppercase tracking-wider font-semibold px-2.5 py-0.5 rounded-full border"
-                          >
-                            {c.date}
-                          </span>
-                        </div>
-                        <p
-                          style={{ color: theme.textSecondary }}
-                          className="mt-1 leading-normal text-xs"
-                        >
-                          {c.note}
-                        </p>
-                      </div>
-
-                      <button
-                        style={{
-                          backgroundColor: theme.btnPrimaryBg,
-                          color: theme.btnPrimaryText,
-                        }}
-                        className="h-8 px-4 rounded-full text-xs font-semibold tracking-tight self-start sm:self-auto shrink-0 shadow-sm transition"
-                      >
-                        Sign Card ✍️
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* TAB: GATHERINGS */}
-            {activeTab === "gatherings" && (
-              <div
-                style={{
-                  backgroundColor: theme.surface,
-                  borderColor: theme.border,
-                }}
-                className="border rounded-[24px] p-6 shadow-sm space-y-5"
-              >
-                <div>
-                  <span
-                    style={{
-                      backgroundColor: theme.subtle,
-                      borderColor: theme.border,
-                      color: theme.textPrimary,
-                    }}
-                    className="text-[10px] font-mono uppercase tracking-wider font-bold px-2.5 py-0.5 rounded-full border inline-block"
-                  >
-                    Upcoming Reunion
-                  </span>
-                  <h2
-                    style={{ color: theme.textPrimary }}
-                    className="text-lg font-bold tracking-tight mt-2"
-                  >
-                    Sunday Family Roast & Lawn Games
-                  </h2>
-                  <div
-                    style={{ color: theme.textSecondary }}
-                    className="flex flex-wrap items-center gap-4 text-xs mt-1.5"
-                  >
-                    <span className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5" /> Sunday, Oct 12 &bull; 4:00 PM
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5" /> Grandma Rose's Backyard
-                    </span>
-                  </div>
-                </div>
-
-                {/* Attendance RSVP Pill Card */}
-                <div
-                  style={{
-                    backgroundColor: theme.subtle,
-                    borderColor: theme.border,
-                  }}
-                  className="border rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
-                >
-                  <div>
-                    <span
-                      style={{ color: theme.textPrimary }}
-                      className="font-semibold block"
-                    >
-                      Your Family RSVP
-                    </span>
-                    <span
-                      style={{ color: theme.textSecondary }}
-                      className="text-[11px]"
-                    >
-                      {rsvpStatus === "going"
-                        ? "Attending with 4 family members"
-                        : "Not attending"}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setRsvpStatus("going")}
-                      style={{
-                        backgroundColor:
-                          rsvpStatus === "going"
-                            ? theme.btnPrimaryBg
-                            : theme.surface,
-                        color:
-                          rsvpStatus === "going"
-                            ? theme.btnPrimaryText
-                            : theme.textPrimary,
-                        borderColor: theme.border,
-                      }}
-                      className="h-8 px-4 rounded-full border font-semibold text-xs tracking-tight transition"
-                    >
-                      ✓ Coming (4)
-                    </button>
-                    <button
-                      onClick={() => setRsvpStatus(null)}
-                      style={{
-                        backgroundColor:
-                          rsvpStatus === null
-                            ? theme.btnPrimaryBg
-                            : theme.surface,
-                        color:
-                          rsvpStatus === null
-                            ? theme.btnPrimaryText
-                            : theme.textPrimary,
-                        borderColor: theme.border,
-                      }}
-                      className="h-8 px-4 rounded-full border font-semibold text-xs tracking-tight transition"
-                    >
-                      Can't Go
-                    </button>
-                  </div>
-                </div>
-
-                {/* Potluck Coordination */}
-                <div>
-                  <h3
-                    style={{ color: theme.textSecondary }}
-                    className="text-[11px] font-semibold uppercase tracking-[0.06em] mb-2.5"
-                  >
-                    Potluck & Supplies List
-                  </h3>
-                  <div className="space-y-2 text-xs">
-                    <div
-                      style={{
-                        backgroundColor: theme.subtle,
-                        borderColor: theme.border,
-                      }}
-                      className="flex items-center justify-between p-3 rounded-xl border"
-                    >
-                      <span style={{ color: theme.textPrimary }}>
-                        Apple skillet tart & fresh cream
-                      </span>
-                      <span
-                        style={{ color: theme.textSecondary }}
-                        className="font-medium text-[11px]"
-                      >
-                        ✓ Rose Miller
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        backgroundColor: theme.subtle,
-                        borderColor: theme.border,
-                      }}
-                      className="flex items-center justify-between p-3 rounded-xl border"
-                    >
-                      <span style={{ color: theme.textPrimary }}>
-                        Marinated brisket & grill tongs
-                      </span>
-                      <span
-                        style={{ color: theme.textSecondary }}
-                        className="font-medium text-[11px]"
-                      >
-                        ✓ Mark Miller
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        backgroundColor: theme.subtle,
-                        borderColor: theme.border,
-                      }}
-                      className="flex items-center justify-between p-3 rounded-xl border"
-                    >
-                      <span style={{ color: theme.textPrimary }}>
-                        Roasted corn salad & cold lemonade
-                      </span>
-                      <button
-                        style={{ color: theme.textPrimary }}
-                        className="font-semibold hover:underline text-xs"
-                      >
-                        Claim item +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* TAB: FAMILY TREE / ROOTS */}
-            {activeTab === "tree" && (
-              <div
-                style={{
-                  backgroundColor: theme.surface,
-                  borderColor: theme.border,
-                }}
-                className="border rounded-[24px] p-6 shadow-sm space-y-5"
-              >
-                <div>
-                  <h2
-                    style={{ color: theme.textPrimary }}
-                    className="text-base font-semibold tracking-tight"
-                  >
-                    Generational Lineage Tree
-                  </h2>
-                  <p
-                    style={{ color: theme.textSecondary }}
-                    className="text-xs leading-relaxed mt-1"
-                  >
-                    3 Generations preserved in the family archives.
-                  </p>
-                </div>
-
-                <div className="space-y-5 pt-2">
-                  {FAMILY_TREE_NODES.map((tier, idx) => (
-                    <div key={idx} className="space-y-2.5">
-                      <div
-                        style={{ color: theme.textSecondary }}
-                        className="text-[11px] font-mono uppercase tracking-[0.06em] font-semibold"
-                        dangerouslySetInnerHTML={{ __html: tier.generation }}
-                      />
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        {tier.members.map((m, mIdx) => (
-                          <div
-                            key={mIdx}
-                            style={{
-                              backgroundColor: theme.subtle,
-                              borderColor: theme.border,
-                            }}
-                            className="border rounded-2xl p-3 flex items-center gap-3 text-xs"
-                          >
-                            <img
-                              src={m.avatar}
-                              alt={m.name}
-                              style={{ borderColor: theme.border }}
-                              className="w-10 h-10 rounded-full object-cover border shrink-0"
-                            />
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-1.5">
-                                <span
-                                  style={{ color: theme.textPrimary }}
-                                  className="font-semibold block truncate"
-                                >
-                                  {m.name}
-                                </span>
-                                <span
-                                  style={{
-                                    backgroundColor: theme.surface,
-                                    borderColor: theme.border,
-                                    color: theme.textSecondary,
-                                  }}
-                                  className="text-[9px] font-mono px-1.5 py-0.2 rounded-full border uppercase"
-                                >
-                                  {m.pill}
-                                </span>
-                              </div>
-                              <span
-                                style={{ color: theme.textSecondary }}
-                                className="text-[11px] block"
-                              >
-                                {m.relation} &bull; {m.lifespan}
-                              </span>
-                            </div>
-                            <button
-                              style={{
-                                backgroundColor: theme.surface,
-                                borderColor: theme.border,
-                                color: theme.textPrimary,
-                              }}
-                              className="px-2.5 py-1 rounded-full border text-[11px] font-medium hover:opacity-80 transition"
-                            >
-                              Bio
-                            </button>
+                    {/* Comment Thread */}
+                    {post.comments.length > 0 && (
+                      <div className="space-y-2 pt-2 border-t border-zinc-100 dark:border-zinc-800/60">
+                        {post.comments.map((c) => (
+                          <div key={c.id} className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-850/60 text-xs space-y-0.5">
+                            <span className="font-semibold text-zinc-900 dark:text-zinc-100">{c.author}: </span>
+                            <span className="text-zinc-700 dark:text-zinc-300">{c.text}</span>
                           </div>
                         ))}
+
+                        {/* Add Comment Input */}
+                        <div className="flex items-center gap-2 pt-1">
+                          <input
+                            type="text"
+                            value={commentInputs[post.id] || ""}
+                            onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
+                            onKeyDown={(e) => e.key === "Enter" && handleAddComment(post.id)}
+                            placeholder="Write a comment for the family..."
+                            className="flex-1 bg-zinc-100 dark:bg-zinc-850 px-3 py-2 rounded-full text-xs border-none focus:outline-none"
+                          />
+                          <button
+                            onClick={() => handleAddComment(post.id)}
+                            className="p-2 rounded-full bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 text-xs cursor-pointer"
+                          >
+                            <Send className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right 5 Columns: The Living Room Shelf */}
+            <div className="lg:col-span-5 space-y-6">
+              
+              {/* 1. On This Day Polaroid (Nostalgic Keepsake) */}
+              <div
+                style={{
+                  backgroundColor: theme.surface,
+                  borderColor: theme.border,
+                }}
+                className="p-5 rounded-[28px] border shadow-xs space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400">
+                    On This Day &bull; 2023
+                  </span>
+                  <span className="text-xs text-zinc-400">3 Years Ago Today</span>
+                </div>
+
+                <div className="p-2 rounded-2xl bg-zinc-50 dark:bg-zinc-850 border border-zinc-200/60 dark:border-zinc-800 space-y-2">
+                  <img
+                    src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=600&q=80"
+                    alt="Throwback"
+                    className="w-full h-44 object-cover rounded-xl"
+                  />
+                  <p
+                    style={{ fontFamily: 'Georgia, Cambria, serif' }}
+                    className="text-xs italic text-zinc-700 dark:text-zinc-300 px-1 py-0.5"
+                  >
+                    “The whole family gathered at Girgaon Chowpatty during the Ganpati Visarjan procession.”
+                  </p>
+                </div>
+                <div className="text-center text-xs text-zinc-400">Preserved in Kadam Heritage Vault</div>
+              </div>
+
+              {/* 2. Celebration Radar */}
+              <div
+                style={{
+                  backgroundColor: theme.surface,
+                  borderColor: theme.border,
+                }}
+                className="p-5 rounded-[28px] border shadow-xs space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-sm text-zinc-950 dark:text-zinc-50 flex items-center gap-1.5">
+                    <Cake className="w-4 h-4 text-rose-500" />
+                    <span>Celebration Radar</span>
+                  </h3>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800">October</span>
+                </div>
+
+                <div className="space-y-2.5">
+                  {CELEBRATIONS.map((c) => (
+                    <div key={c.id} className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-850/60 border border-zinc-200/60 dark:border-zinc-800 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-semibold text-xs text-zinc-900 dark:text-zinc-100">{c.title}</span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 font-bold">
+                          {c.date}
+                        </span>
+                      </div>
+                      <p className="text-xs text-zinc-500">{c.note}</p>
+                      <div className="pt-1">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-0.5 rounded-full">
+                          ✨ {c.pill}
+                        </span>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-          </div>
 
-          {/* SECONDARY COLUMN: The Living Room Shelf (5 cols) */}
-          <aside className="lg:col-span-5 space-y-6">
-            {/* "On This Day" Archival Polaroid Card with Pills */}
-            <div
-              style={{
-                backgroundColor: theme.surface,
-                borderColor: theme.border,
-              }}
-              className="border rounded-[24px] p-5 shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-3 relative overflow-hidden"
-            >
-              <div className="flex items-center justify-between">
-                <span
-                  style={{
-                    backgroundColor: theme.subtle,
-                    color: theme.textPrimary,
-                    borderColor: theme.border,
-                  }}
-                  className="text-[10px] font-mono uppercase tracking-widest font-bold px-2.5 py-0.5 rounded-full border"
-                >
-                  On This Day &bull; 2023
-                </span>
-                <span
-                  style={{ color: theme.textSecondary }}
-                  className="text-xs"
-                >
-                  3 Years Ago
-                </span>
-              </div>
-
-              {/* Polaroid Photo Frame */}
+              {/* 3. Upcoming Family Trip Card */}
               <div
                 style={{
-                  backgroundColor: theme.subtle,
+                  backgroundColor: theme.surface,
                   borderColor: theme.border,
                 }}
-                className="border p-2 rounded-2xl shadow-sm"
+                className="p-5 rounded-[28px] border shadow-xs space-y-3"
               >
-                <img
-                  src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
-                  alt="Archival memory"
-                  className="w-full h-44 object-cover rounded-xl"
-                />
-                <p
-                  style={{ color: theme.textPrimary }}
-                  className="text-xs font-medium p-2 leading-relaxed"
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-sm text-zinc-950 dark:text-zinc-50 flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4 text-amber-500" />
+                    <span>Upcoming Family Trip</span>
+                  </h3>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 font-bold">In 8 Days</span>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="font-bold text-sm text-zinc-900 dark:text-zinc-100">Alibaug Beach Farmhouse Getaway 🌴</p>
+                  <p className="text-xs text-zinc-500">Oct 24–26 &bull; Near Mandwa Jetty &amp; Kihim Beach</p>
+                </div>
+
+                <button
+                  onClick={() => setActiveTab("trips")}
+                  className="w-full py-2 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-800 flex items-center justify-center gap-1 cursor-pointer transition"
                 >
-                  "Family weekend camping at Whispering Pines Lake. Arthur made the bonfire pancakes."
+                  <span>View Trip Details &amp; Packing List</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 2: FAMILY TRIPS & EVENTS PLANNER (PROPOSAL 5)                         */}
+        {/* ========================================================================= */}
+        {activeTab === "trips" && (
+          <div
+            style={{
+              backgroundColor: theme.surface,
+              borderColor: theme.border,
+            }}
+            className="p-6 sm:p-8 rounded-[32px] border shadow-sm space-y-6"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-5">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-0.5 rounded-full bg-amber-500/10 text-amber-600 text-xs font-bold font-mono">
+                    Family Trip 2026
+                  </span>
+                  <span className="text-xs text-zinc-400">Starting in 8 Days</span>
+                </div>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50 mt-1">
+                  Alibaug Beach &amp; Coconut Farmhouse Getaway 🌴
+                </h2>
+                <p className="text-xs sm:text-sm text-zinc-500 mt-0.5">
+                  Friday Oct 24 to Sunday Oct 26 &bull; Kihim Beach Road, Mandwa Jetty, Alibaug
                 </p>
               </div>
 
-              <button
-                style={{
-                  color: theme.textPrimary,
-                }}
-                className="w-full text-center text-xs font-semibold hover:underline flex items-center justify-center gap-1 pt-1"
-              >
-                Open Archival Album <ChevronRight className="w-3.5 h-3.5" />
-              </button>
+              {/* Attendance RSVP Toggle */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-semibold text-zinc-500 block">Your Attendance (RSVP):</span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => setRsvpStatus("going")}
+                    className={`h-9 px-4 rounded-full text-xs font-bold border transition cursor-pointer ${
+                      rsvpStatus === "going"
+                        ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 border-zinc-900"
+                        : "border-zinc-200 dark:border-zinc-800 text-zinc-600"
+                    }`}
+                  >
+                    ✓ We are 4 Going
+                  </button>
+                  <button
+                    onClick={() => setRsvpStatus("tentative")}
+                    className={`h-9 px-4 rounded-full text-xs font-bold border transition cursor-pointer ${
+                      rsvpStatus === "tentative"
+                        ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 border-zinc-900"
+                        : "border-zinc-200 dark:border-zinc-800 text-zinc-600"
+                    }`}
+                  >
+                    Maybe (2)
+                  </button>
+                  <button
+                    onClick={() => setRsvpStatus("cant")}
+                    className={`h-9 px-4 rounded-full text-xs font-bold border transition cursor-pointer ${
+                      rsvpStatus === "cant"
+                        ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 border-zinc-900"
+                        : "border-zinc-200 dark:border-zinc-800 text-zinc-600"
+                    }`}
+                  >
+                    Can't Go
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* Quick Milestones Mini-Shelf with Pills */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Collaborative Packing & Essentials Checklist */}
+              <div className="lg:col-span-7 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-base text-zinc-950 dark:text-zinc-50 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    <span>Collaborative Packing &amp; Supplies Checklist</span>
+                  </h3>
+                  <span className="text-xs text-zinc-400">2 of 4 items claimed</span>
+                </div>
+
+                <div className="space-y-2.5 text-xs sm:text-sm">
+                  <div className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-850/50 flex items-center justify-between">
+                    <div>
+                      <span className="font-semibold text-zinc-900 dark:text-zinc-100 block">First-aid kit, Odomos &amp; travel medicine</span>
+                      <span className="text-xs text-zinc-500">Essential health &amp; safety supplies</span>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full">
+                      ✓ Claimed by Anjali Kaku
+                    </span>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-850/50 flex items-center justify-between">
+                    <div>
+                      <span className="font-semibold text-zinc-900 dark:text-zinc-100 block">Badminton racquets, volleyball &amp; carrom board</span>
+                      <span className="text-xs text-zinc-500">Outdoor games for beach &amp; lawn</span>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full">
+                      ✓ Claimed by Amit Dada
+                    </span>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-850/50 flex items-center justify-between">
+                    <div>
+                      <span className="font-semibold text-zinc-900 dark:text-zinc-100 block">Bluetooth speaker &amp; vintage songs playlist</span>
+                      <span className="text-xs text-zinc-500">For Saturday evening campfire stories</span>
+                    </div>
+                    {activePackingItems.speaker ? (
+                      <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full">
+                        ✓ Claimed by Anand Baba
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => setActivePackingItems({ ...activePackingItems, speaker: true })}
+                        className="text-xs font-semibold px-3 py-1 rounded-full border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition"
+                      >
+                        Claim this item +
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-850/50 flex items-center justify-between">
+                    <div>
+                      <span className="font-semibold text-zinc-900 dark:text-zinc-100 block">Homemade travel snacks: Poha Chivda &amp; Besan Ladoos</span>
+                      <span className="text-xs text-zinc-500">For Saturday morning tea by the beach</span>
+                    </div>
+                    {activePackingItems.faral ? (
+                      <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full">
+                        ✓ Claimed by Supriya Aai
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => setActivePackingItems({ ...activePackingItems, faral: true })}
+                        className="text-xs font-semibold px-3 py-1 rounded-full border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition"
+                      >
+                        Claim this item +
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Trip Itinerary Highlights */}
+              <div className="lg:col-span-5 space-y-4">
+                <h3 className="font-bold text-base text-zinc-950 dark:text-zinc-50 flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-amber-500" />
+                  <span>Daily Itinerary Highlights</span>
+                </h3>
+
+                <div className="space-y-3 text-xs sm:text-sm">
+                  <div className="p-3.5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-zinc-900 dark:text-zinc-100">Friday 5:00 PM</span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800">Mandwa Jetty</span>
+                    </div>
+                    <p className="text-xs text-zinc-500">Ro-Ro ferry arrival, fresh tender coconut water &amp; farmhouse check-in.</p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-zinc-900 dark:text-zinc-100">Saturday 8:30 AM</span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800">Kihim Beach</span>
+                    </div>
+                    <p className="text-xs text-zinc-500">Morning beach walk, volleyball, sandcastles &amp; annual family photograph.</p>
+                  </div>
+
+                  <div className="p-3.5 rounded-2xl bg-zinc-50/70 dark:bg-zinc-850/50 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-zinc-900 dark:text-zinc-100">Saturday 8:00 PM</span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800">Campfire Ring</span>
+                    </div>
+                    <p className="text-xs text-zinc-500">Living Hearth campfire stories, Antakshari singing &amp; Aaji's childhood tales.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 3: GENERATIONAL FAMILY TREE & ROOTS (PROPOSAL 2)                      */}
+        {/* ========================================================================= */}
+        {activeTab === "tree" && (
+          <div
+            style={{
+              backgroundColor: theme.surface,
+              borderColor: theme.border,
+            }}
+            className="p-6 sm:p-8 rounded-[32px] border shadow-sm space-y-8"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-5">
+              <div>
+                <span className="px-3 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs font-mono">
+                  Generational Heritage Tree
+                </span>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50 mt-1">
+                  The Kadam Family Tree &amp; Roots
+                </h2>
+                <p className="text-xs sm:text-sm text-zinc-500 mt-0.5">
+                  Spanning 3 connected generations from Sangameshwar (Ratnagiri) to Mumbai and Pune.
+                </p>
+              </div>
+
+              {/* Onboarding Lineage Discovery Prompt (Proposal 2) */}
+              <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs max-w-sm">
+                <span className="font-bold block">💡 Lineage Discovery Questionnaire:</span>
+                <span>When new relatives join, 3 quick prompts capture: Parents' Names, Partner's Name, and Birth Year to automatically build the tree without missing links.</span>
+              </div>
+            </div>
+
+            {/* Generational Tree Tiers */}
+            <div className="space-y-8 relative">
+              {MARATHI_FAMILY_TREE.map((tier, idx) => (
+                <div key={idx} className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-900 dark:bg-zinc-100" />
+                    <h3 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 uppercase tracking-wide font-mono">
+                      {tier.generation}
+                    </h3>
+                    <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-800" />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {tier.members.map((member, mIdx) => (
+                      <div
+                        key={mIdx}
+                        className="p-4 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-850/40 space-y-3 hover:border-zinc-400 transition"
+                      >
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={member.avatar}
+                            alt={member.name}
+                            className="w-12 h-12 rounded-full object-cover ring-2 ring-white dark:ring-zinc-800 shadow-xs"
+                          />
+                          <div>
+                            <span className="font-bold text-xs sm:text-sm text-zinc-950 dark:text-zinc-50 block">
+                              {member.name}
+                            </span>
+                            <span className="text-[11px] text-zinc-500 block">{member.relation}</span>
+                            <span className="text-[10px] font-mono text-zinc-400">{member.lifespan}</span>
+                          </div>
+                        </div>
+
+                        <div className="pt-1 border-t border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-between">
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300">
+                            {member.pill}
+                          </span>
+                          <span className="text-[10px] text-zinc-400">View Roots ↗</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 4: LIVING HEARTH & MINI-GAMES (PROPOSAL 6)                            */}
+        {/* ========================================================================= */}
+        {activeTab === "gamification" && (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            {/* Left 6 Columns: The Living Hearth Fire */}
             <div
               style={{
                 backgroundColor: theme.surface,
                 borderColor: theme.border,
               }}
-              className="border rounded-[24px] p-5 shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-4"
+              className="lg:col-span-6 p-6 sm:p-8 rounded-[32px] border shadow-sm space-y-6"
             >
-              <div className="flex items-center justify-between">
-                <h3
-                  style={{ color: theme.textPrimary }}
-                  className="font-semibold text-sm tracking-tight flex items-center gap-1.5"
-                >
-                  <Cake className="w-4 h-4 text-zinc-500" />
-                  <span>Celebration Radar</span>
-                </h3>
-                <span
-                  style={{
-                    backgroundColor: theme.subtle,
-                    borderColor: theme.border,
-                    color: theme.textSecondary,
-                  }}
-                  className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full border"
-                >
-                  October
+              <div className="space-y-1">
+                <span className="px-3 py-0.5 rounded-full bg-amber-500/10 text-amber-600 text-xs font-bold font-mono">
+                  Daily Family Hearth Ritual
                 </span>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
+                  The Living Hearth Fire
+                </h2>
+                <p className="text-xs text-zinc-500">
+                  Any family member can toss a log on the fire once a day. Each log extends the collective family warmth streak!
+                </p>
               </div>
 
-              <div className="space-y-3">
-                <div
-                  style={{
-                    backgroundColor: theme.subtle,
-                    borderColor: theme.border,
-                  }}
-                  className="border rounded-2xl p-3 flex items-center justify-between text-xs"
-                >
-                  <div>
-                    <span
-                      style={{ color: theme.textPrimary }}
-                      className="font-semibold block"
-                    >
-                      Rose Miller (78th)
-                    </span>
-                    <span
-                      style={{ color: theme.textSecondary }}
-                      className="text-[11px]"
-                    >
-                      Grandmother &bull; In 4 days
-                    </span>
-                  </div>
-                  <span
-                    style={{
-                      backgroundColor: theme.surface,
-                      borderColor: theme.border,
-                      color: theme.textPrimary,
-                    }}
-                    className="text-[11px] font-mono px-2.5 py-0.5 rounded-full border font-medium"
-                  >
-                    Oct 6
-                  </span>
+              {/* Animated Fireplace HUD */}
+              <div className="p-8 rounded-3xl bg-linear-to-b from-zinc-900 to-black text-center space-y-4 border border-zinc-800 relative overflow-hidden">
+                <div className="w-20 h-20 mx-auto rounded-full bg-amber-500/20 flex items-center justify-center relative">
+                  <Flame className="w-12 h-12 text-amber-400 fill-amber-400 animate-pulse" />
+                  <span className="absolute inset-0 rounded-full border-2 border-amber-400/40 animate-ping" />
                 </div>
 
-                <div
-                  style={{
-                    backgroundColor: theme.subtle,
-                    borderColor: theme.border,
-                  }}
-                  className="border rounded-2xl p-3 flex items-center justify-between text-xs"
-                >
-                  <div>
-                    <span
-                      style={{ color: theme.textPrimary }}
-                      className="font-semibold block"
-                    >
-                      David & Clara (15th)
-                    </span>
-                    <span
-                      style={{ color: theme.textSecondary }}
-                      className="text-[11px]"
-                    >
-                      Anniversary &bull; 3 weeks
-                    </span>
-                  </div>
-                  <span
-                    style={{
-                      backgroundColor: theme.surface,
-                      borderColor: theme.border,
-                      color: theme.textPrimary,
-                    }}
-                    className="text-[11px] font-mono px-2.5 py-0.5 rounded-full border font-medium"
-                  >
-                    Oct 24
-                  </span>
+                <div className="space-y-1 text-white">
+                  <span className="text-3xl font-extrabold tracking-tight font-mono">{hearthLogs} Days</span>
+                  <p className="text-xs text-zinc-400">The Kadam family hearth has been burning continuously</p>
                 </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={handleTossLog}
+                    disabled={hasTossedLog}
+                    className={`px-6 py-3 rounded-full text-xs font-bold flex items-center gap-2 mx-auto transition cursor-pointer ${
+                      hasTossedLog
+                        ? "bg-zinc-800 text-zinc-400 cursor-not-allowed border border-zinc-700"
+                        : "bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-lg shadow-amber-500/20"
+                    }`}
+                  >
+                    <Flame className="w-4 h-4 fill-current" />
+                    <span>{hasTossedLog ? "You tossed a log today! ✓" : "Toss a Log on the Fire 🔥"}</span>
+                  </button>
+                </div>
+
+                <div className="text-[11px] text-zinc-500 pt-2">
+                  Suman Aaji, Anand Baba, and Anjali Kaku kept the hearth alive today.
+                </div>
+              </div>
+
+              {/* Sunday Fishing Pond Mini-Game */}
+              <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-850/60 border border-zinc-200 dark:border-zinc-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                    <Fish className="w-4 h-4 text-cyan-500" />
+                    <span>Sunday Morning Fishing Pond</span>
+                  </h3>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-600">Peaceful Minigame</span>
+                </div>
+
+                <p className="text-xs text-zinc-500">
+                  A tranquil 2-minute minigame for grandparents and grandchildren. Cast a bobber into the lake and reel in vintage family keepsake bottles!
+                </p>
+
+                <div className="pt-1">
+                  <button
+                    onClick={handleFish}
+                    disabled={isFishing}
+                    className="px-4 py-2 rounded-full bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Compass className="w-3.5 h-3.5" />
+                    <span>{isFishing ? "Casting line... waiting for a tug..." : "Cast Line into Pond 🎣"}</span>
+                  </button>
+                </div>
+
+                {caughtKeepsake && (
+                  <div className="p-3.5 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-200 dark:border-cyan-800 text-xs text-cyan-950 dark:text-cyan-200 animate-fadeIn">
+                    <span className="font-bold block mb-1">🎉 You reeled in a Family Keepsake Bottle!</span>
+                    <p style={{ fontFamily: 'Georgia, Cambria, serif' }} className="italic text-sm">{caughtKeepsake}</p>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Living Room Gathering Widget with Attendee Overlap Pills */}
+            {/* Right 6 Columns: Guess the Baby Challenge */}
             <div
               style={{
                 backgroundColor: theme.surface,
                 borderColor: theme.border,
               }}
-              className="border rounded-[24px] p-5 shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-3"
+              className="lg:col-span-6 p-6 sm:p-8 rounded-[32px] border shadow-sm space-y-6"
             >
-              <div className="flex items-center justify-between">
-                <h3
-                  style={{ color: theme.textPrimary }}
-                  className="font-semibold text-sm tracking-tight flex items-center gap-1.5"
-                >
-                  <Calendar className="w-4 h-4 text-zinc-500" />
-                  <span>Sunday Dinner</span>
-                </h3>
-                <span
-                  style={{
-                    backgroundColor: theme.subtle,
-                    borderColor: theme.border,
-                    color: theme.textSecondary,
-                  }}
-                  className="text-[10px] font-mono uppercase px-2.5 py-0.5 rounded-full border"
-                >
-                  Oct 12
+              <div className="space-y-1">
+                <span className="px-3 py-0.5 rounded-full bg-rose-500/10 text-rose-600 text-xs font-bold font-mono">
+                  Weekly Family Nostalgia
                 </span>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
+                  Guess the Baby Challenge
+                </h2>
+                <p className="text-xs text-zinc-500">
+                  Every Sunday, a vintage childhood photo of a relative is posted. Cast your vote and see if you guessed right before the weekend reveal!
+                </p>
               </div>
-              <p
-                style={{ color: theme.textSecondary }}
-                className="text-xs leading-relaxed"
-              >
-                Backyard grill at Grandma's house. 5 of 6 relatives attending.
-              </p>
-              <div className="flex -space-x-2 overflow-hidden pt-1">
-                {[
-                  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=120&q=80",
-                  "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?auto=format&fit=crop&w=120&q=80",
-                  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
-                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80",
-                  "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80",
-                ].map((src, i) => (
+
+              {/* Mystery Photo Frame */}
+              <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-800 space-y-3">
+                <div className="h-64 rounded-xl overflow-hidden bg-zinc-200 dark:bg-zinc-800 relative">
                   <img
-                    key={i}
-                    src={src}
-                    alt="Attendee"
-                    style={{ borderColor: theme.surface }}
-                    className="inline-block h-7 w-7 rounded-full ring-2 ring-zinc-200 dark:ring-zinc-800 object-cover"
+                    src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80"
+                    alt="Mystery baby"
+                    className="w-full h-full object-cover filter sepia-60"
                   />
-                ))}
+                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-mono text-xs">
+                    Year: 1984 &bull; Location: Girgaon
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <h4 className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100">
+                    Who is this chubby baby in the vintage photo?
+                  </h4>
+
+                  <div className="grid grid-cols-1 gap-2 pt-1">
+                    {[
+                      { id: "anand", label: "Anand Kadam (Baba)", pct: "64% Votes" },
+                      { id: "rajesh", label: "Rajesh Kadam (Kaka)", pct: "28% Votes" },
+                      { id: "amit", label: "Amit Kadam (Dada)", pct: "8% Votes" },
+                    ].map((opt) => (
+                      <button
+                        key={opt.id}
+                        onClick={() => setBabyPollVote(opt.id)}
+                        className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-between transition cursor-pointer ${
+                          babyPollVote === opt.id
+                            ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-950 border-zinc-900"
+                            : "bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50"
+                        }`}
+                      >
+                        <span>{opt.label}</span>
+                        {babyPollVote && <span className="font-mono text-xs opacity-75">{opt.pct}</span>}
+                      </button>
+                    ))}
+                  </div>
+
+                  {babyPollVote && (
+                    <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 text-xs">
+                      ✓ Vote recorded! Suman Aaji will reveal the real story behind this picture on Sunday evening.
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </aside>
-        </div>
-      </main>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 5: FRICTIONLESS FAMILY AUTH DEMO (PROPOSAL 3)                         */}
+        {/* ========================================================================= */}
+        {activeTab === "auth" && (
+          <div
+            style={{
+              backgroundColor: theme.surface,
+              borderColor: theme.border,
+            }}
+            className="p-6 sm:p-8 rounded-[32px] border shadow-sm space-y-6 max-w-2xl mx-auto"
+          >
+            <div className="text-center space-y-2 border-b border-zinc-100 dark:border-zinc-800 pb-5">
+              <span className="px-3 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-xs font-mono">
+                Proposal 3 &bull; Frictionless Access
+              </span>
+              <h2 className="text-2xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
+                Farewell to Passwords: 6-Digit PIN &amp; WhatsApp-Style QR
+              </h2>
+              <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
+                Typing complex emails and 12-character passwords is intimidating for grandparents and children. We propose two frictionless alternatives:
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              
+              {/* Option A: 6-Digit PIN Keypad Demo */}
+              <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-850/60 border border-zinc-200 dark:border-zinc-800 space-y-4">
+                <div className="flex items-center gap-2">
+                  <KeyRound className="w-4 h-4 text-emerald-500" />
+                  <span className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100">Option 1: 6-Digit PIN</span>
+                </div>
+
+                <div className="text-center space-y-2">
+                  <div className="flex justify-center gap-2 py-2">
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <div
+                        key={i}
+                        className={`w-3.5 h-3.5 rounded-full border border-zinc-300 dark:border-zinc-700 transition ${
+                          enteredPin.length > i ? "bg-zinc-900 dark:bg-zinc-100" : "bg-transparent"
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {pinSuccess ? (
+                    <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-200 text-xs font-bold">
+                      ✓ Welcome, Anand Baba! (Authenticated)
+                    </div>
+                  ) : (
+                    <span className="text-[11px] text-zinc-400 block font-mono">Test PIN: 240819</span>
+                  )}
+                </div>
+
+                {/* Keypad */}
+                <div className="grid grid-cols-3 gap-1.5 max-w-48 mx-auto font-mono">
+                  {["1", "2", "3", "4", "5", "6", "7", "8", "9", "C", "0", "←"].map((btn) => (
+                    <button
+                      key={btn}
+                      onClick={() => {
+                        if (btn === "C") {
+                          setEnteredPin("");
+                          setPinSuccess(false);
+                        } else if (btn === "←") {
+                          setEnteredPin(enteredPin.slice(0, -1));
+                          setPinSuccess(false);
+                        } else {
+                          handlePinInput(btn);
+                        }
+                      }}
+                      className="h-10 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs font-bold hover:bg-zinc-100 transition cursor-pointer select-none"
+                    >
+                      {btn}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Option B: WhatsApp-Style QR Device Pairing */}
+              <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-850/60 border border-zinc-200 dark:border-zinc-800 space-y-4 text-center">
+                <div className="flex items-center justify-center gap-2">
+                  <QrCode className="w-4 h-4 text-cyan-500" />
+                  <span className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100">Option 2: QR Device Pairing</span>
+                </div>
+
+                <div className="p-4 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 w-40 h-40 mx-auto flex items-center justify-center shadow-xs">
+                  <div className="w-32 h-32 border-4 border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl flex flex-col items-center justify-center text-zinc-400 gap-1">
+                    <QrCode className="w-12 h-12 text-zinc-800 dark:text-zinc-200" />
+                    <span className="text-[9px] font-mono">Scan QR</span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-zinc-500 leading-relaxed">
+                  Scan this code from an already logged-in phone to instantly enter the living room on a new tablet without typing anything.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }

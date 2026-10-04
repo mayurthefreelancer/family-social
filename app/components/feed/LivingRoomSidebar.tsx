@@ -10,8 +10,6 @@ import {
   Heart,
   Mic,
   Sparkles,
-  Utensils,
-  Check,
 } from "lucide-react";
 import { Card } from "@/app/components/ui/Card";
 import { Badge } from "@/app/components/ui/Badge";
@@ -19,7 +17,6 @@ import { buttonVariants } from "@/app/components/ui/Button";
 
 export function LivingRoomSidebar() {
   const [rsvp, setRsvp] = useState<"going" | "maybe" | "declined" | null>("going");
-  const [saladClaimed, setSaladClaimed] = useState(false);
 
   return (
     <aside className="space-y-6">
@@ -51,13 +48,9 @@ export function LivingRoomSidebar() {
           </p>
         </div>
 
-        <Link
-          href="/prototype?tab=vault"
-          className="w-full text-center text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 hover:underline flex items-center justify-center gap-1 pt-1"
-        >
-          <span>Open Family Vault</span>
-          <ChevronRight className="w-3.5 h-3.5" />
-        </Link>
+        <div className="w-full text-center text-xs text-zinc-400 dark:text-zinc-500 pt-1">
+          Archived in Family Keepsakes
+        </div>
       </Card>
 
       {/* 2. Celebration Radar */}
@@ -86,27 +79,20 @@ export function LivingRoomSidebar() {
               Digital card is open. 5 relatives have written secret messages.
             </p>
             <div className="pt-1">
-              <Link
-                href="/prototype?tab=moments"
-                className={buttonVariants({
-                  variant: "outline",
-                  size: "sm",
-                  className: "h-8 px-3.5 text-xs font-semibold rounded-full border-zinc-300 dark:border-zinc-700",
-                })}
-              >
-                Sign Card ✨
-              </Link>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-700 bg-zinc-100/80 dark:bg-zinc-800/80 text-xs font-medium text-zinc-600 dark:text-zinc-300">
+                ✨ Digital card opens on birthday
+              </span>
             </div>
           </div>
         </div>
       </Card>
 
-      {/* 3. Sunday Gathering & Potluck Checklist */}
+      {/* 3. Next Family Trip & Event */}
       <Card className="rounded-[24px] border-zinc-200/80 dark:border-zinc-800 p-5 shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-4 bg-white dark:bg-zinc-900/60">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-sm sm:text-base tracking-tight flex items-center gap-2 text-zinc-950 dark:text-zinc-50">
             <Calendar className="w-4 h-4 text-zinc-500" />
-            <span>Next Gathering</span>
+            <span>Next Family Trip</span>
           </h3>
           <Badge variant="secondary" className="text-xs font-mono px-2.5 py-0.5">
             Oct 12
@@ -115,10 +101,10 @@ export function LivingRoomSidebar() {
 
         <div className="space-y-1.5">
           <p className="font-semibold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">
-            Sunday Lawn Roast &amp; Potluck
+            Autumn Cabin Weekend
           </p>
           <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
-            Sunday, 4:00 PM &bull; Maple Ridge Garden
+            Fri–Sun &bull; Whispering Pines Lakehouse
           </p>
         </div>
 
@@ -137,7 +123,7 @@ export function LivingRoomSidebar() {
                   : "bg-transparent text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-750 hover:bg-zinc-100 dark:hover:bg-zinc-800/80"
               }`}
             >
-              ✓ Coming (4)
+              ✓ Going (4)
             </button>
             <button
               type="button"
@@ -164,35 +150,19 @@ export function LivingRoomSidebar() {
           </div>
         </div>
 
-        {/* Potluck Items */}
+        {/* Trip Highlights & Itinerary */}
         <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800/80 space-y-2">
           <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wider block">
-            Potluck Checklist
+            Trip Highlights
           </span>
           <div className="space-y-1.5 text-xs sm:text-sm">
             <div className="flex items-center justify-between p-2.5 rounded-xl border border-zinc-200/60 dark:border-zinc-750 bg-zinc-50/50 dark:bg-zinc-800/50">
-              <span className="text-zinc-800 dark:text-zinc-200">Apple skillet tart</span>
-              <span className="text-xs text-zinc-500 font-medium">✓ Rose Miller</span>
+              <span className="text-zinc-800 dark:text-zinc-200">Lake trail hike & picnic</span>
+              <span className="text-xs text-zinc-500 font-medium">Sat 10:00 AM</span>
             </div>
             <div className="flex items-center justify-between p-2.5 rounded-xl border border-zinc-200/60 dark:border-zinc-750 bg-zinc-50/50 dark:bg-zinc-800/50">
-              <span className="text-zinc-800 dark:text-zinc-200">Marinated brisket</span>
-              <span className="text-xs text-zinc-500 font-medium">✓ Mark Miller</span>
-            </div>
-            <div className="flex items-center justify-between p-2.5 rounded-xl border border-zinc-200/60 dark:border-zinc-750 bg-zinc-50/50 dark:bg-zinc-800/50">
-              <span className="text-zinc-800 dark:text-zinc-200">Roasted corn salad</span>
-              {saladClaimed ? (
-                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
-                  <Check className="w-3.5 h-3.5" /> You claimed
-                </span>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setSaladClaimed(true)}
-                  className="text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 hover:underline"
-                >
-                  Claim +
-                </button>
-              )}
+              <span className="text-zinc-800 dark:text-zinc-200">Campfire storytelling & s&apos;mores</span>
+              <span className="text-xs text-zinc-500 font-medium">Sat 8:00 PM</span>
             </div>
           </div>
         </div>
@@ -214,13 +184,9 @@ export function LivingRoomSidebar() {
           Mapping 3 connected generations across your direct and extended family branches.
         </p>
 
-        <Link
-          href="/prototype?tab=tree"
-          className="w-full text-center text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 hover:underline flex items-center justify-center gap-1 pt-1"
-        >
-          <span>Explore Generational Tree</span>
-          <ChevronRight className="w-3.5 h-3.5" />
-        </Link>
+        <div className="w-full text-center text-xs text-zinc-400 dark:text-zinc-500 pt-1">
+          3 Connected Generations
+        </div>
       </Card>
     </aside>
   );

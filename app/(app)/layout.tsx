@@ -1,6 +1,7 @@
 import { requireFamilyUser } from "../lib/auth";
 import { logout } from "../actions/auth";
 import { HearthHeader } from "../components/navigation/HearthHeader";
+import { MobileBottomNav } from "../components/navigation/MobileBottomNav";
 import { pool } from "../lib/db";
 
 export default async function AppLayout({
@@ -59,9 +60,12 @@ export default async function AppLayout({
         onLogout={logout}
       />
 
-      <main className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-20 lg:pb-6">
         {children}
       </main>
+
+      <MobileBottomNav />
     </div>
   );
 }
+

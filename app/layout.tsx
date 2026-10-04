@@ -5,9 +5,22 @@ import "./globals.css";
 import "./styles/tokens.css";
 
 export const metadata = {
-  title: "Family Social",
-  description: "Private family space",
+  title: "Kinship: The Digital Living Room",
+  description: "Private, sovereign family sanctuary for intimate memories and gatherings.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Kinship",
+  },
 };
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 
 export default function RootLayout({
   children,
@@ -16,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
-      <head>
+      <body suppressHydrationWarning>
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -36,8 +49,6 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
-      <body suppressHydrationWarning>
         <Providers>
           {children}
           <ThemeToggle />

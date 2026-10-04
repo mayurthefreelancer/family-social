@@ -70,7 +70,7 @@ export function UserMenu({
         {/* Avatar Button */}
         <button
           onClick={() => setOpen((prev) => !prev)}
-          className="p-0.5 rounded-full ring-2 ring-transparent hover:ring-zinc-300 dark:hover:ring-zinc-700 transition-all focus:outline-none cursor-pointer"
+          className="p-0.5 rounded-full aspect-square shrink-0 ring-2 ring-transparent hover:ring-zinc-300 dark:hover:ring-zinc-700 transition-all focus:outline-none cursor-pointer flex items-center justify-center overflow-hidden"
           title={displayName}
         >
           <Avatar
@@ -120,13 +120,6 @@ export function UserMenu({
                 </Link>
               )}
 
-              <Link
-                href="/prototype"
-                className="flex items-center gap-3 px-4 py-2.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                onClick={() => setOpen(false)}
-              >
-                <span>Preview Prototype ↗</span>
-              </Link>
             </div>
 
             <div className="border-t border-zinc-100 dark:border-zinc-800 my-1" />

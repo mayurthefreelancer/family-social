@@ -51,13 +51,6 @@ export default async function HomePage() {
 
           <div className="flex items-center gap-3">
             <Link
-              href="/prototype"
-              className="text-sm font-medium px-4 py-2 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors hidden sm:inline-flex"
-            >
-              Preview Prototype ↗
-            </Link>
-
-            <Link
               href="/login"
               className="text-sm font-medium px-4 py-2 rounded-full text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
             >
@@ -110,10 +103,10 @@ export default async function HomePage() {
               </Link>
 
               <Link
-                href="/prototype"
+                href="/login"
                 className="w-full sm:w-auto h-12 px-7 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm sm:text-base font-semibold shadow-sm flex items-center justify-center gap-2 transition-colors"
               >
-                <span>Explore Live Prototype</span>
+                <span>Enter Your Living Room</span>
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
@@ -367,7 +360,6 @@ export default async function HomePage() {
           </div>
           <div>Private &bull; End-to-End Family Sanctuary &bull; Zero Data Profiling</div>
           <div className="flex items-center gap-4 text-zinc-600 dark:text-zinc-400">
-            <Link href="/prototype" className="hover:underline">Prototype</Link>
             <Link href="/login" className="hover:underline">Sign In</Link>
             <Link href="/register" className="hover:underline">Register</Link>
           </div>

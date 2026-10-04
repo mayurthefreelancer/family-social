@@ -38,9 +38,12 @@ export async function addComment({
 
 export type CommentView = {
   id: string;
+  userId: string;
   authorName: string;
   authorAvatarUrl?: string | null;
   content: string;
+  isEdited?: boolean;
+  updatedAt?: string | null;
   createdAt: string;
 };
 
@@ -52,9 +55,12 @@ export async function getCommentsByPost(
     `
     SELECT
       c.id,
+      c.user_id AS "userId",
       COALESCE(p.display_name, u.name) AS "authorName",
       COALESCE(p.avatar_url, u.avatar_url) AS "authorAvatarUrl",
       c.content,
+      COALESCE(c.is_edited, false) AS "isEdited",
+      c.updated_at AS "updatedAt",
       c.created_at AS "createdAt"
     FROM comments c
     JOIN users u ON u.id = c.user_id

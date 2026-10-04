@@ -80,13 +80,6 @@ export function HearthHeader({
           </Link>
 
           <div className="flex items-center gap-3">
-            <Link
-              href="/prototype"
-              className="text-xs px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors hidden sm:inline-flex"
-            >
-              Prototype Preview ↗
-            </Link>
-
             <UserMenu
               displayName={user.displayName}
               avatarUrl={user.avatarUrl}
@@ -293,30 +286,6 @@ export function HearthHeader({
             <span className="text-xs font-mono px-2 py-0.5 rounded-full border border-black/5 dark:border-white/10 hidden sm:inline">
               {memoriesCount}
             </span>
-          </Link>
-
-          <Link
-            href="/prototype?tab=moments"
-            className="flex-1 h-10 px-3 rounded-full transition-all duration-150 flex items-center justify-center gap-2 text-sm font-semibold tracking-[-0.01em] text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
-          >
-            <Cake className="w-4 h-4 stroke-[1.8]" />
-            <span>Milestones</span>
-          </Link>
-
-          <Link
-            href="/prototype?tab=gatherings"
-            className="flex-1 h-10 px-3 rounded-full transition-all duration-150 flex items-center justify-center gap-2 text-sm font-semibold tracking-[-0.01em] text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
-          >
-            <Calendar className="w-4 h-4 stroke-[1.8]" />
-            <span>Gatherings</span>
-          </Link>
-
-          <Link
-            href="/prototype?tab=tree"
-            className="flex-1 h-10 px-3 rounded-full transition-all duration-150 flex items-center justify-center gap-2 text-sm font-semibold tracking-[-0.01em] text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
-          >
-            <GitFork className="w-4 h-4 stroke-[1.8]" />
-            <span>Family Tree</span>
           </Link>
 
           <Link

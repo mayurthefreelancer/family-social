@@ -1,8 +1,8 @@
 # 🏡 Kinship: The Digital Living Room – System Documentation & Architecture Guide
 
-> **Version:** 2.4.0  
-> **Status:** Production Ready  
-> **Tech Stack:** Next.js 15 (App Router), React 19, Tailwind CSS v4, PostgreSQL (`pg`), NextAuth.js (JWT Strategy)  
+> **Version:** 2.5.0  
+> **Status:** Production Ready (Sprint 1 Delivered)  
+> **Tech Stack:** Next.js 16 (App Router), React 19, Tailwind CSS v4, PostgreSQL (`pg`), NextAuth.js (JWT Strategy)  
 > **Architecture Pattern:** Multi-Tenant Intimate Sanctuary isolated by `family_id` with Standalone Zero-Family Superadmin Governance  
 
 ---
@@ -14,11 +14,13 @@
    - [2.1 Streamlined Founding Admin Onboarding](#21-streamlined-founding-admin-onboarding)
    - [2.2 Robust Kinship Invitation Engine](#22-robust-kinship-invitation-engine)
    - [2.3 Family Sanctuary Branding & Admin Management](#23-family-sanctuary-branding--admin-management)
-   - [2.4 Sovereign Platform Superadmin & Operations Console (New)](#24-sovereign-platform-superadmin--operations-console-new)
-   - [2.5 Ticket-Based Governance & Administrative Interventions (New)](#25-ticket-based-governance--administrative-interventions-new)
+   - [2.4 Sovereign Platform Superadmin & Operations Console](#24-sovereign-platform-superadmin--operations-console)
+   - [2.5 Ticket-Based Governance & Administrative Interventions](#25-ticket-based-governance--administrative-interventions)
    - [2.6 Asymmetrical Living Room Feed & Chronological Stream](#26-asymmetrical-living-room-feed--chronological-stream)
    - [2.7 Memory Preservation, Reactions & Comments](#27-memory-preservation-reactions--comments)
-   - [2.8 High-Contrast Monochrome Dark Theme System](#28-high-contrast-monochrome-dark-theme-system)
+   - [2.8 Post, Comment & Media Management Lifecycle (New)](#28-post-comment--media-management-lifecycle-new)
+   - [2.9 High-Contrast Monochrome Dark Theme System](#29-high-contrast-monochrome-dark-theme-system)
+   - [2.10 Sprint 1 — Mobile Shell & Photo Core Engine](#210-sprint-1--mobile-shell--photo-core-engine)
 3. [Relational Data Model](#3-relational-data-model)
 4. [Security, Session & Privacy Architecture](#4-security-session--privacy-architecture)
 5. [Comprehensive Changelog](#5-comprehensive-changelog)
@@ -107,17 +109,30 @@ Operational governance and administrative actions are performed strictly through
     - *Potluck & Reunion Coordinator:* Event coordination and dish RSVP management.
 - **Topic Filter Pills:** Instant filtering by `All Moments`, `Milestones`, `Audio Notes`, `Recipes`, and `Vault`.
 
-### 2.6 Memory Preservation, Reactions & Comments
-- **Rich Memory Composer:** Post text stories and memories with multi-image support.
-- **Kinship Comments:** Threaded discussions with verified author names (`display_name`), relative avatars, and secure delete permissions restricted to authors and family organizers.
+### 2.7 Memory Preservation, Reactions & Comments
+- **Rich Memory Composer:** Post text stories and memories with multi-image support (up to 6 photos) and instant client-side EXIF scrubbing.
+- **Kinship Comments:** Threaded discussions with verified author names (`display_name`), relative avatars, and inline editing/deletion controls.
 - **Tactile Reactions:** Full heart toggle and categorized reaction capsules (`❤️ Love`, `😂 Laugh`, `🌟 Proud`, `🤗 Hug`).
 
-### 2.7 High-Contrast Monochrome Dark Theme System
+### 2.8 Post, Comment & Media Management Lifecycle (New)
+- **Granular Post Modification:** Authors and family organizers can edit posted stories via a contextual action menu (`MoreHorizontal`), update text narratives, and selectively prune attached photos with automatic thumbnail removal and primary image sync.
+- **Cascading Post Deletion:** Authorized users can permanently delete posts with a double-check confirmation dialog; deletions atomically cascade to all attached `post_photos`, `comments`, and reactions.
+- **Inline Comment Editing & Deletion:** Authors and family admins can modify comments inline or remove them with 1-click confirmation.
+- **Audit Transparency:** Edited posts and comments display a subtle `• (edited)` status indicator next to relative timestamps to maintain authenticity across the family circle.
+
+### 2.9 High-Contrast Monochrome Dark Theme System
 - Grounded in WCAG AAA accessibility standards:
   - Light Canvas: `#fbfbfd` with `#ffffff` elevated card surfaces and `#09090b` primary typography.
   - Dark Canvas: `#09090b` with `#141417` elevated card surfaces and `#fafafa` primary typography.
 - Eliminated all low-contrast gray text and stark white glare blocks in dark mode.
-- Custom Tailwind `@theme` properties registered in [`app/globals.css`](file:///C:/Users/DELL/freelancing/family-social/app/globals.css) for `--color-zinc-750: #23232a` and `--color-zinc-850: #18181e`.
+- Custom Tailwind `@theme` properties registered in [`app/globals.css`](file:///C:/Users/DELL/freelancing/Work/family-social/app/globals.css) for `--color-zinc-750: #23232a` and `--color-zinc-850: #18181e`.
+
+### 2.10 Sprint 1 — Mobile Shell & Photo Core Engine
+- **Privacy-First Client-Side EXIF Metadata Sanitizer:** Canvas 2D binary sanitizer ([`app/lib/exif-sanitizer.ts`](file:///C:/Users/DELL/freelancing/Work/family-social/app/lib/exif-sanitizer.ts)) scrubs camera serial numbers and GPS coordinates in the user's browser before upload, protecting intimate home location privacy.
+- **Progressive Web App (PWA) Shell & Mobile Viewport:** Manifest ([`public/manifest.json`](file:///C:/Users/DELL/freelancing/Work/family-social/public/manifest.json)) configuring standalone mobile display, app icons, theme colors, and `viewport-fit=cover` in [`app/layout.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/layout.tsx) for iOS notch support.
+- **Fixed Mobile Bottom Navigation Bar:** Anchored navigation bar ([`app/components/navigation/MobileBottomNav.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/navigation/MobileBottomNav.tsx)) providing one-touch access to `Living Room` (`/feed`), `Family Tree` (`/family`), `Events` (`/feed#trips`), and `Profile` (`/profile`) on viewport `< 1024px`, with safe area padding and clean English localization.
+- **Multi-Photo Relational Storage & Transactions:** Multi-photo pipeline (`post_photos` table, `0015_post_photos.sql`) supporting up to 6 images per memory post, transactional atomic save via [`app/actions/post.ts`](file:///C:/Users/DELL/freelancing/Work/family-social/app/actions/post.ts), and local storage at `public/uploads/posts/[familyId]/`.
+- **Adaptive Mosaic Grid & Fullscreen Touch Lightbox:** Editorial adaptive layouts ([`app/components/feed/PhotoMosaicGrid.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/feed/PhotoMosaicGrid.tsx)) for 1 hero, 2 split, 3 split-column, and 4+ grid with `+{remainingCount} more` badge, connected to fullscreen touch lightbox viewer ([`app/components/feed/PhotoLightboxModal.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/feed/PhotoLightboxModal.tsx)) with mobile swipe gestures, standard pagination (`${currentIndex + 1} / ${photos.length}`), keyboard controls, and double-tap zoom.
 
 ---
 
@@ -189,6 +204,48 @@ CREATE TABLE audit_logs (
   metadata JSONB,
   created_at TIMESTAMP DEFAULT now() NOT NULL
 );
+
+-- 7. Living Room Posts & Stories (With Edit Management)
+CREATE TABLE posts (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  family_id UUID REFERENCES families(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  content TEXT,
+  image_url TEXT,
+  is_edited BOOLEAN DEFAULT false NOT NULL,
+  updated_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT now()
+);
+CREATE INDEX idx_posts_family ON posts(family_id);
+
+-- 8. Threaded Comments (With Edit Management)
+CREATE TABLE comments (
+  id UUID PRIMARY KEY,
+  post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  family_id UUID NOT NULL REFERENCES families(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  is_edited BOOLEAN DEFAULT false NOT NULL,
+  updated_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT now() NOT NULL
+);
+CREATE INDEX idx_comments_post ON comments(post_id);
+
+-- 9. Multi-Photo Mosaic Attachments (Sprint 1)
+CREATE TABLE post_photos (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  post_id UUID NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  family_id UUID NOT NULL REFERENCES families(id) ON DELETE CASCADE,
+  url TEXT NOT NULL,
+  thumbnail_url TEXT,
+  caption TEXT,
+  sort_order INTEGER DEFAULT 0 NOT NULL,
+  width INTEGER,
+  height INTEGER,
+  created_at TIMESTAMP DEFAULT now() NOT NULL
+);
+CREATE INDEX idx_post_photos_post ON post_photos(post_id);
+CREATE INDEX idx_post_photos_family ON post_photos(family_id);
 ```
 
 ---
@@ -203,7 +260,37 @@ CREATE TABLE audit_logs (
 
 ## 5. Comprehensive Changelog
 
-### Version 2.4.0 (Current Release)
+### Version 2.5.0 (Sprint 1 — Mobile Shell, Photo Core & Refinements — Current Release)
+- **Privacy-First Client-Side EXIF Metadata Sanitizer:**
+  - Implemented [`app/lib/exif-sanitizer.ts`](file:///C:/Users/DELL/freelancing/Work/family-social/app/lib/exif-sanitizer.ts) with HTML5 Canvas 2D image redrawing and WebP re-encoding.
+  - Automatically scrubs GPS coordinates, camera serial numbers, and device fingerprints in the client browser before network transmission.
+- **Mobile-First Progressive Web App (PWA) Shell:**
+  - Added Web App Manifest [`public/manifest.json`](file:///C:/Users/DELL/freelancing/Work/family-social/public/manifest.json) enabling standalone home-screen installation.
+  - Added `viewport-fit=cover` and iOS web app capability metadata in [`app/layout.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/layout.tsx) for edge-to-edge rendering around mobile notches.
+  - Implemented fixed bottom navigation bar [`app/components/navigation/MobileBottomNav.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/navigation/MobileBottomNav.tsx) (`Living Room`, `Family Tree`, `Events`, `Profile`) anchored above device safe areas (`pb-[env(safe-area-inset-bottom)]`).
+- **Rich Multi-Photo Sharing Engine:**
+  - Added relational `post_photos` schema and DDL migration [`db/migrations/0015_post_photos.sql`](file:///C:/Users/DELL/freelancing/Work/family-social/db/migrations/0015_post_photos.sql) with cascade deletes on `posts` and `families`.
+  - Implemented filesystem photo storage pipeline [`app/lib/post-photo-storage.ts`](file:///C:/Users/DELL/freelancing/Work/family-social/app/lib/post-photo-storage.ts) isolated by `public/uploads/posts/[familyId]/`.
+  - Updated [`app/actions/post.ts`](file:///C:/Users/DELL/freelancing/Work/family-social/app/actions/post.ts) to handle multi-photo `FormData` inside an atomic PostgreSQL transaction.
+  - Updated [`app/lib/feed.ts`](file:///C:/Users/DELL/freelancing/Work/family-social/app/lib/feed.ts) to aggregate ordered photos via correlated subquery scoped by `family_id`.
+- **Adaptive Editorial Mosaic Grid & Fullscreen Touch Lightbox:**
+  - Created [`app/components/feed/PhotoMosaicGrid.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/feed/PhotoMosaicGrid.tsx) rendering 1 hero, 2 equal columns, 3 split columns, and 4+ 2x2 grid with `+{remainingCount} more` overlay badge.
+  - Created [`app/components/feed/PhotoLightboxModal.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/feed/PhotoLightboxModal.tsx) via React Portal (`document.body`) with mobile touch swipe gestures (`onTouchStart`/`onTouchMove`/`onTouchEnd`), clean English pagination (`${currentIndex + 1} / ${photos.length}`), keyboard shortcuts (`Esc`, arrows), and double-tap zoom.
+  - Integrated into [`app/components/feed/PostCard.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/feed/PostCard.tsx) while preserving reaction pills and comment threads.
+- **Sprint 1 Refinements & Enhancements:**
+  - **Full English Standardization:** Eliminated all Marathi and Devanagari numerals/dialects across the bottom navigation bar, photo grid counts, and lightbox indicators in favor of clean English.
+  - **Client & Mobile Hydration Error Resolution:** Resolved Next.js 15/16 App Router generic hydration mismatch by removing manual `<head>` elements in [`app/layout.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/layout.tsx), repositioning inline theme scripts inside `<body suppressHydrationWarning>`, adjusting [`app/components/ThemeToggle.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/ThemeToggle.tsx) placement (`bottom-20 lg:bottom-6`), and adding mounted guards in [`app/components/navigation/MobileBottomNav.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/navigation/MobileBottomNav.tsx).
+  - **Removal of Google OAuth 2.0:** Completely purged Google OAuth provider and login buttons from [`app/(public)/login/page.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/(public)/login/page.tsx) and [`app/api/auth/[...nextauth]/route.ts`](file:///C:/Users/DELL/freelancing/Work/family-social/app/api/auth/%5B...nextauth%5D/route.ts).
+  - **Pixel-Perfect Circular UI Geometry:** Enforced strict `aspect-square shrink-0 rounded-full overflow-hidden` with zero-padding overrides across [`app/components/ui/Avatar.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/ui/Avatar.tsx), [`app/components/UserMenu.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/UserMenu.tsx), [`app/components/navigation/MobileBottomNav.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/navigation/MobileBottomNav.tsx), and composer thumbnail cancel buttons in [`app/components/feed/HearthComposer.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/feed/HearthComposer.tsx).
+  - **Complete Post & Comment Management Lifecycle:**
+    - Added `is_edited` and `updated_at` columns to `posts` and `comments` via [`db/migrations/0016_posts_comments_edit_management.sql`](file:///C:/Users/DELL/freelancing/Work/family-social/db/migrations/0016_posts_comments_edit_management.sql).
+    - Implemented `updatePost` and `deletePost` in [`app/actions/post.ts`](file:///C:/Users/DELL/freelancing/Work/family-social/app/actions/post.ts) with multi-photo selective pruning and cascade deletion.
+    - Implemented `updateComment` and `deleteComment` in [`app/actions/comments.ts`](file:///C:/Users/DELL/freelancing/Work/family-social/app/actions/comments.ts).
+    - Updated [`app/components/feed/PostCard.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/feed/PostCard.tsx) and [`app/components/posts/CommentList.tsx`](file:///C:/Users/DELL/freelancing/Work/family-social/app/components/posts/CommentList.tsx) with inline editing, deletion confirmation dialogs, author/admin permissions, and `• (edited)` status indicators.
+  - **Fresh Start Database Truncation Utility:** Created [`scripts/truncate_db.mjs`](file:///C:/Users/DELL/freelancing/Work/family-social/scripts/truncate_db.mjs) and registered `"db:truncate"` in [`package.json`](file:///C:/Users/DELL/freelancing/Work/family-social/package.json) to wipe relational data and re-seed the default sovereign superadmin.
+
+### Version 2.4.0
+
 - **Automated Self-Service & Admin Ticket Workflows:**
   - **Self-Service Password Reset Request:** Any authenticated family member can request a single-use password reset authorization code from [ProfileView](file:///C:/Users/DELL/freelancing/family-social/app/components/profile/ProfileView.tsx). Dispatches an automated `#TIK-XXXX` ticket under category `password_reset` to the SuperAdmin workbench.
   - **Custom Kin Tag Change Request:** Relatives can request to change their relational profile tag (e.g., `KIN` $\to$ `Grandma`, `Uncle`, `Elder`) directly from their profile banner. Dispatches an automated `#TIK-XXXX` ticket under category `tag_change` to the SuperAdmin workbench.

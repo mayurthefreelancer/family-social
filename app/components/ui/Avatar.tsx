@@ -37,7 +37,7 @@ export function Avatar({
   return (
     <div
       className={cn(
-        "relative inline-block rounded-full shrink-0 select-none",
+        "relative inline-flex items-center justify-center rounded-full aspect-square shrink-0 overflow-hidden select-none",
         sizeClasses[size],
         className
       )}
@@ -48,10 +48,10 @@ export function Avatar({
           src={src}
           alt={alt}
           onError={() => setHasError(true)}
-          className="w-full h-full rounded-full object-cover border border-zinc-200 dark:border-zinc-800"
+          className="w-full h-full rounded-full aspect-square object-cover border border-zinc-200 dark:border-zinc-800"
         />
       ) : (
-        <div className="w-full h-full rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center font-semibold text-zinc-700 dark:text-zinc-200">
+        <div className="w-full h-full rounded-full aspect-square bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center font-semibold text-zinc-700 dark:text-zinc-200">
           {initial}
         </div>
       )}
