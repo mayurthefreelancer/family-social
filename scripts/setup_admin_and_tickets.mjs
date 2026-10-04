@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 const connectionString =
   process.env.DATABASE_URL ||
   process.env.DATABASE_POSTGRES_URL ||
+  process.env.DATABASE_POSTGRES_URL_NON_POOLING ||
   process.env.POSTGRES_URL ||
   'postgresql://family_user:root@localhost:5432/family_social';
 
