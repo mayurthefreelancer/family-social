@@ -5,9 +5,22 @@ import "./globals.css";
 import "./styles/tokens.css";
 
 export const metadata = {
-  title: "Family Social",
-  description: "Private family space",
+  title: "Kinship: The Digital Living Room",
+  description: "Private, sovereign family sanctuary for intimate memories and gatherings.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Kinship",
+  },
 };
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 
 export default function RootLayout({
   children,
@@ -15,27 +28,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-theme="light">
-      <head>
+    <html lang="en" data-theme="light" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
                   const stored = localStorage.getItem('theme');
-                  if (stored) {
-                    document.documentElement.setAttribute('data-theme', stored);
+                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  const theme = stored || (prefersDark ? 'dark' : 'light');
+                  document.documentElement.setAttribute('data-theme', theme);
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
                   } else {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+                    document.documentElement.classList.remove('dark');
                   }
                 } catch (e) {}
               })();
             `,
           }}
         />
-      </head>
-      <body>
         <Providers>
           {children}
           <ThemeToggle />

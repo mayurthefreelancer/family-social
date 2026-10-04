@@ -8,6 +8,8 @@ import { redirect } from "next/navigation"
 
 type UploadState = {
   error?: string
+  success?: boolean
+  avatarUrl?: string
 }
 
 export async function uploadAvatar(
@@ -61,9 +63,14 @@ export async function uploadAvatar(
     )
 
     revalidatePath("/profile")
+    revalidatePath("/profile/edit")
+    revalidatePath("/", "layout")
 
-    return {} // success → no error
-  } catch {
-    return { error: "Something went wrong. Please try again." }
+    return { success: true, avatarUrl }
+  } catch (err: any) {
+    if (err?.digest?.startsWith("NEXT_REDIRECT") || err?.message === "NEXT_REDIRECT") {
+      throw err;
+    }
+    return { error: err?.message || "Something went wrong. Please try again." }
   }
 }

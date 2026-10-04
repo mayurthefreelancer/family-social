@@ -1,78 +1,97 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
+import { signIn } from "next-auth/react";
 import { AuthCard } from "@/app/components/auth/AuthCard";
 import { AuthField } from "@/app/components/auth/AuthField";
-import { signIn } from "next-auth/react";
-import Link from "next/link";
-import { useState } from "react";
+import { Button } from "@/app/components/ui/Button";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleCredentialsSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      setError("Invalid email or password. Please try again.");
+      setLoading(false);
+    } else {
+      window.location.href = "/";
+    }
+  }
 
   return (
-    <AuthCard title="Sign in" subtitle="Access your family space">
-
-      {/* Google OAuth — outside the credentials form so clicking it never triggers form submit */}
-      <button
-        type="button"
-        onClick={() => signIn("google", { callbackUrl: "/" })}
-        className="w-full rounded-lg bg-zinc-800 text-white p-3 mb-4"
-      >
-        Continue with Google
-      </button>
-
-      <div className="flex items-center gap-3 my-4">
-        <hr className="flex-1 border-[var(--color-border)]" />
-        <span className="text-sm text-[var(--color-text-muted)]">or</span>
-        <hr className="flex-1 border-[var(--color-border)]" />
-      </div>
-
-      {/* Credentials form — only handles email/password, Google button is above it */}
-      <form
-        action={async (formData) => {
-          const result = await signIn("credentials", {
-            email: formData.get("email"),
-            password: formData.get("password"),
-            redirect: false,
-          });
-
-          if (result?.error) {
-            setError("Invalid email or password");
-          } else {
-            window.location.href = "/";
-          }
-        }}
-        className="space-y-4"
-      >
-        <AuthField label="Email" name="email" type="email" required />
-        <AuthField label="Password" name="password" type="password" required />
+    <AuthCard
+      title="Welcome Home"
+      subtitle="Sign in to step into your family's digital living room."
+    >
+      {/* Credentials form */}
+      <form onSubmit={handleCredentialsSubmit} className="space-y-4">
+        <AuthField
+          label="Email address"
+          name="email"
+          type="email"
+          placeholder="e.g. grandpa.arthur@example.com"
+          autoComplete="email"
+          required
+        />
+        <AuthField
+          label="Password"
+          name="password"
+          type="password"
+          placeholder="••••••••"
+          autoComplete="current-password"
+          required
+        />
 
         {error && (
-          <p className="text-sm text-[var(--color-danger)]">{error}</p>
+          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-600 dark:text-red-400">
+            {error}
+          </div>
         )}
 
-        <button
+        <Button
           type="submit"
-          className="w-full rounded-md bg-[var(--color-accent)] py-2 text-sm text-[var(--color-text)]"
+          disabled={loading}
+          className="w-full h-11 rounded-xl bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white font-medium text-sm transition-all"
         >
-          Sign in
-        </button>
+          {loading ? "Signing in..." : "Sign in to Family"}
+        </Button>
       </form>
 
-      <p className="text-sm text-center text-[var(--color-text-muted)] mt-4">
-        Don't have an account?{" "}
-        <button className="text-[var(--color-accent)]" onClick={() => (window.location.href = "/register")}>
-          <Link href="/register" className="hover:underline">
-            Create one
+      <div className="mt-6 pt-4 border-t border-zinc-200/60 dark:border-zinc-800/60 space-y-2 text-center text-xs">
+        <p className="text-zinc-500 dark:text-zinc-400">
+          New to the family?{" "}
+          <Link
+            href="/register"
+            className="font-medium text-zinc-900 dark:text-zinc-100 hover:underline"
+          >
+            Create account
           </Link>
-        </button>
-      </p>
-
-      <p className="text-sm text-center text-[var(--color-text-muted)]">
-        <Link href="/forgot-password" className="hover:underline">
-          Forgot password?
-        </Link>
-      </p>
+        </p>
+        <p>
+          <Link
+            href="/forgot-password"
+            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+          >
+            Forgot your password?
+          </Link>
+        </p>
+      </div>
     </AuthCard>
   );
 }
